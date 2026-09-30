@@ -1,0 +1,12 @@
+{
+  "name": "my-nav",
+  "version": "1.0.0",
+  "description": "Personal startpage navigation with system theme, search, groups, favicons, drag-sort and shortcuts",
+  "scripts": {
+    "import-bookmarks": "node scripts/bookmarks-to-nav.js",
+    "fetch-icons": "node scripts/fetch-icons.js"
+  },
+  "dependencies": {
+    "jsdom": "^24.0.0"
+  }
+}
