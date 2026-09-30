@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="个人新标签页导航" />
+  <title>我的导航</title>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>" />
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.setAttribute('data-theme', saved);
+        } else if (sysDark) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <select id="engine" class="engine-select" title="切换搜索引擎"></select>
+    <input id="search" type="text" placeholder="搜索站点或搜网页… (按 / 聚焦)" autofocus />
+    <button id="toggle-theme" class="theme-btn" title="主题：系统 / 深 / 浅">🖥️</button>
+  </header>
+
+  <div class="widget-bar">
+    <div id="weather" class="weather-widget">加载天气…</div>
+    <div id="clock" class="clock-widget"></div>
+  </div>
+
+  <main id="nav"></main>
+
+  <footer class="footer">
+    <span id="site-count"></span>
+    <span class="hint">按 <kbd>/</kbd> 搜索 · <kbd>1</kbd>-<kbd>9</kbd> 打开分组</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
