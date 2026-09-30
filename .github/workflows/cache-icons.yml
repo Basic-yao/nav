@@ -1,0 +1,33 @@
+name: Cache Favicons
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Fetch icons
+        run: node scripts/fetch-icons.js
+      - name: Commit & Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add icons/ || true
+          if git diff --staged --quiet; then
+            echo "No new icons"
+          else
+            git commit -m "chore: update favicon cache"
+            git push
+          fi
