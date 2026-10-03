@@ -3,22 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nav (浅色模式)</title>
+  <title>Nav</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="layout">
     <!-- 左侧栏 -->
     <aside class="sidebar">
-      <div class="logo">Nav</div>
-      <div id="navList" class="nav-list"></div>
+      <div class="sidebar-top">
+        <div class="logo">
+          <img src="logo.png" alt="logo" class="logo-img" id="logoImg">
+          <span class="logo-text">Nav</span>
+        </div>
+        <div id="navList" class="nav-list"></div>
+      </div>
+      <div class="sidebar-bottom">
+        <button id="toggle-theme" class="theme-btn" title="切换深浅色">
+          <span id="themeIcon">🌙</span>
+          <span class="theme-label">深色模式</span>
+        </button>
+      </div>
     </aside>
 
     <!-- 右侧主体 -->
     <main class="main">
       <header class="header">
-        <input type="text" id="searchInput" placeholder="搜索网站或分类..." class="search">
-        <button id="toggle-theme" class="theme-btn">🌙</button>
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="搜索网站或分类... (按 / 聚焦)">
+        </div>
       </header>
       <div id="navContainer" class="container"></div>
     </main>

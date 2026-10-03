@@ -1,3 +1,4 @@
+// ============ 导航数据 ============
 const navData = [
   { category: "常用工具", icon: "🛠️", links: [
     { title: "网络剪贴板", url: "#", desc: "在线跨屏剪切文字", icon: `<svg viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1z"/><path d="M20 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h12v14z"/></svg>` },
@@ -13,7 +14,7 @@ const navData = [
     { title: "Stack Overflow", url: "#", desc: "程序员问答社区", icon: `<svg viewBox="0 0 24 24"><path d="M17.36 20.22v-1.672l4.5 1.5v-12l-4.5 1.5v-1.672l6-2v15l-6 2zm-4.86-4.5l-1.5 4.5-3.86-1.28 1.5-4.5 3.86 1.28zm-3.36-4.5l-1.5 4.5-3.86-1.28 1.5-4.5 3.86 1.28zm-3.36-4.5l-1.5 4.5-3.86-1.28 1.5-4.5 3.86 1.28zm14.22 11.22l-4.5-1.5v-9l4.5 1.5v9z"/></svg>` },
     { title: "MDN Web Docs", url: "#", desc: "Web 技术文档", icon: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>` },
     { title: "Figma", url: "#", desc: "在线协作设计工具", icon: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>` },
-    { title: "Can I Use", url: "#", desc: "前端兼容性查询", icon: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93z"/></svg>` },
+    { title: "Can I Use", url: "#", desc: "前端兼容性查询", icon: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>` },
     { title: "npm", url: "#", desc: "JavaScript 包管理器", icon: `<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>` },
     { title: "Vercel", url: "#", desc: "前端项目部署平台", icon: `<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>` }
   ]},
@@ -22,12 +23,16 @@ const navData = [
   ]}
 ];
 
+// ============ DOM ============
 const container = document.getElementById('navContainer');
 const navList = document.getElementById('navList');
 const searchInput = document.getElementById('searchInput');
 const themeBtn = document.getElementById('toggle-theme');
+const themeIcon = document.getElementById('themeIcon');
+const themeLabel = document.querySelector('.theme-label');
 const html = document.documentElement;
 
+// ============ 渲染 ============
 function render(data) {
   container.innerHTML = '';
   navList.innerHTML = '';
@@ -35,7 +40,7 @@ function render(data) {
     navList.innerHTML += `<div data-index="${i}">${section.icon} ${section.category}</div>`;
     container.innerHTML += `<h2 class="section-title" id="sec${i}">${section.icon} ${section.category}</h2><div class="grid">
       ${section.links.map(l => `<a href="${l.url}" target="_blank" class="card">
-        <div class="card-icon">${l.icon || ''}</div>
+        <div class="card-icon">${l.icon || '🔗'}</div>
         <div class="card-title">${l.title}</div>
         <div class="card-desc">${l.desc}</div>
       </a>`).join('')}
@@ -50,30 +55,49 @@ function render(data) {
   });
 }
 
+// ============ 搜索 ============
 searchInput.addEventListener('input', e => {
   const k = e.target.value.toLowerCase().trim();
-  if(!k) { render(navData); return; }
-  const filtered = navData.map(s => ({...s, links: s.links.filter(l => l.title.toLowerCase().includes(k) || l.desc.includes(k))})).filter(s => s.links.length);
+  if (!k) { render(navData); return; }
+  const filtered = navData.map(s => ({
+    ...s,
+    links: s.links.filter(l => l.title.toLowerCase().includes(k) || l.desc.includes(k))
+  })).filter(s => s.links.length);
   render(filtered);
 });
 
+// ============ 快捷键 ============
 document.addEventListener('keydown', e => {
-  if(e.key === '/' && !e.ctrlKey && document.activeElement !== searchInput) {
-    e.preventDefault(); searchInput.focus();
+  if (e.key === '/' && !e.ctrlKey && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
   }
 });
 
-function syncIcon() {
-  themeBtn.textContent = html.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+// ============ 深浅色切换 ============
+function setTheme(t) {
+  html.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+  if (t === 'dark') {
+    themeIcon.textContent = '☀️';
+    themeLabel.textContent = '浅色模式';
+  } else {
+    themeIcon.textContent = '🌙';
+    themeLabel.textContent = '深色模式';
+  }
 }
 themeBtn.onclick = () => {
   const cur = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  html.setAttribute('data-theme', cur);
-  localStorage.setItem('theme', cur);
-  syncIcon();
+  setTheme(cur);
 };
-const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-html.setAttribute('data-theme', saved);
-syncIcon();
+const saved = localStorage.getItem('theme');
+if (saved) {
+  setTheme(saved);
+} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  setTheme('dark');
+} else {
+  setTheme('light');
+}
 
+// ============ 初始渲染 ============
 render(navData);
