@@ -1,380 +1,148 @@
-const $ = (s) => document.querySelector(s);
-const nav = $("#nav");
-const search = $("#search");
-const html = document.documentElement;
+// ============ 导航数据 ============
+const navData = [
+  {
+    category: "常用工具",
+    icon: "fa-tools",
+    links: [
+      { title: "网络剪贴板", url: "https://netcut.cn/", desc: "在线跨屏剪切文字", icon: "fa-clipboard" },
+      { title: "草料二维码", url: "https://cli.im/", desc: "在线二维码生成工具", icon: "fa-qrcode" },
+      { title: "在线文件传输", url: "https://musetransfer.com/", desc: "无需注册的大文件传输", icon: "fa-paper-plane" },
+      { title: "TinyPNG", url: "https://tinypng.com/", desc: "图片压缩神器", icon: "fa-image" },
+      { title: "Remove.bg", url: "https://www.remove.bg/", desc: "一键去背景", icon: "fa-eraser" },
+      { title: "Carbon", url: "https://carbon.now.sh/", desc: "代码截图美化", icon: "fa-code" },
+    ]
+  },
+  {
+    category: "开发设计",
+    icon: "fa-code",
+    links: [
+      { title: "GitHub", url: "https://github.com/", desc: "代码托管平台", icon: "fa-github" },
+      { title: "Gitee", url: "https://gitee.com/", desc: "国内代码托管", icon: "fa-git-alt" },
+      { title: "Stack Overflow", url: "https://stackoverflow.com/", desc: "程序员问答社区", icon: "fa-stack-overflow" },
+      { title: "MDN Web Docs", url: "https://developer.mozilla.org/", desc: "Web 技术文档", icon: "fa-firefox" },
+      { title: "Figma", url: "https://www.figma.com/", desc: "在线协作设计工具", icon: "fa-figma" },
+      { title: "Can I Use", url: "https://caniuse.com/", desc: "前端兼容性查询", icon: "fa-check-circle" },
+      { title: "npm", url: "https://www.npmjs.com/", desc: "JavaScript 包管理器", icon: "fa-box" },
+      { title: "Vercel", url: "https://vercel.com/", desc: "前端项目部署平台", icon: "fa-rocket" },
+    ]
+  },
+  {
+    category: "AI 工具",
+    icon: "fa-robot",
+    links: [
+      { title: "ChatGPT", url: "https://chat.openai.com/", desc: "OpenAI 对话模型", icon: "fa-comments" },
+      { title: "Claude", url: "https://claude.ai/", desc: "Anthropic AI 助手", icon: "fa-brain" },
+      { title: "通义千问", url: "https://tongyi.aliyun.com/", desc: "阿里 AI 助手", icon: "fa-cloud" },
+      { title: "文心一言", url: "https://yiyan.baidu.com/", desc: "百度 AI 对话", icon: "fa-wind" },
+      { title: "Midjourney", url: "https://www.midjourney.com/", desc: "AI 绘画生成", icon: "fa-paint-brush" },
+      { title: "Notion AI", url: "https://www.notion.so/", desc: "智能笔记助手", icon: "fa-book" },
+    ]
+  },
+  {
+    category: "影视影音",
+    icon: "fa-video",
+    links: [
+      { title: "Bilibili", url: "https://bilibili.com/", desc: "弹幕视频网", icon: "fa-tv" },
+      { title: "YouTube", url: "https://youtube.com/", desc: "全球视频平台", icon: "fa-youtube" },
+      { title: "网易云音乐", url: "https://music.163.com/", desc: "在线音乐", icon: "fa-music" },
+      { title: "QQ音乐", url: "https://y.qq.com/", desc: "腾讯音乐平台", icon: "fa-headphones" },
+      { title: "豆瓣", url: "https://douban.com/", desc: "电影/书籍/音乐评分", icon: "fa-film" },
+      { title: "爱奇艺", url: "https://iqiyi.com/", desc: "在线影视", icon: "fa-play-circle" },
+    ]
+  },
+  {
+    category: "学习资源",
+    icon: "fa-graduation-cap",
+    links: [
+      { title: "B站学习区", url: "https://bilibili.com/v/knowledge/", desc: "B站知识区", icon: "fa-book-open" },
+      { title: "知乎", url: "https://zhihu.com/", desc: "问答社区", icon: "fa-question-circle" },
+      { title: "掘金", url: "https://juejin.cn/", desc: "开发者社区", icon: "fa-diamond" },
+      { title: "简书", url: "https://jianshu.com/", desc: "创作社区", icon: "fa-pen" },
+      { title: "Wikipedia", url: "https://wikipedia.org/", desc: "自由百科全书", icon: "fa-globe" },
+      { title: "Coursera", url: "https://coursera.org/", desc: "在线课程平台", icon: "fa-university" },
+    ]
+  },
+  {
+    category: "云盘存储",
+    icon: "fa-cloud",
+    links: [
+      { title: "阿里云盘", url: "https://www.aliyundrive.com/", desc: "阿里云盘", icon: "fa-cloud-upload" },
+      { title: "百度网盘", url: "https://pan.baidu.com/", desc: "百度云存储", icon: "fa-hdd" },
+      { title: "123云盘", url: "https://www.123pan.com/", desc: "不限速网盘", icon: "fa-database" },
+      { title: "蓝奏云", url: "https://wwww.lanzou.com/", desc: "小文件分享", icon: "fa-share-alt" },
+      { title: "OneDrive", url: "https://onedrive.live.com/", desc: "微软云存储", icon: "fa-cloud-arrow-up" },
+    ]
+  },
+  {
+    category: "购物生活",
+    icon: "fa-shopping-cart",
+    links: [
+      { title: "淘宝", url: "https://taobao.com/", desc: "网购平台", icon: "fa-shopping-bag" },
+      { title: "京东", url: "https://jd.com/", desc: "正品电商", icon: "fa-truck" },
+      { title: "拼多多", url: "https://pinduoduo.com/", desc: "拼团购物", icon: "fa-tags" },
+      { title: "美团", url: "https://meituan.com/", desc: "外卖/到店", icon: "fa-utensils" },
+      { title: "饿了么", url: "https://ele.me/", desc: "在线外卖", icon: "fa-hamburger" },
+      { title: "高德地图", url: "https://amap.com/", desc: "导航出行", icon: "fa-map" },
+    ]
+  },
+  {
+    category: "友情链接",
+    icon: "fa-link",
+    links: [
+      { title: "一为导航", url: "https://nav.iowen.cn/", desc: "onenav 主题演示站", icon: "fa-compass" },
+      { title: "趣导航", url: "https://qssily.com/", desc: "简洁导航站", icon: "fa-rocket" },
+      { title: "果核剥壳", url: "https://www.ghxi.com/", desc: "软件分享社区", icon: "fa-seedling" },
+    ]
+  }
+];
 
-// ============ 主题 ============
-const themeBtn = $("#toggle-theme");
+// ============ 年份 ============
+document.getElementById('year').innerText = new Date().getFullYear();
 
-function syncIcon() {
-  const t = html.getAttribute('data-theme');
-  themeBtn.textContent = t === 'dark' ? '☀️' : t === 'light' ? '🌙' : '🖥️';
+// ============ 主题状态提示 ============
+const themeTag = document.getElementById('themeTag');
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  themeTag.innerText = "(深色模式)";
+} else {
+  themeTag.innerText = "(浅色模式)";
 }
 
-themeBtn.onclick = () => {
-  const cur = html.getAttribute('data-theme');
-  if (cur === 'dark') {
-    html.setAttribute('data-theme', 'light');
-    localStorage.setItem('theme', 'light');
-  } else if (cur === 'light') {
-    html.removeAttribute('data-theme');
-    localStorage.removeItem('theme');
-  } else {
-    const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    html.setAttribute('data-theme', sysDark ? 'light' : 'dark');
-    localStorage.setItem('theme', sysDark ? 'light' : 'dark');
-  }
-  syncIcon();
-};
+// ============ 渲染 ============
+const container = document.getElementById('navContainer');
+const searchInput = document.getElementById('searchInput');
 
-window.matchMedia('(prefers-color-scheme: dark)')
-  .addEventListener('change', (e) => {
-    if (!localStorage.getItem('theme')) {
-      if (e.matches) html.setAttribute('data-theme', 'dark');
-      else html.removeAttribute('data-theme');
-      syncIcon();
-    }
+function render(data) {
+  container.innerHTML = '';
+  data.forEach(section => {
+    const secHtml = `
+      <h2 class="section-title"><i class="fa-solid ${section.icon}"></i> ${section.category}</h2>
+      <div class="grid">
+        ${section.links.map(link => `
+          <a href="${link.url}" target="_blank" class="card">
+            <div class="card-icon"><i class="fa-solid ${link.icon}"></i></div>
+            <div class="card-title">${link.title}</div>
+            <div class="card-desc">${link.desc}</div>
+          </a>
+        `).join('')}
+      </div>
+    `;
+    container.innerHTML += secHtml;
   });
-
-syncIcon();
-
-// ============ 搜索引擎 ============
-let engineKeys = [];
-let currentEngine = null;
-
-function initEngines() {
-  const engines = DATA.settings.searchEngines;
-  engineKeys = Object.keys(engines);
-  const saved = localStorage.getItem('engine');
-  currentEngine = engineKeys.includes(saved) ? saved : engineKeys[0] || 'google';
-  renderEngine();
-}
-
-function renderEngine() {
-  const sel = $('#engine');
-  if (!sel) return;
-  sel.innerHTML = engineKeys.map((k) =>
-    `<option value="${k}">${DATA.settings.searchEngines[k].label}</option>`
-  ).join('');
-  sel.value = currentEngine;
-}
-
-function searchUrl(q) {
-  return DATA.settings.searchEngines[currentEngine].url + encodeURIComponent(q);
-}
-
-$('#engine').addEventListener('change', (e) => {
-  currentEngine = e.target.value;
-  localStorage.setItem('engine', currentEngine);
-});
-
-// ============ Favicon ============
-// 配置你的 Cloudflare Worker 地址，留空则走本地 icons 目录
-// 例: const FAVICON_PROXY = "https://favicon-proxy.xxx.workers.dev/?u=";
-const FAVICON_PROXY = "";
-
-function getFavicon(url) {
-  if (FAVICON_PROXY) return FAVICON_PROXY + encodeURIComponent(url);
-  const hash = Math.abs([...url].reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0)).toString(36);
-  return `icons/${hash}.ico`;
-}
-
-function faviconFallback(img, url) {
-  let tried = 0;
-  img.onerror = () => {
-    tried++;
-    const hash = Math.abs([...url].reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0)).toString(36);
-    if (tried === 1) {
-      img.src = `icons/${hash}.png`;
-    } else if (tried === 2 && FAVICON_PROXY) {
-      img.src = FAVICON_PROXY + encodeURIComponent(url);
-    } else {
-      img.onerror = null;
-      img.style.visibility = 'hidden';
-    }
-  };
-}
-
-// ============ URL hash ============
-function hashUrl(url) {
-  return Math.abs([...url].reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0)).toString(36);
-}
-
-// ============ 数据 & 渲染 ============
-let DATA = null;
-let activeIdx = -1;
-
-async function load() {
-  const res = await fetch("data/nav.json", { cache: "no-store" });
-  DATA = await res.json();
-  initEngines();
-  render("");
-}
-
-function getAllSites() {
-  return DATA.groups.flatMap((g) =>
-    g.sites.map((s) => ({ ...s, _group: g.name }))
-  );
-}
-
-function render(keyword) {
-  nav.innerHTML = "";
-  const kw = keyword.trim().toLowerCase();
-  let totalVisible = 0;
-  let cardIdx = 0;
-
-  for (const g of DATA.groups) {
-    const sites = g.sites.filter((s) =>
-      !kw ||
-      s.title.toLowerCase().includes(kw) ||
-      (s.desc || "").toLowerCase().includes(kw)
-    );
-    if (!sites.length) continue;
-
-    totalVisible += sites.length;
-    const sec = document.createElement("section");
-    sec.className = "group";
-    sec.innerHTML = `<h2>${g.name}</h2>`;
-    const grid = document.createElement("div");
-    grid.className = "grid";
-
-    for (const s of sites) {
-      const a = document.createElement("a");
-      a.className = "card";
-      a.href = s.url;
-      a.target = "_blank";
-      a.rel = "noopener";
-      a.dataset.idx = cardIdx++;
-
-      const icon = getFavicon(s.url);
-      a.innerHTML = `
-        <div class="card-top">
-          <img class="favicon" src="${icon}" alt="" data-origin="${s.url}" loading="lazy" />
-          <span class="title">${s.title}</span>
-        </div>
-        <div class="desc">${s.desc || ""}</div>
-      `;
-      grid.appendChild(a);
-    }
-    sec.appendChild(grid);
-    nav.appendChild(sec);
-  }
-
-  document.querySelectorAll('.favicon').forEach((img) => {
-    faviconFallback(img, img.dataset.origin);
-  });
-
-  if (totalVisible === 0) {
-    nav.innerHTML = `<div class="empty">没有匹配的站点</div>`;
-  }
-
-  // 站点计数
-  const countEl = $('#site-count');
-  if (countEl) {
-    const total = DATA.groups.reduce((n, g) => n + g.sites.length, 0);
-    countEl.textContent = `${total} 个站点 · ${DATA.groups.length} 个分组`;
-  }
-
-  activeIdx = -1;
-  setupDrag();
 }
 
 // ============ 搜索 ============
-search.addEventListener("input", () => render(search.value));
-
-search.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    const v = search.value.trim();
-    if (!v) return;
-    const all = getAllSites();
-    const hit = all.find((s) => s.title.toLowerCase() === v.toLowerCase());
-    if (hit) { window.open(hit.url, "_blank"); return; }
-    const fuzzy = all.find((s) => s.title.toLowerCase().includes(v.toLowerCase()));
-    if (fuzzy) { window.open(fuzzy.url, "_blank"); return; }
-    window.open(searchUrl(v), "_blank");
-  }
-
-  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-    e.preventDefault();
-    const cards = document.querySelectorAll(".card");
-    if (!cards.length) return;
-    if (activeIdx >= 0) cards[activeIdx].classList.remove("active");
-    if (e.key === "ArrowDown") {
-      activeIdx = (activeIdx + 1) % cards.length;
-    } else {
-      activeIdx = (activeIdx - 1 + cards.length) % cards.length;
-    }
-    cards[activeIdx].classList.add("active");
-    cards[activeIdx].scrollIntoView({ block: "nearest" });
-  }
+searchInput.addEventListener('input', (e) => {
+  const keyword = e.target.value.toLowerCase();
+  const filtered = navData.map(sec => ({
+    ...sec,
+    links: sec.links.filter(l =>
+      l.title.toLowerCase().includes(keyword) ||
+      l.desc.toLowerCase().includes(keyword) ||
+      sec.category.includes(keyword)
+    )
+  })).filter(sec => sec.links.length > 0);
+  render(filtered);
 });
 
-nav.addEventListener("click", () => {
-  search.value = "";
-  render("");
-});
-
-// ============ 全局快捷键 ============
-document.addEventListener("keydown", (e) => {
-  // / 聚焦搜索
-  if (e.key === "/" && document.activeElement !== search) {
-    e.preventDefault();
-    search.focus();
-    search.select();
-  }
-  // Esc 清空
-  if (e.key === "Escape") {
-    search.value = "";
-    render("");
-    search.focus();
-  }
-
-  // 数字键 1-9 打开分组
-  if (document.activeElement === search) return;
-  if (e.ctrlKey || e.metaKey || e.altKey) return;
-  const n = parseInt(e.key);
-  if (n >= 1 && n <= 9) {
-    const groups = document.querySelectorAll('.group');
-    const idx = n - 1;
-    if (groups[idx]) {
-      const firstCard = groups[idx].querySelector('.card');
-      if (firstCard) {
-        if (e.shiftKey) {
-          window.open(firstCard.href, '_blank');
-        } else {
-          firstCard.click();
-        }
-      }
-    }
-  }
-});
-
-// ============ 拖拽排序 ============
-let dragSrc = null;
-
-function setupDrag() {
-  const cards = document.querySelectorAll('.card');
-  cards.forEach(card => {
-    card.addEventListener('dragstart', function(e) {
-      dragSrc = this;
-      this.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    });
-
-    card.addEventListener('dragend', function() {
-      this.classList.remove('dragging');
-      cards.forEach(c => c.classList.remove('drag-over'));
-    });
-
-    card.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      return false;
-    });
-
-    card.addEventListener('dragenter', function(e) {
-      if (this !== dragSrc) this.classList.add('drag-over');
-    });
-
-    card.addEventListener('dragleave', function() {
-      this.classList.remove('drag-over');
-    });
-
-    card.addEventListener('drop', function(e) {
-      e.stopPropagation();
-      if (dragSrc !== this) {
-        const parent = this.parentNode;
-        const sibling = this.nextSibling === dragSrc ? this : this.nextSibling;
-        parent.insertBefore(dragSrc, sibling);
-      }
-      return false;
-    });
-  });
-}
-
-// ============ 天气 ============
-async function loadWeather() {
-  const el = $('#weather');
-  try {
-    const pos = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000, maximumAge: 300000 });
-    });
-    const { latitude, longitude } = pos.coords;
-    const resp = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`,
-      { signal: AbortSignal.timeout(5000) }
-    );
-    const data = await resp.json();
-    el.textContent = `${weatherEmoji(data.current.weather_code)} ${Math.round(data.current.temperature_2m)}°C`;
-  } catch (e) {
-    try {
-      const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(5000) });
-      const loc = await r.json();
-      const resp = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m,weather_code&timezone=auto`
-      );
-      const data = await resp.json();
-      el.textContent = `${weatherEmoji(data.current.weather_code)} ${Math.round(data.current.temperature_2m)}°C · ${loc.city || ''}`;
-    } catch (e2) {
-      el.textContent = '🌤 天气暂不可用';
-    }
-  }
-}
-
-function weatherEmoji(code) {
-  if (code <= 1) return '☀️';
-  if (code <= 3) return '⛅';
-  if (code <= 48) return '🌫';
-  if (code <= 67) return '🌧';
-  if (code <= 77) return '❄️';
-  if (code <= 82) return '🌦';
-  if (code <= 86) return '🌨';
-  return '⛈';
-}
-
-// ============ 时钟 ============
-function updateClock() {
-  const el = $('#clock');
-  if (!el) return;
-  const now = new Date();
-  el.textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-}
-
-// ============ 背景壁纸（Picsum，国内稳定） ============
-function loadBg() {
-  const el = $('#bg');
-  if (!el) return;
-
-  // 读取上次保存
-  const saved = localStorage.getItem('bgUrl');
-  if (saved) {
-    el.style.backgroundImage = `url("${saved}")`;
-  }
-
-  // Picsum：1000x600 灰度关闭，加时间戳防缓存
-  const seed = Math.floor(Math.random() * 10000);
-  const url = `https://picsum.photos/seed/${seed}/1920/1080`;
-
-  const img = new Image();
-  img.onload = () => {
-    el.style.backgroundImage = `url("${url}")`;
-    localStorage.setItem('bgUrl', url);
-  };
-  img.onerror = () => {
-    // 失败保持原样，不影响使用
-  };
-  img.src = url;
-}
-
-// 双击空白处换壁纸
-document.addEventListener('dblclick', (e) => {
-  if (e.target.closest('.card') || e.target.closest('.topbar') || e.target.closest('.widget-bar') || e.target.closest('.footer')) return;
-  loadBg();
-});
-
-// ============ 启动 ============
-load();
-loadWeather();
-loadBg();
-updateClock();
-setInterval(updateClock, 1000);
+// ============ 初始渲染 ============
+render(navData);
