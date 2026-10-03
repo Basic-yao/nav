@@ -1,55 +1,45 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>网址导航</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>网址导航</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="layout">
-  <!-- 左侧栏 -->
-  <aside class="sidebar">
-    <div class="logo">
-      <span class="cloud-icon-lg">☁️</span>
-      <span>网址导航</span>
-    </div>
-    <nav id="navList"></nav>
-    <div class="theme-box">
-      <button id="toggle-theme" class="theme-btn">
-        <span class="theme-icon">🌙</span>
-        <span class="theme-text">深色模式</span>
-      </button>
-    </div>
-  </aside>
+  <div class="layout">
+    <!-- 左侧栏 -->
+    <aside class="sidebar" id="navList"></aside>
+    
+    <!-- 右侧主区 -->
+    <main class="main">
+      <header class="top-bar">
+        <div class="search-main">
+          <input type="text" id="topSearch" placeholder="搜索网址或站点...">
+          <button id="searchBtn">🔍</button>
+        </div>
+        <div class="top-actions">
+          <span class="code-tag">&lt;/&gt;</span>
+        </div>
+      </header>
 
-  <!-- 右侧主区 -->
-  <main class="main">
-    <!-- 顶部搜索 -->
-    <div class="top-bar">
-      <input type="text" id="topSearch" placeholder="搜索网址或站点..." class="top-search">
-      <button id="searchBtn" class="search-btn">🔍</button>
-      <span class="code-icon">&lt;/&gt;</span>
-    </div>
-
-    <!-- 次级搜索源 -->
-    <div class="sub-search-area">
-      <div class="sub-tags" id="subTags">
-        <span class="sub-tag active" data-engine="常用">常用</span>
-        <span class="sub-tag" data-engine="百度">百度</span>
-        <span class="sub-tag" data-engine="Google">Google</span>
-        <span class="sub-tag" data-engine="Bing">Bing</span>
+      <!-- 次级搜索区 -->
+      <div class="sub-search-area">
+        <div class="sub-tags" id="subTags"></div>
+        <div class="sub-search-box">
+          <input type="text" id="subSearchInput" placeholder="百度一下">
+          <button id="subSearchBtn">🔍</button>
+        </div>
       </div>
-      <div class="sub-input-box">
-        <input type="text" id="subSearchInput" placeholder="百度一下" class="sub-search">
-        <button id="subSearchBtn" class="sub-search-btn">🔍</button>
-      </div>
-    </div>
 
-    <!-- 内容区 -->
-    <div id="navContainer" class="content"></div>
-  </main>
-</div>
-<script src="app.js"></script>
+      <div class="content" id="container"></div>
+    </main>
+  </div>
+  
+  <button id="toggle-theme" class="theme-btn">
+    <span class="theme-icon">🌙</span> <span class="theme-text">深色模式</span>
+  </button>
+
+  <script src="app.js"></script>
 </body>
 </html>
