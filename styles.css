@@ -1,163 +1,34 @@
 :root {
   --bg: #f5f7fa;
-  --text: #333;
+  --card-bg: #ffffff;
+  --text-main: #333;
   --text-sub: #888;
-  --card-bg: #fff;
-  --shadow: rgba(0,0,0,0.05);
-  --sidebar-bg: #ffffff;
   --border: #eaeaea;
   --primary: #3b82f6;
 }
-
 [data-theme="dark"] {
-  --bg: #1a1a1a;
-  --text: #e5e5e5;
-  --text-sub: #999;
-  --card-bg: #262626;
-  --shadow: rgba(0,0,0,0.3);
-  --sidebar-bg: #202020;
+  --bg: #1e1e1e;
+  --card-bg: #2a2a2a;
+  --text-main: #eee;
+  --text-sub: #aaa;
   --border: #333;
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: var(--bg); 
-  color: var(--text);
-  display: flex;
-  min-height: 100vh;
-  transition: background 0.3s, color 0.3s;
-}
-
-/* 左侧栏 */
-.sidebar {
-  width: 220px;
-  background: var(--sidebar-bg);
-  border-right: 1px solid var(--border);
-  position: fixed;
-  left: 0; top: 0; bottom: 0;
-  padding: 24px 0;
-  display: flex;
-  flex-direction: column;
-  z-index: 100;
-}
-.logo { 
-  font-size: 22px; 
-  font-weight: 700; 
-  padding: 0 24px 24px;
-  color: var(--primary);
-}
-.nav-list { 
-  flex: 1; 
-  overflow-y: auto;
-  padding: 0 12px;
-}
-.nav-list div {
-  padding: 10px 16px;
-  margin-bottom: 4px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--text-sub);
-  transition: 0.2s;
-}
-.nav-list div:hover, .nav-list div.active {
-  background: var(--bg);
-  color: var(--primary);
-  font-weight: 500;
-}
-.theme-btn {
-  margin: 12px 24px 0;
-  padding: 10px;
-  border: none;
-  background: var(--bg);
-  cursor: pointer;
-  font-size: 18px;
-  border-radius: 8px;
-}
-
-/* 主内容 & 搜索 */
-.main-content {
-  margin-left: 220px;
-  flex: 1;
-  padding: 24px 40px;
-}
-header { margin-bottom: 32px; }
-.search-box {
-  position: relative;
-  max-width: 400px;
-}
-.search-box input {
-  width: 100%;
-  padding: 12px 40px 12px 42px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--card-bg);
-  color: var(--text);
-  font-size: 15px;
-  outline: none;
-  box-shadow: 0 2px 8px var(--shadow);
-}
-.search-icon { 
-  position: absolute; 
-  left: 14px; 
-  top: 50%; 
-  transform: translateY(-50%);
-  color: var(--text-sub);
-}
-.search-hint {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--bg);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: var(--text-sub);
-}
-
-/* 卡片网格 (保留你当前的风格) */
-.container { max-width: 1200px; }
-.section-title { 
-  margin: 30px 0 15px; 
-  font-size: 18px; 
-  font-weight: 600; 
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.grid { 
-  display: grid; 
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-  gap: 16px; 
-}
-.card { 
-  background: var(--card-bg); 
-  padding: 20px; 
-  border-radius: 12px; 
-  box-shadow: 0 2px 8px var(--shadow); 
-  text-decoration: none; 
-  color: inherit; 
-  display: block; 
-  transition: 0.3s; 
-  border: 1px solid var(--border);
-}
-.card:hover { 
-  transform: translateY(-3px); 
-  box-shadow: 0 4px 12px var(--shadow);
-}
-.card-icon { 
-  width: 36px; 
-  height: 36px; 
-  background: var(--primary); 
-  border-radius: 8px; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  color: #fff;
-  margin-bottom: 12px;
-  font-size: 18px;
-}
-.card-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text-main); }
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 220px; background: var(--card-bg); border-right: 1px solid var(--border); padding: 20px; position: sticky; top: 0; height: 100vh; }
+.logo { font-size: 20px; font-weight: 700; margin-bottom: 30px; color: var(--primary); }
+.nav-list div { padding: 10px; cursor: pointer; border-radius: 6px; margin-bottom: 5px; }
+.nav-list div:hover, .nav-list div.active { background: var(--bg); color: var(--primary); }
+.main { flex: 1; padding: 20px 40px; }
+.header { display: flex; gap: 15px; margin-bottom: 30px; align-items: center; }
+.search { flex: 1; max-width: 400px; padding: 10px 15px; border: 1px solid var(--border); border-radius: 20px; background: var(--card-bg); color: var(--text-main); }
+.theme-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
+.section-title { margin: 30px 0 15px; font-size: 18px; font-weight: 600; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+.card { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: 0.2s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.card-icon { width: 32px; height: 32px; margin-bottom: 10px; display: flex; align-items: center; }
+.card-icon svg { width: 100%; height: 100%; fill: var(--primary); }
+.card-title { font-size: 16px; font-weight: 600; margin-bottom: 5px; }
 .card-desc { font-size: 13px; color: var(--text-sub); }

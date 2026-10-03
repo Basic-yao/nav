@@ -1,31 +1,28 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nav</title>
+  <title>Nav (浅色模式)</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- 左侧栏 -->
-  <aside class="sidebar">
-    <div class="logo">Nav</div>
-    <nav id="navList" class="nav-list"></nav>
-    <button id="toggle-theme" class="theme-btn">🌙</button>
-  </aside>
+  <div class="layout">
+    <!-- 左侧栏 -->
+    <aside class="sidebar">
+      <div class="logo">Nav</div>
+      <div id="navList" class="nav-list"></div>
+    </aside>
 
-  <!-- 主内容 -->
-  <main class="main-content">
-    <header>
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="搜索网站或分类...">
-        <span class="search-hint">/</span>
-      </div>
-    </header>
-    <div id="navContainer" class="container"></div>
-  </main>
-  
+    <!-- 右侧主体 -->
+    <main class="main">
+      <header class="header">
+        <input type="text" id="searchInput" placeholder="搜索网站或分类..." class="search">
+        <button id="toggle-theme" class="theme-btn">🌙</button>
+      </header>
+      <div id="navContainer" class="container"></div>
+    </main>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>
