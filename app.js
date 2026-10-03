@@ -144,19 +144,29 @@ function doSearch(kw) { if (!kw) return; window.open(searchEngines[currentEngine
 subSearchBtn.onclick = () => doSearch(subSearchInput.value);
 subSearchInput.onkeydown = e => { if (e.key === 'Enter') doSearch(subSearchInput.value); };
 
-function applyTheme(t) {
+// ===== 深浅模式：始终跟随系统，手动点击仅临时翻转 =====
+const mql = matchMedia('(prefers-color-scheme: dark)');
+
+function applySystemTheme() {
+  const t = mql.matches ? 'dark' : 'light';
   html.setAttribute('data-theme', t);
   themeBtn.querySelector('.theme-icon').textContent = t === 'dark' ? '☀️' : '🌙';
   themeBtn.querySelector('.theme-text').textContent = t === 'dark' ? '浅色模式' : '深色模式';
 }
+
+// 初始化：只读系统
+applySystemTheme();
+
+// 实时监听系统变化
+mql.addEventListener('change', applySystemTheme);
+
+// 手动点击：临时翻转当前会话
 themeBtn.onclick = () => {
   const cur = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  localStorage.setItem('theme', cur);
-  applyTheme(cur);
+  html.setAttribute('data-theme', cur);
+  themeBtn.querySelector('.theme-icon').textContent = cur === 'dark' ? '☀️' : '🌙';
+  themeBtn.querySelector('.theme-text').textContent = cur === 'dark' ? '浅色模式' : '深色模式';
 };
-const saved = localStorage.getItem('theme');
-const sysDark = matchMedia('(prefers-color-scheme: dark)').matches;
-applyTheme(saved || (sysDark ? 'dark' : 'light'));
 
 renderSidebar(navData);
 renderContent([navData[0]]);
