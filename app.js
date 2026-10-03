@@ -1,171 +1,156 @@
-// 统一的黄橙立体“云标签”图标（带三层渐变）
-const cloudIcon = `<svg class="cloud-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#F8B500"/>
-  <path d="M2 7l10 5 10-5M2 12l10 5 10-5M2 17l10 5 10-5" fill="none" stroke="#E89C00" stroke-width="1.5"/>
-  <path d="M12 22l10-5v-5l-10 5z" fill="#D68A00" opacity="0.8"/>
-</svg>`;
+// 统一立体云标签 SVG
+const cloudTagIcon = `<svg viewBox="0 0 24 24" width="22" height="22"><path fill="#ff9900" d="M19 13a4 4 0 0 0-3.5-3.97 5 5 0 0 0-9.66 1.72A4 4 0 0 0 5 14a4 4 0 0 0 4 4h10a4 4 0 0 0 0-5z"/><path fill="#ffcc66" d="M12 6a5 5 0 0 0-4.9 3.67 4 4 0 0 0-1.1 7.33h10.5a4 4 0 0 0-4.5-11z"/></svg>`;
+const catIcon = cloudTagIcon;
 
-const catIcon = cloudIcon; // 左侧分类也用云标签
+// 搜索源配置（真实搜索接口）
+const searchEngines = {
+  '常用': { url: 'https://www.baidu.com/s?wd=', label: '百度一下' },
+  '百度': { url: 'https://www.baidu.com/s?wd=', label: '百度一下' },
+  'Google': { url: 'https://www.google.com/search?q=', label: 'Google Search' },
+  'Bing': { url: 'https://www.bing.com/search?q=', label: 'Bing 搜索' },
+  '知乎': { url: 'https://www.zhihu.com/search?q=', label: '知乎搜索' },
+  '微信': { url: 'https://weixin.sogou.com/weixin?type=2&query=', label: '微信搜索' },
+  '微博': { url: 'https://s.weibo.com/weibo/', label: '微博搜索' },
+  '豆瓣': { url: 'https://www.douban.com/search?q=', label: '豆瓣搜索' },
+  '搜外问答': { url: 'https://www.sowhy.com/search/', label: '搜外搜索' }
+};
+let currentEngine = '百度';
 
+// 导航数据（含二级菜单）
 const navData = [
   { category: "常用推荐", icon: catIcon, links: [
-    { title: "Dribbble", desc: "全球UI设计师作品分享平台。", url: "https://dribbble.com/", icon: cloudIcon },
-    { title: "Behance", desc: "Adobe旗下设计师交流平台。", url: "https://www.behance.net/", icon: cloudIcon },
-    { title: "站酷", desc: "中国人气设计师互动平台。", url: "https://www.zcool.com.cn/", icon: cloudIcon },
-    { title: "Pinterest", desc: "全球美图收藏采集站。", url: "https://www.pinterest.com/", icon: cloudIcon },
-    { title: "Medium", desc: "高质量设计文章。", url: "https://medium.com/", icon: cloudIcon },
-    { title: "Youtube", desc: "全球最大学习分享平台。", url: "https://www.youtube.com/", icon: cloudIcon }
+    { title: "Dribbble", desc: "全球UI设计师作品分享平台。", url: "https://dribbble.com/", icon: cloudTagIcon },
+    { title: "Behance", desc: "Adobe旗下设计师交流平台。", url: "https://www.behance.net/", icon: cloudTagIcon },
+    { title: "站酷", desc: "中国人气设计师互动平台。", url: "https://www.zcool.com.cn/", icon: cloudTagIcon },
+    { title: "Pinterest", desc: "全球美图收藏采集站。", url: "https://www.pinterest.com/", icon: cloudTagIcon },
+    { title: "Medium", desc: "高质量设计文章。", url: "https://medium.com/", icon: cloudTagIcon },
+    { title: "Youtube", desc: "全球最大学习分享平台。", url: "https://www.youtube.com/", icon: cloudTagIcon }
   ]},
-  { category: "社区咨询", icon: catIcon, links: [
-    { title: "知乎", desc: "中文互联网高质量问答社区。", url: "https://www.zhihu.com/", icon: cloudIcon },
-    { title: "微信", desc: "社交与资讯。", url: "https://weixin.qq.com/", icon: cloudIcon },
-    { title: "微博", desc: "热点资讯与社交。", url: "https://weibo.com/", icon: cloudIcon },
-    { title: "豆瓣", desc: "书影音与讨论。", url: "https://www.douban.com/", icon: cloudIcon }
-  ]},
-  { category: "灵感采集", icon: catIcon, hasChild: true, children: [
-    { label: "发现产品", links: [
-      { title: "Product Hunt", desc: "发现新鲜有趣的产品。", url: "https://www.producthunt.com/", icon: cloudIcon },
-      { title: "UI中国", desc: "图形交互与界面设计交流。", url: "https://www.ui.cn/", icon: cloudIcon }
-    ]},
-    { label: "界面灵感", links: [
-      { title: "花瓣", desc: "收集灵感，保存有用的素材。", url: "https://huaban.com/", icon: cloudIcon },
-      { title: "优设", desc: "设计师交流学习平台。", url: "https://www.uisdc.com/", icon: cloudIcon }
-    ]},
-    { label: "网页灵感", links: [
-      { title: "Awwwards", desc: "网页设计奖项与灵感。", url: "https://www.awwwards.com/", icon: cloudIcon },
-      { title: "CSS Design Awards", desc: "CSS网页设计展示。", url: "https://www.cssdesignawards.com/", icon: cloudIcon }
-    ]}
+  { category: "社区咨询", icon: catIcon, links: [{title:"知乎", desc:"中文互联网高质量问答", url:"https://www.zhihu.com/", icon:cloudTagIcon}]},
+  { category: "灵感采集", icon: catIcon, children: [
+    { label: "发现产品", links: [{title:"Product Hunt", desc:"发现新产品", url:"https://www.producthunt.com/", icon:cloudTagIcon}] },
+    { label: "界面灵感", links: [{title:"Dribbble", desc:"UI灵感", url:"https://dribbble.com/", icon:cloudTagIcon}] },
+    { label: "网页灵感", links: [{title:"Awwwards", desc:"网页设计奖", url:"https://www.awwwards.com/", icon:cloudTagIcon}] }
   ], links: [] },
-  { category: "素材资源", icon: catIcon, links: [
-    { title: "Iconfont", desc: "阿里巴巴矢量图标库。", url: "https://www.iconfont.cn/", icon: cloudIcon },
-    { title: "Unsplash", desc: "免费高清图库。", url: "https://unsplash.com/", icon: cloudIcon }
-  ]},
-  { category: "常用工具", icon: catIcon, links: [
-    { title: "TinyPNG", desc: "图片压缩神器。", url: "https://tinypng.com/", icon: cloudIcon },
-    { title: "Remove.bg", desc: "一键去背景。", url: "https://www.remove.bg/", icon: cloudIcon }
-  ]},
-  { category: "学习教程", icon: catIcon, links: [
-    { title: "Bilibili", desc: "学习资源丰富的视频站。", url: "https://www.bilibili.com/", icon: cloudIcon }
-  ]},
-  { category: "UED团队", icon: catIcon, links: [
-    { title: "阿里云", desc: "云计算与技术服务。", url: "https://www.aliyun.com/", icon: cloudIcon }
-  ]},
-  { category: "友情链接", icon: catIcon, links: [
-    { title: "友链1", desc: "友情链接示例。", url: "#", icon: cloudIcon }
-  ]},
-  { category: "在线编辑", icon: catIcon, links: [
-    { title: "Figma", desc: "在线协作设计工具。", url: "https://www.figma.com/", icon: cloudIcon }
-  ]},
-  { category: "关于本站", icon: catIcon, links: [
-    { title: "GitHub", desc: "项目源码。", url: "https://github.com/", icon: cloudIcon }
-  ]}
+  { category: "素材资源", icon: catIcon, links: [{title:"Unsplash", desc:"免费高清图", url:"https://unsplash.com/", icon:cloudTagIcon}] },
+  { category: "常用工具", icon: catIcon, links: [{title:"TinyPNG", desc:"图片压缩", url:"https://tinypng.com/", icon:cloudTagIcon}] },
+  { category: "学习教程", icon: catIcon, links: [{title:"MDN", desc:"Web文档", url:"https://developer.mozilla.org/", icon:cloudTagIcon}] },
+  { category: "UED团队", icon: catIcon, links: [] },
+  { category: "友情链接", icon: catIcon, links: [] },
+  { category: "在线编辑", icon: catIcon, links: [{title:"CodePen", desc:"前端代码演示", url:"https://codepen.io/", icon:cloudTagIcon}] },
+  { category: "关于本站", icon: catIcon, links: [] }
 ];
 
-const navList = document.getElementById('navList');
-const container = document.getElementById('navContainer');
-const topSearch = document.getElementById('topSearch');
-const menuToggle = document.getElementById('menuToggle');
+// DOM
+const navList = document.getElementById('navList'), container = document.getElementById('navContainer');
+const topSearch = document.getElementById('topSearch'), subSearchInput = document.getElementById('subSearchInput');
+const subTags = document.getElementById('subTags'), menuToggle = document.getElementById('menuToggle');
 
-// 渲染左侧栏（含Logo）
+// 渲染左侧（含二级）
 function renderSidebar(data) {
-  navList.innerHTML = `<div class="logo">${cloudIcon} 网址导航</div>` + 
-    data.map((sec, i) => `
-    <div class="nav-item ${i===0?'active':''}" data-index="${i}" data-haschild="${sec.hasChild?1:0}">
-      <span class="nav-item-left"><span>${sec.icon}</span> <span>${sec.category}</span></span>
-      <span class="nav-arrow ${sec.hasChild?'▼':(sec.links.length?'>':'')}"></span>
-    </div>
-    ${sec.hasChild ? `<div class="sub-menu" id="sub-${i}">
-      ${sec.children.map((ch, ci) => `<div class="sub-item" data-pidx="${i}" data-cidx="${ci}">${ch.label}</div>`).join('')}
-    </div>` : ''}
-  `).join('');
-
-  // 绑定事件
+  navList.innerHTML = '';
+  data.forEach((sec, i) => {
+    const hasChild = sec.children && sec.children.length;
+    navList.innerHTML += `<div class="nav-item" data-index="${i}" data-haschild="${hasChild?1:0}">
+      <span><span>${sec.icon}</span> ${sec.category}</span>
+      <span class="nav-arrow">${hasChild?'▼':'>'}</span>
+      ${hasChild?`<div class="sub-menu" id="sub-${i}">${sec.children.map((c,j)=>`<div class="sub-item" data-pidx="${i}" data-cidx="${j}">${c.label}</div>`).join('')}</div>`:''}
+    </div>`;
+  });
+  
   navList.querySelectorAll('.nav-item').forEach(el => {
     el.onclick = (e) => {
+      if(e.target.classList.contains('sub-item')) return;
       e.stopPropagation();
-      const idx = el.dataset.index;
-      const has = el.dataset.haschild === '1';
-      navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      const idx = el.dataset.index, has = el.dataset.haschild==='1';
+      navList.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
       el.classList.add('active');
-      
-      if (has) {
-        const sub = document.getElementById(`sub-${idx}`);
-        const arrow = el.querySelector('.nav-arrow');
-        const isOpen = sub.classList.contains('open');
-        navList.querySelectorAll('.sub-menu.open').forEach(s => s.classList.remove('open'));
-        navList.querySelectorAll('.nav-arrow.open').forEach(a => a.classList.remove('open'));
-        if (!isOpen) {
-          sub.classList.add('open');
-          arrow.classList.add('open');
-        }
-        // 默认渲染第一项
-        const sec = data[idx];
-        if (sec.children[0]) renderContent([{category: sec.children[0].label, links: sec.children[0].links, icon: catIcon}]);
-      } else {
-        renderContent([{...data[idx], icon: catIcon}]);
-      }
+      if(has) {
+        const sub=document.getElementById(`sub-${idx}`), arrow=el.querySelector('.nav-arrow');
+        const isOpen=sub.classList.contains('open');
+        navList.querySelectorAll('.sub-menu.open').forEach(s=>s.classList.remove('open'));
+        navList.querySelectorAll('.nav-arrow.open').forEach(a=>a.classList.remove('open'));
+        if(!isOpen){sub.classList.add('open');arrow.classList.add('open');}
+        const sec=data[idx];
+        if(sec.children[0]) renderContent([{category:sec.children[0].label, links:sec.children[0].links, icon:catIcon}]);
+      } else renderContent([{...data[idx], icon:catIcon}]);
     };
   });
-
-  navList.querySelectorAll('.sub-item').forEach(el => {
-    el.onclick = (e) => {
+  navList.querySelectorAll('.sub-item').forEach(el=>{
+    el.onclick=(e)=>{
       e.stopPropagation();
-      navList.querySelectorAll('.sub-item').forEach(s => s.classList.remove('active'));
+      navList.querySelectorAll('.sub-item').forEach(s=>s.classList.remove('active'));
       el.classList.add('active');
-      const pidx = el.dataset.pidx, cidx = el.dataset.cidx;
-      const ch = data[pidx].children[cidx];
-      renderContent([{category: ch.label, links: ch.links, icon: catIcon}]);
+      const ch=data[el.dataset.pidx].children[el.dataset.cidx];
+      renderContent([{category:ch.label, links:ch.links, icon:catIcon}]);
     };
   });
 }
 
-// 渲染右侧内容
+// 渲染右侧
 function renderContent(data) {
-  container.innerHTML = '';
-  data.forEach((sec, i) => {
-    container.innerHTML += `<h2 class="section-title" id="sec-${i}"><span>${sec.icon}</span> ${sec.category}</h2>
-      <div class="grid">
-        ${sec.links.map(l => `<a href="${l.url}" target="_blank" class="card">
-          <div class="card-icon">${l.icon||''}</div>
-          <div><div class="card-title">${l.title}</div><div class="card-desc">${l.desc}</div></div>
-        </a>`).join('')}
-      </div>`;
+  container.innerHTML='';
+  data.forEach(sec=>{
+    container.innerHTML+=`<h2 class="section-title"><span>${sec.icon}</span> ${sec.category}</h2>
+      <div class="grid">${sec.links.map(l=>`<a href="${l.url}" target="_blank" class="card">
+        <div class="card-icon">${l.icon||''}</div><div><div class="card-title">${l.title}</div><div class="card-desc">${l.desc}</div></div>
+      </a>`).join('')}</div>`;
   });
 }
 
-// 搜索
+// 次级搜索标签渲染与切换
+const defaultTags = ['常用','百度','Google','Bing'];
+const zhihuTags = ['知乎','微信','微博','豆瓣','搜外问答'];
+function renderSubTags(area='default') {
+  subTags.innerHTML = (area==='zhihu'?zhihuTags:defaultTags).map(t=>`<span class="sub-tag ${t===currentEngine?'active':''}" data-engine="${t}">${t}</span>`).join('');
+  subTags.querySelectorAll('.sub-tag').forEach(t=>{
+    t.onclick=()=>{
+      currentEngine=t.dataset.engine;
+      subSearchInput.placeholder=searchEngines[currentEngine].label;
+      renderSubTags(area);
+    };
+  });
+}
+// 根据左侧选中动态切换标签组
+function updateSubArea(category) {
+  if(category.includes('社区')) renderSubTags('zhihu');
+  else renderSubTags('default');
+}
+
+// 搜索执行
+function doSearch(keyword, engine=currentEngine) {
+  if(!keyword) return;
+  const url = searchEngines[engine].url + encodeURIComponent(keyword);
+  window.open(url, '_blank');
+}
+document.getElementById('subSearchBtn').onclick=()=>doSearch(subSearchInput.value);
+subSearchInput.onkeydown=e=>{if(e.key==='Enter')doSearch(subSearchInput.value);};
+document.getElementById('searchBtn').onclick=()=>doSearch(topSearch.value);
+topSearch.onkeydown=e=>{if(e.key==='Enter')doSearch(topSearch.value);};
+
+// 顶部搜索（全站过滤）
 topSearch.addEventListener('input', e => {
-  const k = e.target.value.toLowerCase().trim();
-  if(!k) { renderContent([navData[0]]); return; }
-  const filtered = navData.map(s => {
-    let links = s.links.filter(l => l.title.toLowerCase().includes(k) || l.desc.includes(k));
-    if (s.children) {
-      s.children.forEach(ch => {
-        ch.links.forEach(l => { if(l.title.toLowerCase().includes(k)||l.desc.includes(k)) links.push(l); });
-      });
-    }
-    return {...s, links};
-  }).filter(s => s.links.length);
+  const k=e.target.value.toLowerCase().trim();
+  if(!k){renderContent([navData[0]]);return;}
+  const filtered=navData.map(s=>{
+    let links=s.links.filter(l=>l.title.toLowerCase().includes(k)||l.desc.includes(k));
+    if(s.children)s.children.forEach(c=>c.links.forEach(l=>{if(l.title.toLowerCase().includes(k)||l.desc.includes(k))links.push(l);}));
+    return{...s,links};
+  }).filter(s=>s.links.length);
   renderContent(filtered);
 });
 
-// 移动端菜单
-menuToggle.onclick = () => navList.classList.toggle('show');
-
 // 主题
-const themeBtn = document.getElementById('toggle-theme'), html = document.documentElement;
-function syncTheme() {
-  const t = html.getAttribute('data-theme');
-  themeBtn.querySelector('.theme-icon').textContent = t==='dark'?'☀️':'🌙';
-  themeBtn.querySelector('.theme-text').textContent = t==='dark'?'浅色模式':'深色模式';
-}
-themeBtn.onclick = () => {
-  const cur = html.getAttribute('data-theme')==='dark'?'light':'dark';
-  html.setAttribute('data-theme', cur); localStorage.setItem('theme', cur); syncTheme();
-};
-html.setAttribute('data-theme', localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+const themeBtn=document.getElementById('toggle-theme'), html=document.documentElement;
+function syncTheme(){const t=html.getAttribute('data-theme');themeBtn.querySelector('.theme-icon').textContent=t==='dark'?'☀️':'🌙';themeBtn.querySelector('.theme-text').textContent=t==='dark'?'浅色模式':'深色模式';}
+themeBtn.onclick=()=>{const cur=html.getAttribute('data-theme')==='dark'?'light':'dark';html.setAttribute('data-theme',cur);localStorage.setItem('theme',cur);syncTheme();};
+html.setAttribute('data-theme',localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
 syncTheme();
 
 // 初始化
 renderSidebar(navData);
 renderContent([navData[0]]);
+navList.querySelector('.nav-item')?.classList.add('active');
+renderSubTags('default');
+subSearchInput.placeholder=searchEngines[currentEngine].label;
+menuToggle.onclick=()=>navList.classList.toggle('show');

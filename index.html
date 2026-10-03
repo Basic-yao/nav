@@ -9,42 +9,36 @@
 <body>
   <div class="layout">
     <!-- 左侧栏 -->
-    <aside class="sidebar" id="navList"></aside>
+    <aside class="sidebar">
+      <div class="logo"><span class="cloud-icon">☁️</span> 网址导航</div>
+      <div class="nav-list" id="navList"></div>
+      <div class="sidebar-bottom">
+        <button id="toggle-theme"><span class="theme-icon">🌙</span> <span class="theme-text">深色模式</span></button>
+      </div>
+    </aside>
     
-    <!-- 主内容区 -->
+    <!-- 右侧主区 -->
     <main class="main">
-      <!-- 顶部固定横栏 -->
+      <!-- 顶部通栏 -->
       <header class="topbar">
-        <div class="topbar-left">
-          <button class="icon-btn" id="menuToggle">☰</button>
-          <div class="logo-mobile">网址导航</div>
-        </div>
+        <span class="menu-toggle" id="menuToggle">☰</span>
         <div class="search-wrapper">
-          <input type="text" id="topSearch" placeholder="搜索网址..." class="top-search">
+          <input type="text" id="topSearch" placeholder="搜索网址或站点..." autocomplete="off">
+          <button id="searchBtn" class="search-btn">🔍</button>
         </div>
-        <div class="topbar-right">
-          <button id="toggle-theme" class="theme-btn"><span class="theme-icon">🌙</span> <span class="theme-text">深色模式</span></button>
-          <span class="code-icon">&lt;/&gt;</span>
-        </div>
+        <span class="code-icon">&lt;/&gt;</span>
       </header>
-
-      <!-- 次级搜索/标签区 -->
-      <div class="sub-search-area">
-        <div class="tags">
-          <span>社区</span> <span class="arrow">&gt;</span>
-          <span class="tag">知乎</span>
-          <span class="tag">微信</span>
-          <span class="tag">微博</span>
-          <span class="tag">豆瓣</span>
-          <span class="tag">搜外问答</span>
-        </div>
-        <div class="mini-search">
-          <input type="text" value="知乎">
-          <button>🔍</button>
+      
+      <!-- 次级搜索标签区（真实搜索切换） -->
+      <div class="sub-search-area" id="subSearchArea">
+        <div class="sub-tags" id="subTags"></div>
+        <div class="sub-input-wrapper">
+          <input type="text" id="subSearchInput" placeholder="百度一下" autocomplete="off">
+          <button id="subSearchBtn" class="sub-search-btn">🔍</button>
         </div>
       </div>
-
-      <!-- 内容容器 -->
+      
+      <!-- 内容区 -->
       <div class="content" id="navContainer"></div>
     </main>
   </div>
