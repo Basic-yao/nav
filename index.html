@@ -8,32 +8,29 @@
 </head>
 <body>
   <div class="layout">
-    <!-- 左侧栏 -->
     <aside class="sidebar">
       <div class="sidebar-top">
         <div class="logo">
           <img src="logo.png" alt="logo" class="logo-img" id="logoImg">
           <span class="logo-text">Nav</span>
         </div>
-        <div id="navList" class="nav-list"></div>
+        <nav class="nav-list" id="navList">
+          <!-- 由JS渲染 -->
+        </nav>
       </div>
       <div class="sidebar-bottom">
-        <button id="toggle-theme" class="theme-btn" title="切换深浅色">
-          <span id="themeIcon">🌙</span>
-          <span class="theme-label">深色模式</span>
+        <button id="toggle-theme" class="theme-btn">
+          <span class="theme-icon">🌙</span>
+          <span class="theme-text">深色模式</span>
         </button>
       </div>
     </aside>
-
-    <!-- 右侧主体 -->
-    <main class="main">
-      <header class="header">
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" placeholder="搜索网站或分类... (按 / 聚焦)">
-        </div>
-      </header>
-      <div id="navContainer" class="container"></div>
+    <main class="main-content">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="搜索网站或分类... (按 / 聚焦)">
+      </div>
+      <div id="navContainer" class="content-area"></div>
     </main>
   </div>
   <script src="app.js"></script>
