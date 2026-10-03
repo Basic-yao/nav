@@ -3,21 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nav</title>
+  <title>网址导航</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="layout">
+    <!-- 左侧栏 -->
     <aside class="sidebar">
-      <div class="sidebar-top">
-        <div class="logo">
-          <img src="logo.png" alt="logo" class="logo-img" id="logoImg">
-          <span class="logo-text">Nav</span>
-        </div>
-        <nav class="nav-list" id="navList">
-          <!-- 由JS渲染 -->
-        </nav>
+      <div class="logo">
+        <img src="logo.png" alt="logo" class="logo-img" id="logoImg">
+        <span class="logo-text">网址导航</span>
       </div>
+      <div class="nav-list" id="navList"></div>
       <div class="sidebar-bottom">
         <button id="toggle-theme" class="theme-btn">
           <span class="theme-icon">🌙</span>
@@ -25,12 +22,15 @@
         </button>
       </div>
     </aside>
-    <main class="main-content">
+
+    <!-- 主内容 -->
+    <main class="main">
       <div class="search-box">
         <span class="search-icon">🔍</span>
         <input type="text" id="searchInput" placeholder="搜索网站或分类... (按 / 聚焦)">
+        <button class="search-btn">🔍</button>
       </div>
-      <div id="navContainer" class="content-area"></div>
+      <div id="navContainer" class="content"></div>
     </main>
   </div>
   <script src="app.js"></script>
