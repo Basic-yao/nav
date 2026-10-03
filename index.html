@@ -9,36 +9,40 @@
 <body>
   <div class="layout">
     <!-- 左侧栏 -->
-    <aside class="sidebar" id="navList"></aside>
-    
+    <aside class="sidebar">
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+          <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+        <span>网址导航</span>
+      </div>
+      <nav class="nav-list" id="navList"></nav>
+      <div class="sidebar-footer">
+        <button class="theme-btn" id="toggle-theme">
+          <span class="theme-icon">🌙</span>
+          <span class="theme-text">深色模式</span>
+        </button>
+      </div>
+    </aside>
+
     <!-- 右侧主区 -->
     <main class="main">
-      <header class="top-bar">
-        <div class="search-main">
-          <input type="text" id="topSearch" placeholder="搜索网址或站点...">
-          <button id="searchBtn">🔍</button>
-        </div>
-        <div class="top-actions">
-          <span class="code-tag">&lt;/&gt;</span>
-        </div>
-      </header>
-
-      <!-- 次级搜索区 -->
-      <div class="sub-search-area">
-        <div class="sub-tags" id="subTags"></div>
-        <div class="sub-search-box">
-          <input type="text" id="subSearchInput" placeholder="百度一下">
-          <button id="subSearchBtn">🔍</button>
+      <!-- 搜索区（居中） -->
+      <div class="search-area">
+        <div class="search-tags" id="searchTags"></div>
+        <div class="search-input-row">
+          <input type="text" id="subSearchInput" placeholder="微软Bing搜索">
+          <button id="subSearchBtn" title="搜索">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          </button>
         </div>
       </div>
 
-      <div class="content" id="container"></div>
+      <!-- 内容区 -->
+      <div class="content" id="content"></div>
     </main>
   </div>
-  
-  <button id="toggle-theme" class="theme-btn">
-    <span class="theme-icon">🌙</span> <span class="theme-text">深色模式</span>
-  </button>
 
   <script src="app.js"></script>
 </body>
