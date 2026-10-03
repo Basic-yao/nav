@@ -1,57 +1,6 @@
 // ============================================================
-// ★ 数据区：添加/删除网站链接只改这里
-// ============================================================
-const navData = [
-  {
-    category: '常用工具',
-    icon: '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
-    links: [
-      { title: '网络剪贴板', url: 'https://netcut.cn/', desc: '在线跨屏剪切文字', icon: 'https://www.google.com/s2/favicons?domain=netcut.cn' },
-      { title: '草料二维码', url: 'https://cli.im/url', desc: '在线二维码生成工具', icon: 'https://www.google.com/s2/favicons?domain=cli.im' },
-      { title: '在线文件传输', url: 'https://musetransfer.com/', desc: '', icon: 'https://www.google.com/s2/favicons?domain=musetransfer.com' }
-    ]
-  },
-  {
-    category: '云服务平台',
-    icon: '<svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>',
-    links: [
-      { title: 'Github', url: 'https://github.com/', desc: '', icon: 'https://www.google.com/s2/favicons?domain=github.com' }
-    ]
-  },
-  {
-    category: '网络资源',
-    icon: '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>',
-    children: [
-      { label: '软件', links: [{ title: '果核剥壳', url: 'https://www.ghxi.com/', desc: '互联网的净土。PC软件，手机软件，正版软件，破解软件', icon: 'https://www.google.com/s2/favicons?domain=ghxi.com' }] },
-      { label: '游戏', links: [{ title: '老男人游戏网', url: 'https://www.oldmantvg.net/', desc: '仓储式主机资源站 精校 完整 极致 静待您的垂青', icon: 'https://www.google.com/s2/favicons?domain=oldmantvg.net' }] }
-    ],
-    links: []
-  },
-  {
-    category: '影视影音',
-    icon: '<svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>',
-    children: [
-      { label: '影视', links: [{ title: '阿里小站', url: 'https://pan666.cn', desc: '阿里云盘资源共享站。人人为我，我为人人的共享资源社区', icon: 'https://www.google.com/s2/favicons?domain=pan666.cn' }] },
-      { label: '字幕', links: [
-        { title: '字幕库', url: 'https://zmk.pw/', desc: '', icon: 'https://www.google.com/s2/favicons?domain=zmk.pw' },
-        { title: 'SubHD', url: 'https://subhd.tv/', desc: '', icon: 'https://www.google.com/s2/favicons?domain=subhd.tv' }
-      ] },
-      { label: '音乐', links: [
-        { title: '果核音乐搜搜', url: 'https://music.ghxi.com/', desc: '', icon: 'https://www.google.com/s2/favicons?domain=music.ghxi.com' },
-        { title: '音乐磁场', url: 'https://www.hifini.com/', desc: '', icon: 'https://www.google.com/s2/favicons?domain=hifini.com' }
-      ] }
-    ],
-    links: []
-  },
-  {
-    category: '友情链接',
-    icon: '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>',
-    links: [
-      { title: '一为导航', url: 'https://nav.iowen.cn/', desc: 'onenav主题演示站', icon: 'https://www.google.com/s2/favicons?domain=nav.iowen.cn' },
-      { title: '趣导航', url: 'https://qssily.com/', desc: '', icon: 'https://www.google.com/s2/favicons?domain=qssily.com' }
-    ]
-  }
-];
+// ★ 逻辑层：navData 已在 data.js 中定义
+// 二级菜单结构：父项带箭头，子项缩进嵌套在父项下方（参考图样式）
 // ============================================================
 
 const navIcons = {};
@@ -76,19 +25,25 @@ const subSearchBtn = document.getElementById('subSearchBtn');
 // ===== 侧边栏渲染 =====
 function renderSidebar(data) {
   navList.innerHTML = '';
-  data.forEach((item, pidx) => {
+  data.forEach((item) => {
     const hasChild = item.children && item.children.length > 0;
     const div = document.createElement('div');
-    div.className = 'nav-item';
-    div.innerHTML = `<span class="nav-icon">${item.icon}</span><span>${item.category}</span>${hasChild ? '<span class="nav-arrow">▼</span>' : ''}`;
+    div.className = 'nav-item' + (hasChild ? ' has-child' : '');
 
+    // 父项：图标 + 文字 + 箭头
+    const parent = document.createElement('div');
+    parent.className = 'nav-parent';
+    parent.innerHTML = `<span class="nav-icon">${navIcons[item.category] || item.icon}</span><span class="nav-title">${item.category}</span><span class="nav-arrow">${hasChild ? '▼' : ''}</span>`;
+
+    // 子项容器（嵌套在父项下方）
+    let sub = null;
     if (hasChild) {
-      const sub = document.createElement('div');
+      sub = document.createElement('div');
       sub.className = 'sub-menu';
-      item.children.forEach((ch, cidx) => {
+      item.children.forEach((ch) => {
         const subItem = document.createElement('div');
         subItem.className = 'sub-item';
-        subItem.innerHTML = `<span>·</span><span>${ch.label}</span>`;
+        subItem.innerHTML = `<span class="sub-dot">·</span><span class="sub-label">${ch.label}</span>`;
         subItem.onclick = (e) => {
           e.stopPropagation();
           navList.querySelectorAll('.sub-item').forEach(s => s.classList.remove('active'));
@@ -97,24 +52,36 @@ function renderSidebar(data) {
         };
         sub.appendChild(subItem);
       });
-      div.appendChild(sub);
-      div.onclick = () => {
-        navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        div.classList.add('active');
-        const arrow = div.querySelector('.nav-arrow');
-        const isOpen = sub.classList.contains('open');
-        navList.querySelectorAll('.sub-menu.open').forEach(s => s.classList.remove('open'));
-        navList.querySelectorAll('.nav-arrow.open').forEach(a => a.classList.remove('open'));
-        if (!isOpen) { sub.classList.add('open'); arrow.classList.add('open'); }
-        if (item.children[0]) renderContent([{ category: item.children[0].label, links: item.children[0].links }]);
-      };
-    } else {
-      div.onclick = () => {
-        navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        div.classList.add('active');
-        renderContent([item]);
-      };
     }
+
+    div.appendChild(parent);
+    if (sub) div.appendChild(sub);
+
+    // 点击父项：整块展开/收起（手风琴）
+    parent.onclick = () => {
+      navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      div.classList.add('active');
+
+      if (hasChild) {
+        const isOpen = sub.classList.contains('open');
+        // 收起其它已展开的
+        navList.querySelectorAll('.sub-menu.open').forEach(s => {
+          if (s !== sub) s.classList.remove('open');
+        });
+        navList.querySelectorAll('.nav-item.has-child.open').forEach(n => {
+          if (n !== div) n.classList.remove('open');
+        });
+        sub.classList.toggle('open', !isOpen);
+        div.classList.toggle('open', !isOpen);
+        // 展开时默认渲染第一个子分类
+        if (!isOpen && item.children[0]) {
+          renderContent([{ category: item.children[0].label, links: item.children[0].links }]);
+        }
+      } else {
+        renderContent([item]);
+      }
+    };
+
     navList.appendChild(div);
   });
 }
@@ -134,7 +101,7 @@ function renderContent(data) {
 logo.onclick = () => {
   navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   navList.querySelectorAll('.sub-menu.open').forEach(s => s.classList.remove('open'));
-  navList.querySelectorAll('.nav-arrow.open').forEach(a => a.classList.remove('open'));
+  navList.querySelectorAll('.nav-item.has-child.open').forEach(n => n.classList.remove('open'));
   renderContent(navData.filter(s => s.links?.length > 0 || s.children?.some(c => c.links?.length > 0)));
 };
 
@@ -153,30 +120,28 @@ function doSearch(kw) { if (!kw) return; window.open(searchEngines[currentEngine
 subSearchBtn.onclick = () => doSearch(subSearchInput.value);
 subSearchInput.onkeydown = e => { if (e.key === 'Enter') doSearch(subSearchInput.value); };
 
-// ===== 深浅模式：始终跟随系统，手动点击仅临时翻转当前会话 =====
+// ===== 深浅模式：系统跟随 + 手动切换互不打架 =====
 const mql = window.matchMedia('(prefers-color-scheme: dark)');
+let userOverride = null; // null = 跟系统，'dark'/'light' = 手动
 
-function applySystemTheme() {
-  const t = mql.matches ? 'dark' : 'light';
+// 黑白单色 SVG 图标（无 fill，用 currentColor 跟随文字色）
+const iconMoon = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+const iconSun  = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+
+function applyTheme(t) {
   html.setAttribute('data-theme', t);
-  themeBtn.querySelector('.theme-icon').innerHTML = t === 'dark'
-    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
-    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  themeBtn.querySelector('.theme-icon').innerHTML = t === 'dark' ? iconSun : iconMoon;
   themeBtn.querySelector('.theme-text').textContent = t === 'dark' ? '浅色模式' : '深色模式';
 }
+function resolveTheme() { return userOverride || (mql.matches ? 'dark' : 'light'); }
+function refresh() { applyTheme(resolveTheme()); }
 
-// 初始化：只读系统
-applySystemTheme();
-// 实时监听系统变化
-mql.addEventListener('change', applySystemTheme);
-// 手动点击：临时翻转
+refresh();
+mql.addEventListener('change', () => { if (!userOverride) refresh(); });
 themeBtn.onclick = () => {
-  const cur = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  html.setAttribute('data-theme', cur);
-  themeBtn.querySelector('.theme-icon').innerHTML = cur === 'dark'
-    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
-    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
-  themeBtn.querySelector('.theme-text').textContent = cur === 'dark' ? '浅色模式' : '深色模式';
+  const cur = resolveTheme();
+  userOverride = !userOverride ? (cur === 'dark' ? 'light' : 'dark') : null;
+  refresh();
 };
 
 // ===== 初始化 =====
