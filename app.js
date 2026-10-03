@@ -1,122 +1,155 @@
-// 1. 定义“云标签”SVG（复刻参考图的层叠样式）
-const cloudTagIcon = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  <!-- 顶部黄色层 -->
-  <path d="M12 2L22 7L12 12L2 7L12 2Z" fill="#FFA500"/>
-  <!-- 底部左侧层 -->
-  <path d="M2 7L12 12L12 17L2 12L2 7Z" fill="#333333"/>
-  <!-- 底部右侧层 -->
-  <path d="M22 7L12 12L12 17L22 12L22 7Z" fill="#555555"/>
-</svg>`;
+const cloudTagIcon = `<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#ff9900" d="M12 2L2 7l10 5 10-5-10-5z"/><path fill="#cc7a00" d="M2 7l10 5 10-5M2 12l10 5 10-5M2 17l10 5 10-5"/></svg>`;
+const catIcon = cloudTagIcon;
 
-// 2. 分类图标（浅色侧栏用，保持简约，也可换成 cloudTagIcon）
-const catIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>`;
-
+// 数据：children 即为二级菜单
 const navData = [
   { category: "常用推荐", icon: catIcon, links: [
     { title: "Dribbble", desc: "全球UI设计师作品分享平台。", url: "https://dribbble.com/", icon: cloudTagIcon },
-    { title: "Behance", desc: "Adobe旗下的设计师交流平台。", url: "https://www.behance.net/", icon: cloudTagIcon },
-    { title: "二维码演示", desc: "手机扫一扫，也可以点击。", url: "#", icon: cloudTagIcon },
-    { title: "UI中国", desc: "图形交互与界面设计交流。", url: "https://www.ui.cn/", icon: cloudTagIcon },
+    { title: "Behance", desc: "Adobe旗下设计师交流平台。", url: "https://www.behance.net/", icon: cloudTagIcon },
     { title: "站酷", desc: "中国人气设计师互动平台。", url: "https://www.zcool.com.cn/", icon: cloudTagIcon },
-    { title: "Pinterest", desc: "全球美图收藏集站。", url: "https://www.pinterest.com/", icon: cloudTagIcon },
-    { title: "花瓣", desc: "收集灵感,保存有用的素材。", url: "https://huaban.com/", icon: cloudTagIcon },
+    { title: "Pinterest", desc: "全球美图收藏采集站。", url: "https://www.pinterest.com/", icon: cloudTagIcon },
     { title: "Medium", desc: "高质量设计文章。", url: "https://medium.com/", icon: cloudTagIcon },
-    { title: "优设", desc: "设计师交流学习平台。", url: "https://www.uisdc.com/", icon: cloudTagIcon },
-    { title: "Producthunt", desc: "发现新鲜有趣的产品。", url: "https://www.producthunt.com/", icon: cloudTagIcon },
-    { title: "Youtube", desc: "全球最大的学习分享平台。", url: "https://www.youtube.com/", icon: cloudTagIcon },
-    { title: "Google", desc: "全球最大的UI学习分享平台。", url: "https://www.google.com/", icon: cloudTagIcon }
+    { title: "Youtube", desc: "全球最大学习分享平台。", url: "https://youtube.com/", icon: cloudTagIcon }
   ]},
   { category: "社区咨询", icon: catIcon, links: [
-    { title: "雷锋网", desc: "人工智能和智能硬件领域的互联网科技媒体。", url: "https://www.leiphone.com/", icon: cloudTagIcon },
-    { title: "36kr", desc: "创业资讯、科技新闻。", url: "https://36kr.com/", icon: cloudTagIcon },
-    { title: "数英网", desc: "数字媒体及职业招聘网站。", url: "https://www.digitaling.com/", icon: cloudTagIcon },
-    { title: "猎云网", desc: "互联网创业项目推荐和创业创新资讯。", url: "https://lieyunwang.com/", icon: cloudTagIcon },
-    { title: "人人都是产品经理", desc: "产品经理、产品爱好者学习交流平台。", url: "https://www.woshipm.com/", icon: cloudTagIcon },
-    { title: "互联网早读课", desc: "互联网行业深度阅读与学习平台。", url: "https://www.zaodula.com/", icon: cloudTagIcon },
-    { title: "产品壹佰", desc: "为产品经理爱好者提供最优质的产品资讯。", url: "https://www.chanpin100.com/", icon: cloudTagIcon },
-    { title: "PMCAFF", desc: "中国第一产品经理人气组织。", url: "https://www.pmcaff.com/", icon: cloudTagIcon },
-    { title: "爱运营", desc: "网站运营人员学习交流。", url: "https://www.iyunying.org/", icon: cloudTagIcon },
-    { title: "鸟哥笔记", desc: "移动互联网第一干货平台。", url: "https://www.niaogebiji.com/", icon: cloudTagIcon },
-    { title: "古田路9号", desc: "国内专业品牌创意平台。", url: "https://www.gtn9.com/", icon: cloudTagIcon },
-    { title: "优阅网", desc: "UI设计师学习交流社区。", url: "#", icon: cloudTagIcon }
+    { title: "雷锋网", desc: "人工智能科技媒体。", url: "https://www.leiphone.com/", icon: cloudTagIcon },
+    { title: "36kr", desc: "创业资讯科技新闻。", url: "https://36kr.com/", icon: cloudTagIcon },
+    { title: "人人都是产品经理", desc: "产品爱好者交流平台。", url: "https://www.woshipm.com/", icon: cloudTagIcon }
   ]},
-  { category: "开发设计", icon: catIcon, links: [
-    { title: "GitHub", desc: "代码托管平台。", url: "https://github.com/", icon: cloudTagIcon },
-    { title: "Gitee", desc: "国内代码托管。", url: "https://gitee.com/", icon: cloudTagIcon },
-    { title: "MDN Web Docs", desc: "Web 技术文档。", url: "https://developer.mozilla.org/", icon: cloudTagIcon },
-    { title: "Figma", desc: "在线协作设计工具。", url: "https://www.figma.com/", icon: cloudTagIcon },
-    { title: "Vercel", desc: "前端项目部署平台。", url: "https://vercel.com/", icon: cloudTagIcon }
+  { 
+    category: "灵感采集", icon: catIcon, 
+    children: [
+      { label: "发现产品", links: [{title:"Product Hunt", desc:"发现新鲜产品", url:"https://www.producthunt.com/", icon:cloudTagIcon}] },
+      { label: "界面灵感", links: [{title:"Dribbble", desc:"界面灵感", url:"https://dribbble.com/", icon:cloudTagIcon}] },
+      { label: "网页灵感", links: [{title:"Awwwards", desc:"网页设计灵感", url:"https://www.awwwards.com/", icon:cloudTagIcon}] }
+    ],
+    links: [] // 父级自身可不填，或填默认
+  },
+  { category: "素材资源", icon: catIcon, links: [
+    { title: "花瓣", desc: "收集灵感保存素材。", url: "https://huaban.com/", icon: cloudTagIcon },
+    { title: "UI中国", desc: "图形交互与界面设计。", url: "https://ui.cn/", icon: cloudTagIcon }
   ]},
   { category: "常用工具", icon: catIcon, links: [
-    { title: "TinyPNG", desc: "图片压缩神器。", url: "https://tinypng.com/", icon: cloudTagIcon },
-    { title: "Remove.bg", desc: "一键去背景。", url: "https://www.remove.bg/", icon: cloudTagIcon },
-    { title: "Carbon", desc: "代码截图美化。", url: "https://carbon.now.sh/", icon: cloudTagIcon }
-  ]}
+    { title: "Google", desc: "全球最大UI学习分享平台。", url: "https://google.com/", icon: cloudTagIcon },
+    { title: "TinyPNG", desc: "图片压缩。", url: "https://tinypng.com/", icon: cloudTagIcon }
+  ]},
+  { category: "学习教程", icon: catIcon, links: [{ title: "优设", desc: "设计师交流学习平台。", url: "https://ui.cn/", icon: cloudTagIcon }] },
+  { category: "UED团队", icon: catIcon, links: [] },
+  { category: "友情链接", icon: catIcon, links: [] },
+  { category: "在线编辑", icon: catIcon, links: [] },
+  { category: "关于本站", icon: catIcon, links: [] }
 ];
 
-const container = document.getElementById('navContainer');
 const navList = document.getElementById('navList');
+const container = document.getElementById('navContainer');
 const topSearch = document.getElementById('topSearch');
-const themeBtn = document.getElementById('toggle-theme');
-const html = document.documentElement;
-const themeIcon = themeBtn.querySelector('.theme-icon');
-const themeText = themeBtn.querySelector('.theme-text');
 
-function render(data) {
-  container.innerHTML = '';
-  navList.innerHTML = '';
-  data.forEach((section, i) => {
-    navList.innerHTML += `<div data-index="${i}">
-      <span class="nav-item-left"><span>${section.icon}</span> <span>${section.category}</span></span>
-      <span class="nav-arrow">></span>
+// 渲染左侧栏（含二级菜单）
+function renderSidebar(data) {
+  let html = `<div class="side-logo">${cloudTagIcon} 网址导航</div>`;
+  data.forEach((sec, i) => {
+    const hasChild = sec.children && sec.children.length;
+    html += `<div class="nav-item" data-index="${i}" data-haschild="${hasChild?'1':'0'}">
+      <span style="display:flex;align-items:center;gap:8px;">${sec.icon} <span>${sec.category}</span></span>
+      <span class="nav-arrow">${hasChild ? '▼' : '>'}</span>
     </div>`;
-    container.innerHTML += `<h2 class="section-title" id="sec${i}"><span>${section.icon}</span> ${section.category}</h2>
-      <div class="grid">
-        ${section.links.map(l => `<a href="${l.url}" target="_blank" class="card">
-          <div class="card-icon">${l.icon || ''}</div>
-          <div>
-            <div class="card-title">${l.title}</div>
-            <div class="card-desc">${l.desc}</div>
-          </div>
-        </a>`).join('')}
-      </div>`;
+    if (hasChild) {
+      html += `<div class="sub-menu" id="sub-${i}">`;
+      sec.children.forEach((ch, j) => {
+        html += `<span class="sub-item" data-pidx="${i}" data-cidx="${j}">${ch.label}</span>`;
+      });
+      html += `</div>`;
+    }
   });
-  navList.querySelectorAll('div').forEach(el => {
-    el.onclick = () => {
-      document.getElementById(`sec${el.dataset.index}`).scrollIntoView({ behavior: 'smooth' });
-      navList.querySelectorAll('div').forEach(n => n.classList.remove('active'));
+  navList.innerHTML = html;
+
+  // 父级点击：展开/收起
+  navList.querySelectorAll('.nav-item').forEach(el => {
+    el.onclick = (e) => {
+      e.stopPropagation();
+      const idx = el.dataset.index;
+      const has = el.dataset.haschild === '1';
+      navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       el.classList.add('active');
+      
+      if (has) {
+        const sub = document.getElementById(`sub-${idx}`);
+        const arrow = el.querySelector('.nav-arrow');
+        const isOpen = sub.classList.contains('open');
+        // 手风琴：关闭其他
+        navList.querySelectorAll('.sub-menu.open').forEach(s => s.classList.remove('open'));
+        navList.querySelectorAll('.nav-arrow.open').forEach(a => a.classList.remove('open'));
+        if (!isOpen) {
+          sub.classList.add('open');
+          arrow.classList.add('open');
+        }
+        // 默认渲染第一个子项
+        const sec = data[idx];
+        if (sec.children[0]) renderContent([{category: sec.children[0].label, links: sec.children[0].links, icon: catIcon}]);
+      } else {
+        renderContent([{...data[idx], icon: catIcon}]);
+      }
+    };
+  });
+
+  // 子级点击
+  navList.querySelectorAll('.sub-item').forEach(el => {
+    el.onclick = (e) => {
+      e.stopPropagation();
+      navList.querySelectorAll('.sub-item').forEach(s => s.classList.remove('active'));
+      el.classList.add('active');
+      const pidx = el.dataset.pidx, cidx = el.dataset.cidx;
+      const ch = data[pidx].children[cidx];
+      renderContent([{category: ch.label, links: ch.links, icon: catIcon}]);
     };
   });
 }
 
+// 渲染右侧内容
+function renderContent(data) {
+  container.innerHTML = '';
+  data.forEach((sec, i) => {
+    container.innerHTML += `<h2 class="section-title" id="sec-${i}"><span>${sec.icon}</span> ${sec.category}</h2>
+      <div class="grid">
+        ${sec.links.map(l => `<a href="${l.url}" target="_blank" class="card">
+          <div class="card-icon">${l.icon||''}</div>
+          <div><div class="card-title">${l.title}</div><div class="card-desc">${l.desc}</div></div>
+        </a>`).join('')}
+      </div>`;
+  });
+}
+
+// 搜索
 topSearch.addEventListener('input', e => {
   const k = e.target.value.toLowerCase().trim();
-  if(!k) { render(navData); return; }
-  const filtered = navData.map(s => ({...s, links: s.links.filter(l => l.title.toLowerCase().includes(k) || l.desc.includes(k))})).filter(s => s.links.length);
-  render(filtered);
+  if(!k) { renderContent(navData.filter(s=>s.links.length)); return; }
+  const filtered = navData.map(s => {
+    let links = s.links.filter(l => l.title.toLowerCase().includes(k) || l.desc.includes(k));
+    if (s.children) {
+      s.children.forEach(ch => {
+        ch.links.forEach(l => { if(l.title.toLowerCase().includes(k)||l.desc.includes(k)) links.push(l); });
+      });
+    }
+    return {...s, links};
+  }).filter(s => s.links.length);
+  renderContent(filtered);
 });
 
-document.addEventListener('keydown', e => {
-  if(e.key === '/' && !e.ctrlKey && document.activeElement !== topSearch) {
-    e.preventDefault(); topSearch.focus();
-  }
-});
-
+// 主题
+const themeBtn = document.getElementById('toggle-theme'), html = document.documentElement;
 function syncTheme() {
   const t = html.getAttribute('data-theme');
-  themeIcon.textContent = t === 'dark' ? '☀️' : '🌙';
-  themeText.textContent = t === 'dark' ? '浅色模式' : '深色模式';
+  themeBtn.querySelector('.theme-icon').textContent = t==='dark'?'☀️':'🌙';
+  themeBtn.querySelector('.theme-text').textContent = t==='dark'?'浅色模式':'深色模式';
 }
 themeBtn.onclick = () => {
-  const cur = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  html.setAttribute('data-theme', cur);
-  localStorage.setItem('theme', cur);
-  syncTheme();
+  const cur = html.getAttribute('data-theme')==='dark'?'light':'dark';
+  html.setAttribute('data-theme', cur); localStorage.setItem('theme', cur); syncTheme();
 };
-const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-html.setAttribute('data-theme', saved);
+html.setAttribute('data-theme', localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
 syncTheme();
 
-render(navData);
-navList.querySelector('div')?.classList.add('active');
+// 初始化
+renderSidebar(navData);
+renderContent([navData[0]]); // 默认显示常用推荐
+navList.querySelector('.nav-item')?.classList.add('active');
