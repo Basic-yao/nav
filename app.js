@@ -39,7 +39,6 @@ const navData = [
 ];
 // ============================================================
 
-// 左侧图标
 const navIcons = {
   '常用推荐': '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
   '灵感采集': '<svg viewBox="0 0 24 24"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 00-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0012 2z"></path></svg>',
@@ -48,57 +47,70 @@ const navIcons = {
   '默认': '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>'
 };
 
-// 搜索引擎
 const searchEngines = {
-  'Bing': { label: '微软Bing搜索', url: 'https://cn.bing.com/search?q=' },
-  '百度': { label: '百度一下', url: 'https://www.baidu.com/s?wd=' },
-  'Google': { label: 'Google搜索', url: 'https://www.google.com/search?q=' }
+  'Bing': { url: 'https://cn.bing.com/search?q=', label: 'Bing 搜索' },
+  '百度': { url: 'https://www.baidu.com/s?wd=', label: '百度一下' },
+  'Google': { url: 'https://www.google.com/search?q=', label: 'Google 搜索' }
 };
 let currentEngine = 'Bing';
 
-// DOM
-const html = document.documentElement, navList = document.getElementById('navList'), content = document.getElementById('content'), searchTags = document.getElementById('searchTags'), subSearchInput = document.getElementById('subSearchInput'), subSearchBtn = document.getElementById('subSearchBtn'), themeBtn = document.getElementById('themeBtn'), logo = document.getElementById('logo');
+const html = document.documentElement;
+const logo = document.getElementById('logo');
+const navList = document.getElementById('navList');
+const content = document.getElementById('content');
+const themeBtn = document.getElementById('themeBtn');
+const searchTags = document.getElementById('searchTags');
+const subSearchInput = document.getElementById('subSearchInput');
+const subSearchBtn = document.getElementById('subSearchBtn');
 
-// 渲染左侧
 function renderSidebar(data) {
-  navList.innerHTML = data.map((d, idx) => {
-    const icon = navIcons[d.category] || navIcons['默认'];
-    const hasChild = d.children && d.children.length;
-    return `<div><div class="nav-item" data-idx="${idx}">${icon}<span>${d.category}</span>${hasChild ? '<span class="nav-arrow">▼</span>' : ''}</div>${hasChild ? `<div class="sub-menu">${d.children.map((c,i)=>`<div class="sub-item" data-pidx="${idx}" data-cidx="${i}">${c.label}</div>`).join('')}</div>` : ''}</div>`;
-  }).join('');
-
-  navList.querySelectorAll('.nav-item').forEach(el => {
-    el.onclick = () => {
-      const idx = el.dataset.idx, item = data[idx];
-      navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      navList.querySelectorAll('.sub-item').forEach(s => s.classList.remove('active'));
-      el.classList.add('active');
-      if (item.children) {
-        const sub = el.nextElementSibling, arrow = el.querySelector('.nav-arrow');
+  navList.innerHTML = '';
+  data.forEach((item, pidx) => {
+    const hasChild = item.children && item.children.length > 0;
+    const div = document.createElement('div');
+    div.className = 'nav-item';
+    div.dataset.pidx = pidx;
+    const icon = navIcons[item.category] || navIcons['默认'];
+    div.innerHTML = `<span class="nav-icon">${icon}</span><span>${item.category}</span>${hasChild ? '<span class="nav-arrow">▼</span>' : ''}`;
+    if (hasChild) {
+      const sub = document.createElement('div');
+      sub.className = 'sub-menu';
+      item.children.forEach((ch, cidx) => {
+        const subItem = document.createElement('div');
+        subItem.className = 'sub-item';
+        subItem.dataset.pidx = pidx;
+        subItem.dataset.cidx = cidx;
+        subItem.innerHTML = `<span>·</span><span>${ch.label}</span>`;
+        subItem.onclick = (e) => {
+          e.stopPropagation();
+          navList.querySelectorAll('.sub-item').forEach(s => s.classList.remove('active'));
+          subItem.classList.add('active');
+          renderContent([{ category: ch.label, links: ch.links }]);
+        };
+        sub.appendChild(subItem);
+      });
+      div.appendChild(sub);
+      div.onclick = () => {
+        navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        div.classList.add('active');
+        const arrow = div.querySelector('.nav-arrow');
         const isOpen = sub.classList.contains('open');
         navList.querySelectorAll('.sub-menu.open').forEach(s => s.classList.remove('open'));
         navList.querySelectorAll('.nav-arrow.open').forEach(a => a.classList.remove('open'));
         if (!isOpen) { sub.classList.add('open'); arrow.classList.add('open'); }
-        if (item.children[0]) renderContent([{category:item.children[0].label, links:item.children[0].links}]);
-      } else {
-        navList.querySelectorAll('.sub-menu.open').forEach(s => s.classList.remove('open'));
+        if (item.children[0]) renderContent([{ category: item.children[0].label, links: item.children[0].links }]);
+      };
+    } else {
+      div.onclick = () => {
+        navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        div.classList.add('active');
         renderContent([item]);
-      }
-    };
-  });
-
-  navList.querySelectorAll('.sub-item').forEach(el => {
-    el.onclick = (e) => {
-      e.stopPropagation();
-      navList.querySelectorAll('.sub-item').forEach(s => s.classList.remove('active'));
-      el.classList.add('active');
-      const p = el.dataset.pidx, c = el.dataset.cidx, ch = data[p].children[c];
-      renderContent([{category:ch.label, links:ch.links}]);
-    };
+      };
+    }
+    navList.appendChild(div);
   });
 }
 
-// 渲染内容
 function renderContent(data) {
   content.innerHTML = '';
   data.forEach(sec => {
@@ -110,7 +122,6 @@ function renderContent(data) {
   });
 }
 
-// Logo → 全部
 logo.onclick = () => {
   navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   navList.querySelectorAll('.sub-menu.open').forEach(s => s.classList.remove('open'));
@@ -118,22 +129,21 @@ logo.onclick = () => {
   renderContent(navData.filter(s => s.links?.length > 0 || s.children?.some(c => c.links?.length > 0)));
 };
 
-// 搜索标签
 function renderSearchTags() {
   const tags = ['Bing', '百度', 'Google'];
   searchTags.innerHTML = tags.map((t, i) => {
-    if (i === 0) return `<span class="tag ${t===currentEngine?'active':''}" data-engine="${t}">${t}</span><span class="arrow">></span>`;
-    return `<span class="tag ${t===currentEngine?'active':''}" data-engine="${t}">${t}</span>`;
+    if (i === 0) return `<span class="tag ${t === currentEngine ? 'active' : ''}" data-engine="${t}">${t}</span><span class="arrow">></span>`;
+    return `<span class="tag ${t === currentEngine ? 'active' : ''}" data-engine="${t}">${t}</span>`;
   }).join('');
   searchTags.querySelectorAll('.tag').forEach(t => {
     t.onclick = () => { currentEngine = t.dataset.engine; subSearchInput.placeholder = searchEngines[currentEngine].label; renderSearchTags(); };
   });
 }
-function doSearch(kw, engine = currentEngine) { if (!kw) return; window.open(searchEngines[engine].url + encodeURIComponent(kw), '_blank'); }
+
+function doSearch(kw) { if (!kw) return; window.open(searchEngines[currentEngine].url + encodeURIComponent(kw), '_blank'); }
 subSearchBtn.onclick = () => doSearch(subSearchInput.value);
 subSearchInput.onkeydown = e => { if (e.key === 'Enter') doSearch(subSearchInput.value); };
 
-// 深浅模式
 function applyTheme(t) {
   html.setAttribute('data-theme', t);
   themeBtn.querySelector('.theme-icon').textContent = t === 'dark' ? '☀️' : '🌙';
@@ -148,7 +158,6 @@ const saved = localStorage.getItem('theme');
 const sysDark = matchMedia('(prefers-color-scheme: dark)').matches;
 applyTheme(saved || (sysDark ? 'dark' : 'light'));
 
-// 初始化
 renderSidebar(navData);
 renderContent([navData[0]]);
 navList.querySelector('.nav-item')?.classList.add('active');
