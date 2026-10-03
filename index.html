@@ -8,10 +8,10 @@
 </head>
 <body>
   <div class="layout">
-    <!-- 左侧栏 -->
+    <!-- 左侧栏（还原浅色，底部主题切换） -->
     <aside class="sidebar">
       <div class="logo">
-        <img src="logo.png" alt="logo" class="logo-img" id="logoImg">
+        <img src="logo.png" alt="logo" class="logo-img" onerror="this.style.display='none'">
         <span class="logo-text">网址导航</span>
       </div>
       <div class="nav-list" id="navList"></div>
@@ -23,14 +23,39 @@
       </div>
     </aside>
 
-    <!-- 主内容 -->
+    <!-- 右侧主内容 -->
     <main class="main">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="搜索网站或分类... (按 / 聚焦)">
-        <button class="search-btn">🔍</button>
+      <!-- 顶部固定横栏（含汉堡、顶部搜索、代码图标） -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="hamburger">☰</span>
+        </div>
+        <div class="topbar-search">
+          <input type="text" id="topSearch" placeholder="搜索网站或分类... (按 / 聚焦)">
+        </div>
+        <div class="topbar-right">
+          <span class="code-icon">&lt;/&gt;</span>
+        </div>
+      </header>
+
+      <!-- 次级搜索区（模仿参考图带标签的搜索） -->
+      <div class="sub-search-area">
+        <div class="search-tags">
+          <span>社区</span> <span class="arrow">></span>
+          <span class="tag">知乎</span>
+          <span class="tag">微信</span>
+          <span class="tag">微博</span>
+          <span class="tag">豆瓣</span>
+          <span class="tag">搜外问答</span>
+        </div>
+        <div class="search-box">
+          <input type="text" placeholder="知乎">
+          <button>🔍</button>
+        </div>
       </div>
-      <div id="navContainer" class="content"></div>
+
+      <!-- 导航卡片区 -->
+      <div class="content" id="navContainer"></div>
     </main>
   </div>
   <script src="app.js"></script>
