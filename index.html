@@ -11,32 +11,41 @@
     <!-- 左侧栏 -->
     <aside class="sidebar" id="navList"></aside>
     
-    <!-- 右侧主区 -->
+    <!-- 主内容区 -->
     <main class="main">
-      <header class="top-bar">
-        <div class="top-left">☰</div>
-        <div class="top-search">
-          <input type="text" id="topSearch" placeholder="搜索网址...">
+      <!-- 顶部固定横栏 -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn" id="menuToggle">☰</button>
+          <div class="logo-mobile">网址导航</div>
         </div>
-        <div class="top-right">
-          <button id="toggle-theme">
-            <span class="theme-icon">🌙</span><span class="theme-text">深色模式</span>
-          </button>
-          <span>&lt;/&gt;</span>
+        <div class="search-wrapper">
+          <input type="text" id="topSearch" placeholder="搜索网址..." class="top-search">
+        </div>
+        <div class="topbar-right">
+          <button id="toggle-theme" class="theme-btn"><span class="theme-icon">🌙</span> <span class="theme-text">深色模式</span></button>
+          <span class="code-icon">&lt;/&gt;</span>
         </div>
       </header>
-      
-      <!-- 次级搜索区（按图保留） -->
+
+      <!-- 次级搜索/标签区 -->
       <div class="sub-search-area">
-        <span>社区</span> <span>&gt;</span>
-        <span class="tag">知乎</span> <span class="tag">微信</span> <span class="tag">微博</span>
-        <span class="tag">豆瓣</span> <span class="tag">搜外问答</span>
-        <div class="sub-search-box">
-          <input value="知乎"><button>🔍</button>
+        <div class="tags">
+          <span>社区</span> <span class="arrow">&gt;</span>
+          <span class="tag">知乎</span>
+          <span class="tag">微信</span>
+          <span class="tag">微博</span>
+          <span class="tag">豆瓣</span>
+          <span class="tag">搜外问答</span>
+        </div>
+        <div class="mini-search">
+          <input type="text" value="知乎">
+          <button>🔍</button>
         </div>
       </div>
 
-      <div id="navContainer" class="content"></div>
+      <!-- 内容容器 -->
+      <div class="content" id="navContainer"></div>
     </main>
   </div>
   <script src="app.js"></script>
