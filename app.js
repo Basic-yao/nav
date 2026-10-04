@@ -333,12 +333,22 @@ logo.onclick = () => {
 // ===== 深浅模式 =====
 const mql = window.matchMedia('(prefers-color-scheme: dark)');
 let userOverride = null;
-const iconMoon = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
-const iconSun  = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+// 月 / 日 图标用 SVG 字符串存源，再用 svgFromString 走 DOM API 创建，
+// 避免 innerHTML 注入 SVG 在 iOS Safari 上解析失败（只显示文字、无图标）
+const iconMoonSrc = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+const iconSunSrc  = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+const themeIconEl = themeBtn.querySelector('.theme-icon');
 
 function applyTheme(t) {
   html.setAttribute('data-theme', t);
-  themeBtn.querySelector('.theme-icon').innerHTML = t === 'dark' ? iconSun : iconMoon;
+  // 重建 SVG 节点，保证手机端也能正常渲染线条图标
+  themeIconEl.textContent = '';
+  const svg = svgFromString(t === 'dark' ? iconSunSrc : iconMoonSrc);
+  if (svg) {
+    svg.setAttribute('width', '18');
+    svg.setAttribute('height', '18');
+    themeIconEl.appendChild(svg);
+  }
   themeBtn.querySelector('.theme-text').textContent = t === 'dark' ? '浅色模式' : '深色模式';
 }
 function resolveTheme() { return userOverride || (mql.matches ? 'dark' : 'light'); }
