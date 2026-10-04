@@ -22,10 +22,35 @@ const searchTags = document.getElementById('searchTags');
 const subSearchInput = document.getElementById('subSearchInput');
 const subSearchBtn = document.getElementById('subSearchBtn');
 
+// ===== SVG 命名空间（必须显式声明，Safari 才能识别动态创建的 SVG）=====
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+// ===== 把 data.js 里的 SVG 字符串解析成真实 SVG 元素 =====
+// 用 DOMParser 解析，规避 Safari 对 innerHTML 插入自闭合 SVG 标签的解析差异
+function svgFromString(str) {
+  if (!str) return null;
+  try {
+    const doc = new DOMParser().parseFromString(
+      '<svg xmlns="http://www.w3.org/2000/svg">' + str + '</svg>',
+      'image/svg+xml'
+    );
+    if (doc.querySelector('parsererror')) return null;
+    // 取根 svg 的第一个元素（真正的图标节点）
+    const child = doc.documentElement.firstElementChild;
+    if (!child) return null;
+    // 克隆到当前文档上下文
+    const node = document.importNode(child, true);
+    node.setAttribute('fill', 'currentColor');
+    return node;
+  } catch (e) {
+    return null;
+  }
+}
+
 // ===== 卡片模板 =====
 function cardTpl(l) {
   return `<a href="${l.url}" target="_blank" class="card">
-    <div class="card-icon"><img src="${l.icon}" alt="" onerror="this.style.display='none'"></div>
+    <div class="card-icon"><img src="${l.icon}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div>
     <div>
       <div class="card-title">${l.title}</div>
       <div class="card-desc">${l.desc}</div>
@@ -103,8 +128,9 @@ function renderSearchTags() {
         ? '按 / 快速唤起站内搜索'
         : searchEngines[currentEngine].label;
       renderSearchTags();
-      // 切引擎时立即用当前输入内容搜索
+      // 切到站内时立即聚焦输入框（手机端自动弹出键盘）
       if (currentEngine === '站内') {
+        subSearchInput.focus();
         doLocalSearch(subSearchInput.value);
       }
     };
@@ -160,7 +186,25 @@ function renderSidebar(data) {
 
     const parent = document.createElement('div');
     parent.className = 'nav-parent';
-    parent.innerHTML = `<span class="nav-icon">${navIcons[item.category] || item.icon}</span><span class="nav-title">${item.category}</span><span class="nav-arrow">${hasChild ? '▼' : ''}</span>`;
+
+    const iconWrap = document.createElement('span');
+    iconWrap.className = 'nav-icon';
+    const svgNode = svgFromString(navIcons[item.category] || item.icon);
+    if (svgNode) {
+      iconWrap.appendChild(svgNode);
+    }
+
+    const titleWrap = document.createElement('span');
+    titleWrap.className = 'nav-title';
+    titleWrap.textContent = item.category;
+
+    const arrowWrap = document.createElement('span');
+    arrowWrap.className = 'nav-arrow';
+    arrowWrap.textContent = hasChild ? '▼' : '';
+
+    parent.appendChild(iconWrap);
+    parent.appendChild(titleWrap);
+    parent.appendChild(arrowWrap);
 
     let sub = null;
     if (hasChild) {
@@ -169,7 +213,18 @@ function renderSidebar(data) {
       item.children.forEach((ch) => {
         const subItem = document.createElement('div');
         subItem.className = 'sub-item';
-        subItem.innerHTML = `<span class="sub-dot">·</span><span class="sub-label">${ch.label}</span>`;
+
+        const dot = document.createElement('span');
+        dot.className = 'sub-dot';
+        dot.textContent = '·';
+
+        const label = document.createElement('span');
+        label.className = 'sub-label';
+        label.textContent = ch.label;
+
+        subItem.appendChild(dot);
+        subItem.appendChild(label);
+
         subItem.onclick = (e) => {
           e.stopPropagation();
           navList.querySelectorAll('.sub-item').forEach(s => s.classList.remove('active'));

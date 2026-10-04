@@ -65,7 +65,9 @@ a { text-decoration: none; color: inherit; }
 .nav-item.has-child.open > .nav-parent,
 .nav-item.active > .nav-parent { background: var(--hover); color: var(--accent); font-weight: 600; }
 .nav-item.has-child.open > .nav-parent .nav-arrow { transform: rotate(180deg); }
-.nav-parent .nav-icon { width: 18px; height: 18px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; }
+.nav-parent .nav-icon { width: 18px; height: 18px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; color: currentColor; }
+.nav-parent .nav-icon svg { width: 18px; height: 18px; display: block; fill: currentColor; stroke: currentColor; }
+.nav-parent .nav-icon svg [stroke] { fill: none; }
 .nav-title { flex: 1; }
 .nav-arrow { font-size: 11px; opacity: .55; transition: transform .2s; }
 
@@ -83,7 +85,7 @@ a { text-decoration: none; color: inherit; }
 .theme-btn .theme-icon, .theme-btn .theme-text { display: inline-flex; align-items: center; line-height: 1; }
 
 .sidebar svg,
-.theme-btn svg { fill: none; stroke: currentColor; color: currentColor; }
+.theme-btn svg { color: currentColor; }
 
 /* 主区 */
 .main { flex: 1; padding: 30px 40px; overflow-x: hidden; }
@@ -163,7 +165,7 @@ a { text-decoration: none; color: inherit; }
   .logo span { display: none; }
   .logo { padding: 14px 0; justify-content: center; }
 
-  /* 导航文字 & 箭头隐藏 */
+  /* 导航文字 & 箭头隐藏（图标保留） */
   .nav-title,
   .nav-arrow { display: none; }
 
@@ -172,6 +174,24 @@ a { text-decoration: none; color: inherit; }
     justify-content: center;
     border-radius: 0;
     position: relative;
+  }
+
+  /* 手机端图标栏：图标放大到 22px，确保可见 */
+  .nav-parent .nav-icon { width: 24px; height: 24px; }
+  .nav-parent .nav-icon svg { width: 22px; height: 22px; }
+
+  /* 子菜单标签保留，便于回退显示；默认隐藏由 .sub-menu 控制 */
+  .sub-label { display: inline-block; }
+
+  /* 图标加载失败时显示占位方块，避免整块空白 */
+  .card-icon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    min-width: 24px;
+    min-height: 24px;
+    background: var(--hover);
+    border-radius: 6px;
   }
 
   /* ★ active 指示条（左侧蓝色竖线） */
