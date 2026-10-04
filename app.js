@@ -90,6 +90,26 @@ function cardTpl(l) {
 }
 
 // ===== 渲染内容区 =====
+// 分类标题的图标取用规则：
+//   1) 该分类在 navData 中登记过 icon（顶层分类）        → 用它
+//   2) 子分类有自己的 icon（data.js 里可选填 icon 字段） → 用它
+//   3) 都没有                                             → 回退到父级分类的图标
+// 这样「软件 / 游戏」这类子分类也会显示对应线条图标，而不是空白
+function getSectionIcon(sec, ch) {
+  if (ch && ch.icon) return svgToString(svgFromString(ch.icon));
+  const byKey = navIcons[ch ? ch.label : sec.category];
+  if (byKey) return svgToString(svgFromString(byKey));
+  return svgToString(svgFromString(navIcons[sec.category]));
+}
+function svgToString(node) {
+  if (!node) return '';
+  const clone = node.cloneNode(true);
+  clone.setAttribute('width', '18');
+  clone.setAttribute('height', '18');
+  clone.classList.add('section-icon');
+  return new XMLSerializer().serializeToString(clone);
+}
+
 function renderContent(data) {
   content.innerHTML = '';
   if (!data || data.length === 0) {
@@ -100,12 +120,12 @@ function renderContent(data) {
     if (sec.children && sec.children.length > 0) {
       sec.children.forEach(ch => {
         if (!ch.links || ch.links.length === 0) return;
-        content.innerHTML += `<h2 class="section-title">${ch.label}</h2><div class="grid">${ch.links.map(l => cardTpl(l)).join('')}</div>`;
+        content.innerHTML += `<h2 class="section-title">${getSectionIcon(sec, ch)}<span>${ch.label}</span></h2><div class="grid">${ch.links.map(l => cardTpl(l)).join('')}</div>`;
       });
     } else {
       const allLinks = [...(sec.links || [])];
       if (allLinks.length === 0) return;
-      content.innerHTML += `<h2 class="section-title">${sec.category}</h2><div class="grid">${allLinks.map(l => cardTpl(l)).join('')}</div>`;
+      content.innerHTML += `<h2 class="section-title">${getSectionIcon(sec)}<span>${sec.category}</span></h2><div class="grid">${allLinks.map(l => cardTpl(l)).join('')}</div>`;
     }
   });
 }
