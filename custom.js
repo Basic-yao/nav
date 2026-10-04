@@ -19,8 +19,11 @@ async function loadNavData() {
   try {
     const res = await fetch('nav.json?v=' + Date.now(), { cache: 'no-store' });
     if (res.ok) {
-      navData = await res.json();
-      return;
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        navData = data;
+        return;
+      }
     }
   } catch(e) {}
 
@@ -812,5 +815,10 @@ function renderContentForCurrent() {
   }
   renderContent(data);
 }
+(async function bootNav() {
+  await loadNavData();
+  renderSidebar(navData);
+  renderContent(navData.filter(s => (s.links || []).length > 0));
+})();
 
 })();
