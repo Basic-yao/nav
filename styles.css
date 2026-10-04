@@ -10,6 +10,9 @@
   --btn-bg: #4a90e2;
   --btn-icon: #fff;
   --shadow: 0 2px 8px rgba(0,0,0,0.05);
+  /* 激活态菜单项：浅色与深色各一份，避免依赖 --hover 导致未定义 */
+  --nav-active-bg: #eaf2fd;
+  --nav-active-color: #4a90e2;
   color-scheme: light dark;
 }
 
@@ -22,6 +25,8 @@
     --text-sub: #aaa;
     --border: #2a2a30;
     --hover: #222228;
+    --nav-active-bg: #1e2a3d;
+    --nav-active-color: #6ba7ee;
     --shadow: 0 2px 8px rgba(0,0,0,0.3);
     color-scheme: dark;
   }
@@ -35,6 +40,8 @@
   --text-sub: #aaa;
   --border: #2a2a30;
   --hover: #222228;
+  --nav-active-bg: #1e2a3d;
+  --nav-active-color: #6ba7ee;
   --shadow: 0 2px 8px rgba(0,0,0,0.3);
   color-scheme: dark;
 }
@@ -43,40 +50,87 @@
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text-main); transition: background .2s, color .2s; -webkit-tap-highlight-color: transparent; }
 a { text-decoration: none; color: inherit; }
 
-.layout { display: flex; min-height: 100vh; }
+/* ===== 横向布局锁定：避免内容高度变化导致滚动条显隐，
+   进而让 body 可用宽度变化、搜索栏左右位移 ===== */
+html, body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+html {
+  scrollbar-gutter: stable;
+}
+@supports not (overflow-x: clip) {
+  html, body { overflow-x: hidden; }
+}
+
+.layout { display: flex; min-height: 100vh; width: 100vw; max-width: 100%; }
 
 /* 左侧栏 */
 .sidebar { width: 240px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 0; display: flex; flex-direction: column; flex-shrink: 0; transition: background .2s, color .2s; position: sticky; top: 0; height: 100vh; overflow: hidden; }
 
 /* Logo 居中 */
-.logo { padding: 16px 20px; margin: 0; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--text-main); border-bottom: 1px solid var(--border); transition: opacity .15s; }
+.logo { padding: 16px 20px; margin: 0; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--text-main); border-bottom: 1px solid var(--border); transition: opacity .15s, color .15s, background .15s; }
 .logo:hover { opacity: .7; }
+/* Logo 仅作为点击回首页的入口，不做激活态高亮——首页是全部网址的聚合视图，
+   不存在"选中 Logo"这一状态；真正的高亮只属于已点击的菜单项 */
 
-.nav-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+/* ===== 一级菜单：横向排列，左右两端对齐，底部横线，直角框 ===== */
+.nav-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
 
 /* 美化滚动条（桌面） */
 .nav-list::-webkit-scrollbar { width: 4px; }
 .nav-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 .nav-list::-webkit-scrollbar-thumb:hover { background: var(--text-sub); }
 
-.nav-item { margin: 2px 0; }
-.nav-parent { padding: 11px 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-main); border-radius: 8px; transition: background .15s, color .15s; }
-.nav-parent:hover { background: var(--hover); }
-.nav-item.has-child.open > .nav-parent,
-.nav-item.active > .nav-parent { background: var(--hover); color: var(--accent); font-weight: 600; }
-.nav-item.has-child.open > .nav-parent .nav-arrow { transform: rotate(180deg); }
-.nav-parent .nav-icon { width: 18px; height: 18px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; color: currentColor; }
-.nav-parent .nav-icon svg { width: 18px; height: 18px; display: block; stroke: currentColor; }
-.nav-title { flex: 1; }
-.nav-arrow { font-size: 11px; opacity: .55; transition: transform .2s; }
+.nav-item { margin: 0; }
 
-.sub-menu { display: none; padding: 2px 0 6px; }
-.sub-menu.open { display: block; }
-.sub-item { padding: 8px 20px 8px 48px; cursor: pointer; font-size: 13.5px; color: var(--text-sub); display: flex; align-items: center; gap: 8px; border-radius: 6px; }
-.sub-item:hover { background: var(--hover); color: var(--text-main); }
-.sub-item.active { color: var(--accent); font-weight: 600; background: var(--hover); }
-.sub-dot { flex-shrink: 0; width: 14px; text-align: center; opacity: .55; }
-.sub-label { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* 单个菜单项：左右居中（图标+文字在栏内两端对齐），底部横线，
+   直角框，字体加大一号（14px → 16px） */
+.nav-parent {
+  padding: 15px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--text-main);
+  /* 直角框：去掉圆角 */
+  border-radius: 0;
+  border-bottom: 1px solid var(--border);
+  transition: background .15s, color .15s;
+  position: relative;
+}
+.nav-parent:hover { background: var(--hover); }
+
+/* 激活态：左侧加粗直线（直角框风格）
+   用独立变量 + !important 双保险，避免被 .sidebar 或主题规则覆盖后"看起来没高亮" */
+.nav-item.active > .nav-parent,
+body .nav-list .nav-item.active > .nav-parent {
+  background: var(--nav-active-bg, #eaf2fd) !important;
+  color: var(--nav-active-color, #4a90e2) !important;
+  font-weight: 700;
+}
+.nav-item.active > .nav-parent::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--nav-active-color, #4a90e2);
+}
+
+/* 图标与加大后的字号协调 */
+.nav-parent .nav-icon { width: 20px; height: 20px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; color: currentColor; }
+.nav-parent .nav-icon svg { width: 20px; height: 20px; display: block; stroke: currentColor; }
+.nav-title { flex: 1; }
 
 /* 深浅模式按钮居中 */
 .theme-btn { margin: 0; height: 56px; padding: 0 20px; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 10px; background: transparent; color: var(--text-main); border: none; border-top: 1px solid var(--border); border-radius: 0; width: 100%; box-sizing: border-box; transition: opacity .15s; }
@@ -89,11 +143,17 @@ a { text-decoration: none; color: inherit; }
 .nav-parent .nav-icon svg { fill: none !important; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* 主区 */
-.main { flex: 1; padding: 30px 40px; overflow-x: hidden; }
+/* width 显式锁定为“视口宽度 − 侧栏宽度”，避免内容高度变化触发 flex 重排
+   时 .main 的可用宽度出现亚像素级跳动，进而让内部用 margin:auto 居中的
+   搜索栏左右偏移 */
+.main { flex: 1 1 auto; width: calc(100vw - 240px - var(--scrollbar-width, 0px)); padding: 30px 40px; overflow-x: clip; }
+@supports not (overflow-x: clip) {
+  .main { overflow-x: hidden; }
+}
 
 /* 搜索 */
 .search-box { max-width: 640px; margin: 0 auto 40px; text-align: center; }
-.search-tags { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; font-size: 14px; }
+.search-tags { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; font-size: 14px; min-height: 28px; align-content: center; }
 .tag { cursor: pointer; padding: 3px 8px; border-radius: 4px; font-weight: 500; opacity: .55; transition: all .15s; border-bottom: 2px solid transparent; }
 .tag:hover { opacity: .85; }
 .tag[data-engine="站内"] { color: var(--accent); }
@@ -171,15 +231,16 @@ a { text-decoration: none; color: inherit; }
   .logo span { display: none; }
   .logo { padding: 14px 0; justify-content: center; }
 
-  /* 导航文字 & 箭头隐藏（图标保留） */
-  .nav-title,
-  .nav-arrow { display: none; }
+  /* 导航文字隐藏（图标保留），保持与桌面端视觉风格统一 */
+  .nav-title { display: none; }
 
   .nav-parent {
     padding: 14px 0;
     justify-content: center;
     border-radius: 0;
     position: relative;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
   }
 
   /* 手机端图标栏：图标放大到 22px，确保可见 */
@@ -214,8 +275,6 @@ a { text-decoration: none; color: inherit; }
     border-radius: 0 3px 3px 0;
   }
 
-  /* 子菜单手机端不展开 */
-  .sub-menu { display: none !important; }
 
   /* 主题按钮只留图标 */
   .theme-btn .theme-text { display: none; }

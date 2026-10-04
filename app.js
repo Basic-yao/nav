@@ -72,6 +72,18 @@ function getFallback(l) {
   return { ch, hue };
 }
 
+// ===== 点击 Logo / 分组后统一滚动到顶部 =====
+function resetScrollToTop() {
+  const target = document.scrollingElement || document.documentElement;
+  requestAnimationFrame(() => target.scrollTo(0, 0));
+}
+
+// ===== 把滚动条宽度同步为 CSS 变量 =====
+function syncScrollbarVar() {
+  const w = window.innerWidth - document.documentElement.clientWidth;
+  document.documentElement.style.setProperty('--scrollbar-width', w + 'px');
+}
+
 // ===== 卡片模板 =====
 function cardTpl(l) {
   const fb = getFallback(l);
@@ -119,16 +131,9 @@ function renderContent(data) {
     return;
   }
   data.forEach(sec => {
-    if (sec.children && sec.children.length > 0) {
-      sec.children.forEach(ch => {
-        if (!ch.links || ch.links.length === 0) return;
-        content.innerHTML += `<h2 class="section-title">${getSectionIcon(sec, ch)}<span>${ch.label}</span></h2><div class="grid">${ch.links.map(l => cardTpl(l)).join('')}</div>`;
-      });
-    } else {
-      const allLinks = [...(sec.links || [])];
-      if (allLinks.length === 0) return;
-      content.innerHTML += `<h2 class="section-title">${getSectionIcon(sec)}<span>${sec.category}</span></h2><div class="grid">${allLinks.map(l => cardTpl(l)).join('')}</div>`;
-    }
+    const allLinks = [...(sec.links || [])];
+    if (allLinks.length === 0) return;
+    content.innerHTML += `<h2 class="section-title">${getSectionIcon(sec)}<span>${sec.category}</span></h2><div class="grid">${allLinks.map(l => cardTpl(l)).join('')}</div>`;
   });
 }
 
@@ -137,24 +142,17 @@ function doLocalSearch(kw) {
   kw = (kw || '').trim();
   if (!kw) {
     // 空关键词 → 显示全量
-    renderContent(navData.filter(s => s.links?.length > 0 || s.children?.some(c => c.links?.length > 0)));
+    renderContent(navData.filter(s => (s.links || []).length > 0));
     return;
   }
   const lower = kw.toLowerCase();
-  const hitData = navData.map(sec => {
-    const hitLinks = (sec.links || []).filter(l =>
+  const hitData = navData.map(sec => ({
+    ...sec,
+    links: (sec.links || []).filter(l =>
       (l.title || '').toLowerCase().includes(lower) ||
       (l.desc || '').toLowerCase().includes(lower)
-    );
-    const hitChildren = (sec.children || []).map(ch => ({
-      ...ch,
-      links: (ch.links || []).filter(l =>
-        (l.title || '').toLowerCase().includes(lower) ||
-        (l.desc || '').toLowerCase().includes(lower)
-      )
-    })).filter(ch => ch.links.length > 0);
-    return { ...sec, links: hitLinks, children: hitChildren };
-  }).filter(sec => sec.links.length > 0 || sec.children.length > 0);
+    )
+  })).filter(sec => sec.links.length > 0);
   renderContent(hitData);
 }
 
@@ -225,17 +223,17 @@ document.addEventListener('keydown', (e) => {
     renderSearchTags();
     subSearchInput.value = '';
     subSearchInput.focus();
-    renderContent(navData.filter(s => s.links?.length > 0 || s.children?.some(c => c.links?.length > 0)));
+    renderContent(navData.filter(s => (s.links || []).length > 0));
   }
 });
 
-// ===== 侧边栏渲染 =====
+// ===== 侧边栏渲染（单一层级）=====
+// 全站不再使用二级菜单：每个顶层分类都是独立的一级菜单项，点击直接渲染自身。
 function renderSidebar(data) {
   navList.innerHTML = '';
   data.forEach((item) => {
-    const hasChild = item.children && item.children.length > 0;
     const div = document.createElement('div');
-    div.className = 'nav-item' + (hasChild ? ' has-child' : '');
+    div.className = 'nav-item';
 
     const parent = document.createElement('div');
     parent.className = 'nav-parent';
@@ -251,85 +249,32 @@ function renderSidebar(data) {
     titleWrap.className = 'nav-title';
     titleWrap.textContent = item.category;
 
-    const arrowWrap = document.createElement('span');
-    arrowWrap.className = 'nav-arrow';
-    arrowWrap.textContent = hasChild ? '▼' : '';
-
     parent.appendChild(iconWrap);
     parent.appendChild(titleWrap);
-    parent.appendChild(arrowWrap);
-
-    let sub = null;
-    if (hasChild) {
-      sub = document.createElement('div');
-      sub.className = 'sub-menu';
-      item.children.forEach((ch) => {
-        const subItem = document.createElement('div');
-        subItem.className = 'sub-item';
-
-        const dot = document.createElement('span');
-        dot.className = 'sub-dot';
-        dot.textContent = '·';
-
-        const label = document.createElement('span');
-        label.className = 'sub-label';
-        label.textContent = ch.label;
-
-        subItem.appendChild(dot);
-        subItem.appendChild(label);
-
-        subItem.onclick = (e) => {
-          e.stopPropagation();
-          navList.querySelectorAll('.sub-item').forEach(s => s.classList.remove('active'));
-          subItem.classList.add('active');
-          renderContent([{ category: ch.label, links: ch.links }]);
-        };
-        sub.appendChild(subItem);
-      });
-    }
-
-    div.appendChild(parent);
-    if (sub) div.appendChild(sub);
 
     parent.onclick = () => {
       navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       div.classList.add('active');
-      // 手机端：直接跳第一个子分类，不展开
-      if (window.innerWidth <= 768 && hasChild) {
-        renderContent([{ category: item.children[0].label, links: item.children[0].links }]);
-        return;
-      }
-      if (hasChild) {
-        const isOpen = sub.classList.contains('open');
-        navList.querySelectorAll('.sub-menu.open').forEach(s => { if (s !== sub) s.classList.remove('open'); });
-        navList.querySelectorAll('.nav-item.has-child.open').forEach(n => { if (n !== div) n.classList.remove('open'); });
-        sub.classList.toggle('open', !isOpen);
-        div.classList.toggle('open', !isOpen);
-        if (!isOpen && item.children[0]) {
-          renderContent([{ category: item.children[0].label, links: item.children[0].links }]);
-        }
-      } else {
-        renderContent([item]);
-      }
+      renderContent([item]);
+      resetScrollToTop();
     };
 
+    div.appendChild(parent);
     navList.appendChild(div);
   });
 }
 
 // ===== Logo 点击回首页 =====
 logo.onclick = () => {
+  // 回到首页：清除所有菜单的高亮。首页是"全部分类"的聚合视图，
+  // Logo 与菜单项均不高亮，符合"未选中任何分组"的默认语义
   navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  navList.querySelectorAll('.sub-menu.open').forEach(s => s.classList.remove('open'));
-  navList.querySelectorAll('.nav-item.has-child.open').forEach(n => n.classList.remove('open'));
   currentEngine = '站内';
   subSearchInput.placeholder = '按 / 快速唤起站内搜索';
   subSearchInput.value = '';
   renderSearchTags();
-  renderContent(navData.filter(s => s.links?.length > 0 || s.children?.some(c => c.links?.length > 0)));
-  if (window.innerWidth <= 768) {
-    navList.querySelector('.nav-item')?.classList.add('active');
-  }
+  renderContent(navData.filter(s => (s.links || []).length > 0));
+  resetScrollToTop();
 };
 
 // ===== 深浅模式 =====
@@ -366,8 +311,10 @@ themeBtn.onclick = () => {
 
 // ===== 初始化 =====
 renderSidebar(navData);
+syncScrollbarVar();
+window.addEventListener('resize', syncScrollbarVar);
 currentEngine = '站内';
 subSearchInput.placeholder = '按 / 快速唤起站内搜索';
 renderSearchTags();
-renderContent(navData.filter(s => s.links?.length > 0 || s.children?.some(c => c.links?.length > 0)));
-navList.querySelector('.nav-item')?.classList.add('active');
+renderContent(navData.filter(s => (s.links || []).length > 0));
+// 初始为首页：显示全部网址，Logo 与菜单项都不高亮，符合"未选中任何分组"的默认状态
