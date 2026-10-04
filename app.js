@@ -22,12 +22,8 @@ const searchTags = document.getElementById('searchTags');
 const subSearchInput = document.getElementById('subSearchInput');
 const subSearchBtn = document.getElementById('subSearchBtn');
 
-// ===== SVG 命名空间（必须显式声明，Safari 才能识别动态创建的 SVG）=====
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-// ===== 把 data.js 里的 SVG 字符串解析成真实 SVG 元素 =====
-// 用 DOMParser 解析，规避 Safari 对 innerHTML 插入自闭合 SVG 标签的解析差异
-// 线条风图标的默认描边属性
 const STROKE_ATTRS = {
   'fill': 'none',
   'stroke': 'currentColor',
@@ -44,14 +40,9 @@ function svgFromString(str) {
       'image/svg+xml'
     );
     if (doc.querySelector('parsererror')) return null;
-    // 取根 svg 的第一个元素（真正的图标节点）
     const child = doc.documentElement.firstElementChild;
     if (!child) return null;
-    // 克隆到当前文档上下文
     const node = document.importNode(child, true);
-
-    // 若内部图形本身没声明 fill/stroke，则统一套用线条描边，
-    // 保证图标永远是线条风，不会变成实心块
     for (const [k, v] of Object.entries(STROKE_ATTRS)) {
       if (!node.hasAttribute(k)) node.setAttribute(k, v);
     }
@@ -61,8 +52,6 @@ function svgFromString(str) {
   }
 }
 
-// ===== 卡片图标兜底：favicon 失败时用「首字母色块」代替空白 =====
-// 首字母取 title，颜色按 title 哈希固定，保证同一站点颜色稳定
 function getFallback(l) {
   const ch = (l.title || '?').trim().charAt(0).toUpperCase();
   let hash = 0;
@@ -72,19 +61,16 @@ function getFallback(l) {
   return { ch, hue };
 }
 
-// ===== 点击 Logo / 分组后统一滚动到顶部 =====
 function resetScrollToTop() {
   const target = document.scrollingElement || document.documentElement;
   requestAnimationFrame(() => target.scrollTo(0, 0));
 }
 
-// ===== 把滚动条宽度同步为 CSS 变量 =====
 function syncScrollbarVar() {
   const w = window.innerWidth - document.documentElement.clientWidth;
   document.documentElement.style.setProperty('--scrollbar-width', w + 'px');
 }
 
-// ===== 卡片模板 =====
 function cardTpl(l) {
   const fb = getFallback(l);
   const bg = `hsl(${fb.hue}, 65%, 88%)`;
@@ -103,18 +89,13 @@ function cardTpl(l) {
   </a>`;
 }
 
-// ===== 渲染内容区 =====
-// 分类标题的图标取用规则：
-//   1) 该分类在 navData 中登记过 icon（顶层分类）        → 用它
-//   2) 子分类有自己的 icon（data.js 里可选填 icon 字段） → 用它
-//   3) 都没有                                             → 回退到父级分类的图标
-// 这样「软件 / 游戏」这类子分类也会显示对应线条图标，而不是空白
 function getSectionIcon(sec, ch) {
   if (ch && ch.icon) return svgToString(svgFromString(ch.icon));
   const byKey = navIcons[ch ? ch.label : sec.category];
   if (byKey) return svgToString(svgFromString(byKey));
   return svgToString(svgFromString(navIcons[sec.category]));
 }
+
 function svgToString(node) {
   if (!node) return '';
   const clone = node.cloneNode(true);
@@ -137,11 +118,9 @@ function renderContent(data) {
   });
 }
 
-// ===== 站内搜索（核心：实时过滤）=====
 function doLocalSearch(kw) {
   kw = (kw || '').trim();
   if (!kw) {
-    // 空关键词 → 显示全量
     renderContent(navData.filter(s => (s.links || []).length > 0));
     return;
   }
@@ -156,14 +135,12 @@ function doLocalSearch(kw) {
   renderContent(hitData);
 }
 
-// ===== 外站搜索 =====
 function doWebSearch(kw) {
   kw = kw.trim();
   if (!kw) return;
   window.open(searchEngines[currentEngine].url + encodeURIComponent(kw), '_blank');
 }
 
-// ===== 渲染引擎标签 =====
 function renderSearchTags() {
   const tags = ['站内', 'Bing', '百度', 'Google'];
   searchTags.innerHTML = tags.map((t, i) => {
@@ -179,7 +156,6 @@ function renderSearchTags() {
         ? '按 / 快速唤起站内搜索'
         : searchEngines[currentEngine].label;
       renderSearchTags();
-      // 切到站内时立即聚焦输入框（手机端自动弹出键盘）
       if (currentEngine === '站内') {
         subSearchInput.focus();
         doLocalSearch(subSearchInput.value);
@@ -188,14 +164,12 @@ function renderSearchTags() {
   });
 }
 
-// ===== ★ 实时搜索：input 事件（每输入一个字就触发）=====
 subSearchInput.addEventListener('input', (e) => {
   if (currentEngine === '站内') {
     doLocalSearch(e.target.value);
   }
 });
 
-// ===== 回车 / 点击按钮 =====
 subSearchInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     if (currentEngine === '站内') {
@@ -214,7 +188,6 @@ subSearchBtn.addEventListener('click', () => {
   }
 });
 
-// ===== 全局 / 键唤起站内搜索 =====
 document.addEventListener('keydown', (e) => {
   if (e.key === '/' && document.activeElement !== subSearchInput) {
     e.preventDefault();
@@ -227,8 +200,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// ===== 侧边栏渲染（单一层级）=====
-// 全站不再使用二级菜单：每个顶层分类都是独立的一级菜单项，点击直接渲染自身。
 function renderSidebar(data) {
   navList.innerHTML = '';
   data.forEach((item) => {
@@ -264,10 +235,7 @@ function renderSidebar(data) {
   });
 }
 
-// ===== Logo 点击回首页 =====
 logo.onclick = () => {
-  // 回到首页：清除所有菜单的高亮。首页是"全部分类"的聚合视图，
-  // Logo 与菜单项均不高亮，符合"未选中任何分组"的默认语义
   navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   currentEngine = '站内';
   subSearchInput.placeholder = '按 / 快速唤起站内搜索';
@@ -277,18 +245,14 @@ logo.onclick = () => {
   resetScrollToTop();
 };
 
-// ===== 深浅模式 =====
 const mql = window.matchMedia('(prefers-color-scheme: dark)');
 let userOverride = null;
-// 月 / 日 图标用 SVG 字符串存源，再用 svgFromString 走 DOM API 创建，
-// 避免 innerHTML 注入 SVG 在 iOS Safari 上解析失败（只显示文字、无图标）
 const iconMoonSrc = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
 const iconSunSrc  = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
 const themeIconEl = themeBtn.querySelector('.theme-icon');
 
 function applyTheme(t) {
   html.setAttribute('data-theme', t);
-  // 重建 SVG 节点，保证手机端也能正常渲染线条图标
   themeIconEl.textContent = '';
   const svg = svgFromString(t === 'dark' ? iconSunSrc : iconMoonSrc);
   if (svg) {
@@ -309,7 +273,6 @@ themeBtn.onclick = () => {
   refresh();
 };
 
-// ===== 初始化 =====
 renderSidebar(navData);
 syncScrollbarVar();
 window.addEventListener('resize', syncScrollbarVar);
@@ -317,4 +280,3 @@ currentEngine = '站内';
 subSearchInput.placeholder = '按 / 快速唤起站内搜索';
 renderSearchTags();
 renderContent(navData.filter(s => (s.links || []).length > 0));
-// 初始为首页：显示全部网址，Logo 与菜单项都不高亮，符合"未选中任何分组"的默认状态
