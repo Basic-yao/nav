@@ -228,7 +228,7 @@ a { text-decoration: none; color: inherit; }
   .card { padding: 10px; flex-direction: column; gap: 8px; }
   .card-icon { width: 32px; height: 32px; align-self: flex-start; }
   .card-title { font-size: 13px; }
-  .card-desc { display: none; }
+  .card-desc { font-size: 11px; }
   .section-title { margin: 16px 0 10px; font-size: 15px; }
 }
 
