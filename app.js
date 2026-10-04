@@ -27,6 +27,15 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 
 // ===== 把 data.js 里的 SVG 字符串解析成真实 SVG 元素 =====
 // 用 DOMParser 解析，规避 Safari 对 innerHTML 插入自闭合 SVG 标签的解析差异
+// 线条风图标的默认描边属性
+const STROKE_ATTRS = {
+  'fill': 'none',
+  'stroke': 'currentColor',
+  'stroke-width': '2',
+  'stroke-linecap': 'round',
+  'stroke-linejoin': 'round'
+};
+
 function svgFromString(str) {
   if (!str) return null;
   try {
@@ -40,7 +49,12 @@ function svgFromString(str) {
     if (!child) return null;
     // 克隆到当前文档上下文
     const node = document.importNode(child, true);
-    node.setAttribute('fill', 'currentColor');
+
+    // 若内部图形本身没声明 fill/stroke，则统一套用线条描边，
+    // 保证图标永远是线条风，不会变成实心块
+    for (const [k, v] of Object.entries(STROKE_ATTRS)) {
+      if (!node.hasAttribute(k)) node.setAttribute(k, v);
+    }
     return node;
   } catch (e) {
     return null;

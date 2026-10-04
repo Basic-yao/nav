@@ -66,8 +66,7 @@ a { text-decoration: none; color: inherit; }
 .nav-item.active > .nav-parent { background: var(--hover); color: var(--accent); font-weight: 600; }
 .nav-item.has-child.open > .nav-parent .nav-arrow { transform: rotate(180deg); }
 .nav-parent .nav-icon { width: 18px; height: 18px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; color: currentColor; }
-.nav-parent .nav-icon svg { width: 18px; height: 18px; display: block; fill: currentColor; stroke: currentColor; }
-.nav-parent .nav-icon svg [stroke] { fill: none; }
+.nav-parent .nav-icon svg { width: 18px; height: 18px; display: block; stroke: currentColor; }
 .nav-title { flex: 1; }
 .nav-arrow { font-size: 11px; opacity: .55; transition: transform .2s; }
 
@@ -86,6 +85,8 @@ a { text-decoration: none; color: inherit; }
 
 .sidebar svg,
 .theme-btn svg { color: currentColor; }
+/* 侧栏图标统一线条描边（data.js 中已声明 fill=none + stroke，此处兜底） */
+.nav-parent .nav-icon svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* 主区 */
 .main { flex: 1; padding: 30px 40px; overflow-x: hidden; }
@@ -178,7 +179,7 @@ a { text-decoration: none; color: inherit; }
 
   /* 手机端图标栏：图标放大到 22px，确保可见 */
   .nav-parent .nav-icon { width: 24px; height: 24px; }
-  .nav-parent .nav-icon svg { width: 22px; height: 22px; }
+  .nav-parent .nav-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
   /* 子菜单标签保留，便于回退显示；默认隐藏由 .sub-menu 控制 */
   .sub-label { display: inline-block; }
