@@ -186,6 +186,11 @@ function renderSidebar(data) {
     parent.onclick = () => {
       navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       div.classList.add('active');
+      // 手机端：直接跳第一个子分类，不展开
+      if (window.innerWidth <= 768 && hasChild) {
+        renderContent([{ category: item.children[0].label, links: item.children[0].links }]);
+        return;
+      }
       if (hasChild) {
         const isOpen = sub.classList.contains('open');
         navList.querySelectorAll('.sub-menu.open').forEach(s => { if (s !== sub) s.classList.remove('open'); });
@@ -214,6 +219,9 @@ logo.onclick = () => {
   subSearchInput.value = '';
   renderSearchTags();
   renderContent(navData.filter(s => s.links?.length > 0 || s.children?.some(c => c.links?.length > 0)));
+  if (window.innerWidth <= 768) {
+    navList.querySelector('.nav-item')?.classList.add('active');
+  }
 };
 
 // ===== 深浅模式 =====
