@@ -14,35 +14,28 @@
     localStorage.setItem(STORE_KEY, JSON.stringify(navData));
   }
 
-  function loadNavData() {
-    const raw = localStorage.getItem(STORE_KEY);
-    if (raw) {
-      try {
-        const arr = JSON.parse(raw);
-        navData.length = 0;
-        arr.forEach(x => navData.push(x));
-        return;
-      } catch (e) {
-        console.warn('本地数据解析失败，使用默认数据');
-      }
+async function loadNavData() {
+  // 1. 从仓库 nav.json 加载（真实数据源）
+  try {
+    const res = await fetch('nav.json?v=' + Date.now(), { cache: 'no-store' });
+    if (res.ok) {
+      navData = await res.json();
+      return;
     }
-    const oldExtras = localStorage.getItem('navExtras');
-    if (oldExtras) {
-      try {
-        const extras = JSON.parse(oldExtras);
-        extras.forEach(extra => {
-          const exist = navData.find(s => s.category === extra.category);
-          if (exist) {
-            exist.links = exist.links.concat(extra.links || []);
-          } else {
-            navData.push({ category: extra.category, icon: extra.icon || DEFAULT_GROUP_ICON, links: (extra.links || []).slice() });
-          }
-        });
-        localStorage.removeItem('navExtras');
-      } catch (e) {}
+  } catch(e) {}
+
+  // 2. 仓库加载失败：尝试本地草稿
+  try {
+    const local = localStorage.getItem('navStoreV2');
+    if (local) {
+      navData = JSON.parse(local);
+      return;
     }
-    saveNavData();
-  }
+  } catch(e) {}
+
+  // 3. 最后回退到内置默认数据
+  navData = JSON.parse(JSON.stringify(ORIGINAL));
+}
 
   function svgToString(svgNode) {
     if (!svgNode) return '';
@@ -201,10 +194,27 @@ function renderSidebar(data) {
       if (typeof logo !== 'undefined' && logo && typeof logo.onclick === 'function') logo.onclick();
     }
   };
-  navList.appendChild(resetBtn);
+navList.appendChild(resetBtn);
+
+  // 新增：导出数据JSON按钮
+  const exportBtn = document.createElement('button');
+  exportBtn.className = 'reset-btn';
+  exportBtn.textContent = '导出数据JSON';
+  exportBtn.onclick = function() {
+    const blob = new Blob([JSON.stringify(navData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'nav.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  navList.appendChild(exportBtn);
 
   bindGroupDragSort();
 }
+
+
 
   function handleGlobalClick(e) {
     const addGroup = e.target.closest('.add-group-item');
@@ -773,7 +783,8 @@ window.openLinkModal = function (cat, index) {
     }
 
     // 关闭弹窗
-    document.getElementById('navExtModal').style.display = 'none';
+document.getElementById('navExtModal').style.display = 'none';
+alert('已保存到本机。要让别人看到，请点“导出数据JSON”并将 nav.json 上传到仓库。');
   } catch (e) {
     alert('保存出错：' + e.message);
   }
