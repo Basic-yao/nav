@@ -61,10 +61,27 @@ function svgFromString(str) {
   }
 }
 
+// ===== 卡片图标兜底：favicon 失败时用「首字母色块」代替空白 =====
+// 首字母取 title，颜色按 title 哈希固定，保证同一站点颜色稳定
+function getFallback(l) {
+  const ch = (l.title || '?').trim().charAt(0).toUpperCase();
+  let hash = 0;
+  const seed = l.title || l.url || '';
+  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  const hue = hash % 360;
+  return { ch, hue };
+}
+
 // ===== 卡片模板 =====
 function cardTpl(l) {
-  return `<a href="${l.url}" target="_blank" class="card">
-    <div class="card-icon"><img src="${l.icon}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div>
+  const fb = getFallback(l);
+  const bg = `hsl(${fb.hue}, 65%, 88%)`;
+  const fg = `hsl(${fb.hue}, 45%, 32%)`;
+  const safeUrl = (l.url || '').replace(/"/g, '&quot;');
+  return `<a href="${safeUrl}" target="_blank" class="card">
+    <div class="card-icon">
+      <img src="${l.icon}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${fb.ch}',className:'card-fallback',style:'background:${bg};color:${fg}'}))">
+    </div>
     <div>
       <div class="card-title">${l.title}</div>
       <div class="card-desc">${l.desc}</div>

@@ -86,7 +86,7 @@ a { text-decoration: none; color: inherit; }
 .sidebar svg,
 .theme-btn svg { color: currentColor; }
 /* 侧栏图标统一线条描边（data.js 中已声明 fill=none + stroke，此处兜底） */
-.nav-parent .nav-icon svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.nav-parent .nav-icon svg { fill: none !important; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* 主区 */
 .main { flex: 1; padding: 30px 40px; overflow-x: hidden; }
@@ -115,6 +115,7 @@ a { text-decoration: none; color: inherit; }
 .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 .card-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--hover); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
 .card-icon img { width: 24px; height: 24px; object-fit: contain; }
+.card-fallback { width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; line-height: 1; flex-shrink: 0; }
 .card-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text-main); }
 .card-desc { font-size: 12px; color: var(--text-sub); line-height: 1.4; }
 
@@ -179,7 +180,7 @@ a { text-decoration: none; color: inherit; }
 
   /* 手机端图标栏：图标放大到 22px，确保可见 */
   .nav-parent .nav-icon { width: 24px; height: 24px; }
-  .nav-parent .nav-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-parent .nav-icon svg { width: 22px; height: 22px; fill: none !important; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
   /* 子菜单标签保留，便于回退显示；默认隐藏由 .sub-menu 控制 */
   .sub-label { display: inline-block; }
@@ -194,6 +195,7 @@ a { text-decoration: none; color: inherit; }
     background: var(--hover);
     border-radius: 6px;
   }
+  .card-fallback { width: 24px; height: 24px; border-radius: 6px; font-size: 12px; }
 
   /* ★ active 指示条（左侧蓝色竖线） */
   .nav-item.active > .nav-parent::before {
