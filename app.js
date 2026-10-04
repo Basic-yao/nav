@@ -82,8 +82,10 @@ function cardTpl(l) {
     <div class="card-icon">
       <img src="${l.icon}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${fb.ch}',className:'card-fallback',style:'background:${bg};color:${fg}'}))">
     </div>
-    <div>
-      <div class="card-title">${l.title}</div>
+    <div class="card-body">
+      <div class="card-head">
+        <div class="card-title">${l.title}</div>
+      </div>
       <div class="card-desc">${l.desc}</div>
     </div>
   </a>`;
