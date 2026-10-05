@@ -159,7 +159,7 @@ const navData = [
         "title": "Windows 11",
         "url": "https://www.microsoft.com/zh-cn/software-download/windows11",
         "desc": "微软官方 Windows 11 下载",
-        "icon": "https://www.google.com/s2/favicons?domain=microsoft.com"
+        "icon": "https://www.microsoft.com/favicon.ico?v2"
       },
       {
         "title": "Ubuntu",

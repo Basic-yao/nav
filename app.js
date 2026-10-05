@@ -280,3 +280,11 @@ currentEngine = '站内';
 subSearchInput.placeholder = '按 / 快速唤起站内搜索';
 renderSearchTags();
 renderContent(navData.filter(s => (s.links || []).length > 0));
+
+function syncScrollbarVar() {
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+  document.documentElement.style.setProperty('--scrollbar-width', scrollbarWidth + 'px');
+}
+window.addEventListener('load', syncScrollbarVar);
+window.addEventListener('resize', syncScrollbarVar);
+syncScrollbarVar();
