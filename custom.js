@@ -1,9 +1,3 @@
-// 方案 B：GitHub 存储（推荐）
-const GITHUB_OWNER = 'basic-yao';
-const GITHUB_REPO = 'nav';
-const GITHUB_PATH = 'nav.json';
-const GITHUB_BRANCH = 'main';
-
 (function () {
   'use strict';
 
