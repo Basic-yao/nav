@@ -223,7 +223,9 @@ svg {
   overflow-y: auto;
   overflow-x: clip;
   scrollbar-gutter: stable;
-  padding: 0 32px 48px;
+  /* 强制清零上内边距，保留左右和下内边距 */
+  padding: 0 32px 48px !important; 
+  background: var(--bg);
 }
 
 /* ===== 搜索栏 ===== */
@@ -231,11 +233,12 @@ svg {
   position: sticky;
   top: 0;
   z-index: 100;
-  max-width: 720px;
+  width: 100%;
+  max-width: 1220px;
   margin: 0 auto 24px;
-  padding-top: 24px;
+  padding: 12px 0 16px; /* 增加底部 padding 扩大遮挡面积 */
+  background: var(--bg) !important; /* 强制背景色 */
   padding-bottom: 8px;
-  background: var(--bg);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -267,7 +270,7 @@ svg {
 }
 
 .search-input-row {
-  width: 100%;
+  width: 50%;
   display: flex;
   align-items: center;
   background: #ffffff;
@@ -847,7 +850,8 @@ svg {
   }
 
   .search-box {
-    padding-top: 15px;
+     padding: 8px 0 16px !important; /* 手机端紧凑但留出足够遮挡空间 */
+    margin-bottom: 12px;
   }
 
   .grid {
@@ -859,7 +863,7 @@ svg {
 /* ===== 小屏竖屏 ===== */
 @media (max-width: 480px) {
   .main {
-    padding: 12px;
+    padding: 0 12px 48px !important;
   }
 
   .grid {
