@@ -10,8 +10,21 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 
+<style>
+:root {
+  --overlay-bg: #f2f3f5; /* 默认浅色模式下的背景 */
+  --overlay-text: #1f2329;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --overlay-bg: #141518; /* 深色模式下的背景 */
+    --overlay-text: #e8eaed;
+  }
+}
+</style>
+
 <!-- 登录弹窗 -->
-<div id="loginOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:999999;">
+<div id="loginOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--overlay-bg); display:flex; align-items:center; justify-content:center; z-index:999999;">
   <div style="background:#fff; padding:30px; border-radius:8px; box-shadow:0 5px 15px rgba(0,0,0,0.3); text-align:center; width:320px;">
     <h2 style="margin:0 0 15px;">管理登录</h2>
     <input type="password" id="adminPwd" autofocus placeholder="请输入密码" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:4px; box-sizing:border-box;">
