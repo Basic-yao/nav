@@ -24,7 +24,7 @@ const navData = [
         "url": "https://greenvideo.cc/",
         "desc": "视频下载,微博视频下载,短视频下载,无水印视频下载,油管视频下载,快手视频下载,全能视频下载,万能视频下载",
         "icon": "https://greenvideo.cc/favicon.ico"
-      }
+      },
       {
         "title": "视频下载工具",
         "url": "https://www.convry.com/",
@@ -168,6 +168,12 @@ const navData = [
         "url": "https://www.chinavid.com/color.html",
         "desc": "在线配色器-在线色彩搭配和色彩配色方案",
         "icon": "https://www.chinavid.com/wp-content/themes/Vstyle/assets/img/favicon.ico"
+      },
+      {
+        "title": "Locrdp远程工具",
+        "url": "https://www.locrdp.cn/",
+        "desc": "让每一台windows电脑安全启用远程桌面和远程协助",
+        "icon": "https://www.locrdp.cn/favicon.ico"
       }
     ]
   },
