@@ -273,7 +273,7 @@ svg {
 
 .search-input-row {
   width: 50%;
-  min-width:220px;
+  min-width:320px;
   display: flex;
   align-items: center;
   background: #ffffff;
