@@ -25,6 +25,12 @@ const navData = [
         "desc": "视频下载,微博视频下载,短视频下载,无水印视频下载,油管视频下载,快手视频下载,全能视频下载,万能视频下载",
         "icon": "https://greenvideo.cc/favicon.ico"
       }
+      {
+        "title": "视频下载工具",
+        "url": "https://www.convry.com/",
+        "desc": "致力打造即用即走型在线工具箱",
+        "icon": "https://www.convry.com/favicon.ico"
+      }
     ]
   },
   {
