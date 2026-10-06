@@ -248,6 +248,8 @@ svg {
   display: flex;
   gap: 15px;
   margin-bottom: 10px;
+  justify-content: center; /* 水平居中 */
+  align-items: center;     /* 垂直居中 */
 }
 
 .tag {
@@ -271,6 +273,7 @@ svg {
 
 .search-input-row {
   width: 50%;
+  min-width:220px;
   display: flex;
   align-items: center;
   background: #ffffff;
