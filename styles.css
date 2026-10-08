@@ -82,14 +82,14 @@ svg {
   flex: 0 0 var(--sidebar-width);
   width: var(--sidebar-width);
   height: 100vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--sidebar-bg);
   border-right: 1px solid var(--border);
   position: sticky;
   top: 0;
-  overflow-y: auto;
-  overflow-x: clip;
+  overflow: hidden; /* 外层禁止滚动，交给 .nav-list 内部滚动 */
   z-index: 200;
 }
 
@@ -160,6 +160,8 @@ svg {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow-y: auto; /* 分类多时仅此区域滚动 */
+  overflow-x: hidden;
 }
 
 .nav-item {
@@ -233,12 +235,13 @@ svg {
   position: sticky;
   top: 0;
   z-index: 100;
-  width: 100%;
-  max-width: 1220px;
-  margin: 0 auto 24px;
-  padding: 12px 0 16px; /* 增加底部 padding 扩大遮挡面积 */
-  background: var(--bg) !important; /* 强制背景色 */
-  padding-bottom: 8px;
+  width: calc(100% + 64px);   /* 比 .main 内容区左右各宽 32px */
+  max-width: none;            /* 取消 1220px 限制 */
+  margin-left: -32px;         /* 向左吃掉 .main 的 padding */
+  margin-right: -32px;        /* 向右吃掉 .main 的 padding */
+  margin-bottom: 24px;
+  padding: 12px 32px 16px;    /* 内部重新加回左右 padding，内容不贴边 */
+  background: var(--bg) !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -314,7 +317,7 @@ svg {
 
 /* ===== 内容区 ===== */
 .content {
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 0 auto;
 }
 
@@ -669,7 +672,7 @@ svg {
    ========================================================= */
 
 /* ===== 移动端：768px 及以下 ===== */
-@media (max-width: 768px) {
+@media (max-width: 768px) and (orientation: landscape) {
 
   /* ---- 仅移动端隐藏文字，电脑端正常显示 ---- */
   .sidebar .nav-title,
@@ -743,12 +746,21 @@ svg {
     height: 56px;
     min-height: 56px;
     padding: 0;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 4px);
     border-top: 1px solid var(--border);
     border-left: none;
     justify-content: center;
   }
+  .nav-parent {
+    min-height: 44px;
+    padding: 8px 0;
+  }
 
+  /* 横屏时固定 4 列，防止变成单列长卡片 */
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 10px;
+  }
   /* ---- 主题图标 ---- */
   .theme-icon {
     width: 22px;
@@ -852,11 +864,34 @@ svg {
     overflow-x: clip;
   }
 
-  .search-box {
-     padding: 8px 0 16px !important; /* 手机端紧凑但留出足够遮挡空间 */
-    margin-bottom: 12px;
-  }
+.search-box {
+  padding: 8px 0 16px !important;
+  margin-bottom: 12px;
+  width: calc(100% + 32px);  /* 比内容区左右各宽 16px */
+  margin-left: -16px;
+  margin-right: -16px;
+}
 
+.search-tags {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;        /* 禁止标签换行 */
+  white-space: nowrap;      /* 禁止文字换行 */
+  overflow-x: auto;         /* 如果标签太多，允许横向滚动 */
+  -webkit-overflow-scrolling: touch;
+}
+
+.tag {
+  display: inline-flex;     /* 让文字水平垂直居中 */
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;           /* 禁止被压缩变窄 */
+  white-space: nowrap;      /* 强制单行显示 */
+  text-align: center;
+  padding: 4px 10px;
+}
   .grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 10px;
@@ -885,13 +920,3 @@ svg {
     min-height: 44px;
     padding: 8px 0;
   }
-<<<<<<< HEAD
-.search-tags {
-  justify-content: center; /* 水平居中 */
-  align-items: center;     /* 垂直居中 */
-}
-}
-
-=======
-}
->>>>>>> cd4e33b884aa4005f07ad10e5600da884695a77f
