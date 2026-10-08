@@ -885,4 +885,9 @@ svg {
     min-height: 44px;
     padding: 8px 0;
   }
+.search-tags {
+  justify-content: center; /* 水平居中 */
+  align-items: center;     /* 垂直居中 */
 }
+}
+
