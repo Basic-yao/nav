@@ -14,16 +14,22 @@ const navData = [
         "icon": "https://github.githubassets.com/favicons/favicon.svg"
       },
       {
-        "title": "一为导航",
-        "url": "https://nav.iowen.cn/",
-        "desc": "onenav主题演示站",
-        "icon": "https://www.google.com/s2/favicons?domain=nav.iowen.cn"
+        "title": "Gitee",
+        "url": "https://gitee.com/",
+        "desc": "基于 Git 的代码托管和研发协作平台",
+        "icon": "https://gitee.com/favicon.ico"
       },
       {
-        "title": "趣导航",
-        "url": "https://qssily.com/",
-        "desc": "",
-        "icon": "https://www.google.com/s2/favicons?domain=qssily.com"
+        "title": "万能视频下载",
+        "url": "https://greenvideo.cc/",
+        "desc": "视频下载,微博视频下载,短视频下载,无水印视频下载,油管视频下载,快手视频下载,全能视频下载,万能视频下载",
+        "icon": "https://greenvideo.cc/favicon.ico"
+      },
+      {
+        "title": "视频下载工具",
+        "url": "https://www.convry.com/",
+        "desc": "致力打造即用即走型在线工具箱",
+        "icon": "https://www.convry.com/favicon.ico"
       }
     ]
   },
@@ -32,22 +38,28 @@ const navData = [
     "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"7\" width=\"20\" height=\"15\" rx=\"2\"/><polyline points=\"17 2 12 7 7 2\"/></svg>",
     "links": [
       {
-        "title": "字幕库",
-        "url": "https://zmk.pw/",
-        "desc": "",
-        "icon": "https://www.google.com/s2/favicons?domain=zmk.pw"
+        "title": "王二小放牛娃",
+        "url": "https://9280.kstore.space/newwex.json",
+        "desc": "TVBox数据源",
+        "icon": "https://icons.duckduckgo.com/ip3/9280.kstore.space.ico"
       },
       {
-        "title": "SubHD",
-        "url": "https://subhd.tv/",
-        "desc": "",
-        "icon": "https://www.google.com/s2/favicons?domain=subhd.tv"
+        "title": "IPTV 直播源",
+        "url": "https://iptv.hacks.tools/",
+        "desc": "全部频道 IPTV 直播源 | 免费国际电视直播源",
+        "icon": "https://iptv.hacks.tools/favicon.svg"
       },
       {
-        "title": "当贝市场",
-        "url": "http://www.dangbei.com/",
-        "desc": "TV端应用商店",
-        "icon": "https://www.google.com/s2/favicons?domain=dangbei.com"
+        "title": "TVBox全链路资源",
+        "url": "https://zoo.ink/tvbox.html",
+        "desc": "TVBox全链路资源聚合导航页，汇集TvBox相关软件下载、接口地址与资源站点，为电视盒子用户提供一站式的免费影视观影资源索引与配置指南。",
+        "icon": "https://zoo.ink/wp-content/themes/zoo/assets/img/favicon.png"
+      },
+      {
+        "title": "淘IPTV",
+        "url": "https://taoiptv.com/",
+        "desc": "全网自动搜集酒店源和组播源，过滤低分辨率保留1920x1080高清，筛选播放速度优质流畅源，IPTV频道每天2次自动检测、发布最新的有效源。",
+        "icon": "https://taoiptv.com/upload/20240312/ab83c2f29ff9c2.jpg"
       }
     ]
   },
@@ -74,22 +86,46 @@ const navData = [
     "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"5\" y=\"2\" width=\"14\" height=\"20\" rx=\"2\"/><line x1=\"12\" y1=\"18\" x2=\"12.01\" y2=\"18\"/></svg>",
     "links": [
       {
-        "title": "老男人游戏网",
-        "url": "https://www.oldmantvg.net/",
-        "desc": "仓储式主机资源站 精校 完整 极致 静待您的垂青",
-        "icon": "https://www.google.com/s2/favicons?domain=oldmantvg.net"
+        "title": "iFixit：免费修理手册",
+        "url": "https://zh.ifixit.com/",
+        "desc": "iFixit 是一个以维修为主题的全球性互助社区。从一个一个的设备开始，让我们来一步一个脚印一点一点的修复这个世界。你可以在问题解答论坛和专家一起互动——还可以创建并与全世界分享由你编篡的维修手册。你可以在这里买到所有关于你的 DIY 维修计划的配件及工具，帮助修复好你的苹果或安卓设备。",
+        "icon": "https://assets.cdn.ifixit.com/static/icons/ifixit/favicon-96x96.png"
       },
       {
-        "title": "音乐磁场",
-        "url": "https://www.hifini.com/",
-        "desc": "",
-        "icon": "https://www.google.com/s2/favicons?domain=hifini.com"
+        "title": "56IDC.Net",
+        "url": "https://56idc.net/store/hk-vps",
+        "desc": "HK卡 - 56IDC.Net | 无聊云",
+        "icon": "https://56idc.net/assets/img/logo.png"
       },
       {
-        "title": "果核音乐搜搜",
-        "url": "https://music.ghxi.com/",
-        "desc": "",
-        "icon": "https://www.google.com/s2/favicons?domain=music.ghxi.com"
+        "title": "香港共用月神卡",
+        "url": "https://store.cuniq.com/tc/services-plan/cuniq-go/cuniq-go-monthly",
+        "desc": "內地及香港共用月神卡｜中國聯通(香港)CUniq網上商城",
+        "icon": "https://store.cuniq.com/logo.ico"
+      },
+      {
+        "title": "问真八字在线排盘",
+        "url": "https://pcbz.iwzwh.com/",
+        "desc": "网页版问真八字在线排盘，免下载使用，更适合专业命理师的选择。为您提供八字命盘准确信息、命例云存储、真太阳时、AI智能提示格局、旺衰、五行能量、八字合婚、玄学学堂、名人八字库、断事笔记等功能。",
+        "icon": "https://pcbz.iwzwh.com/favicon.ico"
+      },
+      {
+        "title": "88看球直播",
+        "url": "https://www.88kq.org/",
+        "desc": "88直播地址发布页_NBA足球免费直播_收藏不迷路",
+        "icon": "https://www.88kq.org/img/88.png"
+      },
+      {
+        "title": "卜易居算命网",
+        "url": "https://www.buyiju.com/",
+        "desc": "免费算命,生辰八字算命,周易占卜,姓名测试打分-卜易居算命网",
+        "icon": "https://i.buyiju.com/favicon.ico"
+      },
+      {
+        "title": "倪海厦大全集",
+        "url": "http://www.finalhopes.com/",
+        "desc": "经方派倪海厦大全集和医案在线查询,下载,自学中医和中医入门经验分享指导",
+        "icon": "http://www.finalhopes.com/favicon.ico"
       }
     ]
   },
@@ -98,22 +134,46 @@ const navData = [
     "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z\"/></svg>",
     "links": [
       {
-        "title": "网络剪贴板",
-        "url": "https://netcut.cn/",
-        "desc": "在线跨屏剪切文字",
-        "icon": "https://www.google.com/s2/favicons?domain=netcut.cn"
+        "title": "节点小宝",
+        "url": "https://iepose.com/",
+        "desc": "节点小宝,节点小宝官网,内网穿透,异地组网,远程访问,NAS远程,P2P直连,无需公网IP,远程桌面,远程办公",
+        "icon": "https://cdn.iepose.com/iepose_pc/favicon.ico"
       },
       {
-        "title": "草料二维码",
-        "url": "https://cli.im/url",
-        "desc": "在线二维码生成工具",
-        "icon": "https://www.google.com/s2/favicons?domain=cli.im"
+        "title": "易采集Easy Spider",
+        "url": "https://www.easyspider.net",
+        "desc": "可视化爬虫, 不需要写代码, 无代码, 开源, 免费, 浏览器自动化测试工具, 机器人流程自动化, RPA",
+        "icon": "https://www.easyspider.net/favicon.ico"
       },
       {
-        "title": "在线文件传输",
-        "url": "https://musetransfer.com/",
-        "desc": "",
-        "icon": "https://www.google.com/s2/favicons?domain=musetransfer.com"
+        "title": "tailscale.com",
+        "url": "https://tailscale.com/",
+        "desc": "一个免费的异地联网打洞工具",
+        "icon": "https://tailscale.com/favicon.ico"
+      },
+      {
+        "title": "硬盘检测修复工具",
+        "url": "https://www.victoria-ssd-hdd.cn/",
+        "desc": "Victoria SSD/HDD 是一款免费、专业的硬盘检测与修复工具，同时支持机械硬盘（HDD）与固态硬盘（SSD）。提供表面扫描、S.M.A.R.T. 监测、坏道修复、安全擦除等功能，深耕硬盘底层 20 余年，深受全球技术爱好者信赖。",
+        "icon": "https://www.victoria-ssd-hdd.cn/images/logo.png"
+      },
+      {
+        "title": "BTSOU",
+        "url": "https://www.mefcl.com/btresourcesearch.html",
+        "desc": "磁力资源搜索助手 | BTSOU Plus",
+        "icon": "https://www.mefcl.com/favicon.ico"
+      },
+      {
+        "title": "在线配色器",
+        "url": "https://www.chinavid.com/color.html",
+        "desc": "在线配色器-在线色彩搭配和色彩配色方案",
+        "icon": "https://www.chinavid.com/wp-content/themes/Vstyle/assets/img/favicon.ico"
+      },
+      {
+        "title": "Locrdp远程工具",
+        "url": "https://www.locrdp.cn/",
+        "desc": "让每一台windows电脑安全启用远程桌面和远程协助",
+        "icon": "https://www.locrdp.cn/favicon.ico"
       }
     ]
   },
@@ -132,7 +192,14 @@ const navData = [
   {
     "category": "网络书籍",
     "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"/></svg>",
-    "links": []
+    "links": [
+      {
+        "title": "Z-Library",
+        "url": "https://zh.101isfj.ru/",
+        "desc": "世界上最大的电子图书馆。自由访问知识和文化。",
+        "icon": "https://zh.101isfj.ru/img/favicons/apple-touch-icon.png?v=1"
+      }
+    ]
   },
   {
     "category": "网盘云储",
@@ -149,7 +216,20 @@ const navData = [
   {
     "category": "学习资源",
     "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\"/><path d=\"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\"/></svg>",
-    "links": []
+    "links": [
+      {
+        "title": "Fmhy.net",
+        "url": "https://fmhy.net/",
+        "desc": "互联网上的免费资源收藏！",
+        "icon": "https://fmhy.net/hall.png"
+      },
+      {
+        "title": "新华字典",
+        "url": "https://www.hao86.com/",
+        "desc": "新华字典,成语,诗词,在线翻译,谜语,歇后语",
+        "icon": "https://www.hao86.com/favicon.ico"
+      }
+    ]
   },
   {
     "category": "操作系统",
