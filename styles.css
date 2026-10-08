@@ -663,17 +663,8 @@ svg {
    - 电脑端正常显示图标和文字
    ========================================================= */
 
-/* ===== 移动端：768px 及以下 ===== */
-/* =========================================================
-   响应式布局
-   - 768px 以下：左侧固定图标栏
-   - 横屏、竖屏统一显示：顶部 Logo + 中间分类 + 底部主题按钮
-   - 电脑端保持原样（文字+图标）
-   ========================================================= */
-
-/* ===== 移动端：768px 及以下 ===== */
-@media (max-width: 768px) and (orientation: landscape) {
-
+/* ===== 移动端通用：768px 及以下（同时作用于竖屏和横屏） ===== */
+@media (max-width: 768px) {
   /* ---- 仅移动端隐藏文字，电脑端正常显示 ---- */
   .sidebar .nav-title,
   .logo > span,
@@ -750,17 +741,9 @@ svg {
     border-top: 1px solid var(--border);
     border-left: none;
     justify-content: center;
-  }
-  .nav-parent {
-    min-height: 44px;
-    padding: 8px 0;
+    display: flex;
   }
 
-  /* 横屏时固定 4 列，防止变成单列长卡片 */
-  .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 10px;
-  }
   /* ---- 主题图标 ---- */
   .theme-icon {
     width: 22px;
@@ -779,26 +762,11 @@ svg {
     transition: opacity 0.2s, transform 0.2s;
   }
 
-  /* 默认显示太阳 */
-  .theme-icon .icon-sun {
-    opacity: 1;
-  }
+  .theme-icon .icon-sun { opacity: 1; }
+  .theme-icon .icon-moon { opacity: 0; transform: rotate(-90deg); }
 
-  .theme-icon .icon-moon {
-    opacity: 0;
-    transform: rotate(-90deg);
-  }
-
-  /* 深色模式切换图标 */
-  html[data-theme="dark"] .theme-icon .icon-sun {
-    opacity: 0;
-    transform: rotate(90deg);
-  }
-
-  html[data-theme="dark"] .theme-icon .icon-moon {
-    opacity: 1;
-    transform: rotate(0deg);
-  }
+  html[data-theme="dark"] .theme-icon .icon-sun { opacity: 0; transform: rotate(90deg); }
+  html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0deg); }
 
   /* ---- 中间导航列表 ---- */
   .nav-list {
@@ -818,7 +786,6 @@ svg {
     border-right: none;
   }
 
-  /* 保持与桌面端一致的左侧激活竖条 */
   .nav-item.active::before {
     left: 0;
     right: auto;
@@ -864,48 +831,40 @@ svg {
     overflow-x: clip;
   }
 
-.search-box {
-  padding: 8px 0 16px !important;
-  margin-bottom: 12px;
-  width: calc(100% + 32px);  /* 比内容区左右各宽 16px */
-  margin-left: -16px;
-  margin-right: -16px;
-}
+  /* ---- 搜索栏与标签 ---- */
+  .search-box {
+    padding: 8px 0 16px !important;
+    margin-bottom: 12px;
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    margin-right: -16px;
+  }
 
-.search-tags {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: nowrap;        /* 禁止标签换行 */
-  white-space: nowrap;      /* 禁止文字换行 */
-  overflow-x: auto;         /* 如果标签太多，允许横向滚动 */
-  -webkit-overflow-scrolling: touch;
-}
+  .search-tags {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 
-.tag {
-  display: inline-flex;     /* 让文字水平垂直居中 */
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;           /* 禁止被压缩变窄 */
-  white-space: nowrap;      /* 强制单行显示 */
-  text-align: center;
-  padding: 4px 10px;
-}
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    white-space: nowrap;
+    text-align: center;
+    padding: 4px 10px;
+  }
+
+  /* ---- 卡片网格默认 ---- */
   .grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 10px;
-  }
-}
-
-/* ===== 小屏竖屏 ===== */
-@media (max-width: 480px) {
-  .main {
-    padding: 0 12px 48px !important;
-  }
-
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   }
 }
 
@@ -920,3 +879,21 @@ svg {
     min-height: 44px;
     padding: 8px 0;
   }
+
+  /* 横屏时固定 3 列，防止变成单列长卡片 */
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 10px;
+  }
+}
+
+/* ===== 小屏竖屏 ===== */
+@media (max-width: 480px) {
+  .main {
+    padding: 0 12px 48px !important;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
