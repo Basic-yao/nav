@@ -273,7 +273,6 @@ svg {
 
 .search-input-row {
   width: 50%;
-  min-width:220px;
   display: flex;
   align-items: center;
   background: #ffffff;
@@ -885,9 +884,13 @@ svg {
     min-height: 44px;
     padding: 8px 0;
   }
+<<<<<<< HEAD
 .search-tags {
   justify-content: center; /* 水平居中 */
   align-items: center;     /* 垂直居中 */
 }
 }
 
+=======
+}
+>>>>>>> cd4e33b884aa4005f07ad10e5600da884695a77f
