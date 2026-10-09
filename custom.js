@@ -1,48 +1,107 @@
 (function () {
   'use strict';
 
-  const STORE_KEY = 'navStoreV2';
-  const DEFAULT_GROUP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
-  const PLUS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
-  const EDIT_ICON = '<svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>';
-  const TRASH_ICON = '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+  // ============================================================
+  // 常量与状态
+  // ============================================================
+  var STORE_KEY = 'navStoreV2';
+  var NAV_READY = false;
+  var BOOTED = false;
 
-  const ORIGINAL = JSON.parse(JSON.stringify(navData));
-  let currentView = null;
+  var SUN_ICON = '<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+  var MOON_ICON = '<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 
+  var DEFAULT_GROUP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
+  var PLUS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+  var EDIT_ICON = '<svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>';
+  var TRASH_ICON = '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+
+  var DEFAULT_ICONS = {
+    '常用网站': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>',
+    '电视应用': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>',
+    '软件下载': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+    '生活应用': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+    '实用工具': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    '素材资源': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+    '网络书籍': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+    '网盘云储': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>',
+    '学习资源': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+    '操作系统': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>'
+  };
+
+  // 保存对外部 navData 的引用，通过修改数组内容而非重新赋值
+  var navDataRef = navData;
+  var ORIGINAL = JSON.parse(JSON.stringify(navDataRef));
+  var currentView = null;
+
+  // ============================================================
+  // 保存与加载
+  // ============================================================
   function saveNavData() {
-    localStorage.setItem(STORE_KEY, JSON.stringify(navData));
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify(navDataRef));
+    } catch (e) {
+      console.error('[nav] 保存失败:', e);
+    }
   }
 
-async function loadNavData() {
-  // 1. 从仓库 nav.json 加载（真实数据源）
-  try {
-    const res = await fetch('nav.json?v=' + Date.now(), { cache: 'no-store' });
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        navData = data;
-        return;
+  // 安全替换 navDataRef 指向的数组内容（不重新赋值外部 const）
+  function replaceNavData(newData) {
+    navDataRef.length = 0;
+    newData.forEach(function (item) { navDataRef.push(item); });
+  }
+
+  async function loadNavData() {
+    if (NAV_READY) return;
+
+    // 1. 优先使用本地已保存的数据
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          replaceNavData(parsed);
+          NAV_READY = true;
+          return;
+        }
       }
-    }
-  } catch(e) {}
+    } catch (e) { /* 忽略损坏数据 */ }
 
-  // 2. 仓库加载失败：尝试本地草稿
-  try {
-    const local = localStorage.getItem('navStoreV2');
-    if (local) {
-      navData = JSON.parse(local);
-      return;
-    }
-  } catch(e) {}
+    // 2. 本地无数据：尝试 nav.json
+    try {
+      var res = await fetch('nav.json?v=' + Date.now(), { cache: 'no-store' });
+      if (res.ok) {
+        var data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          replaceNavData(data);
+          NAV_READY = true;
+          return;
+        }
+      }
+    } catch (e) { /* file:// 协议下 fetch 会失败，正常 */ }
 
-  // 3. 最后回退到内置默认数据
-  navData = JSON.parse(JSON.stringify(ORIGINAL));
-}
+    // 3. 回退到内置默认数据
+    replaceNavData(JSON.parse(JSON.stringify(ORIGINAL)));
+    NAV_READY = true;
+  }
+
+  // ============================================================
+  // 工具函数
+  // ============================================================
+  function svgFromString(str) {
+    if (!str) return null;
+    try {
+      var div = document.createElement('div');
+      div.innerHTML = str.trim();
+      return div.querySelector('svg');
+    } catch (e) {
+      return null;
+    }
+  }
 
   function svgToString(svgNode) {
     if (!svgNode) return '';
-    const clone = svgNode.cloneNode(true);
+    var clone = svgNode.cloneNode(true);
     clone.setAttribute('width', '18');
     clone.setAttribute('height', '18');
     clone.classList.add('section-icon');
@@ -50,216 +109,245 @@ async function loadNavData() {
   }
 
   function getSectionIcon(sec) {
-    if (sec.icon) {
-      const node = svgFromString(sec.icon);
-      if (node) return svgToString(node);
-    }
-    const fallback = navIcons[sec.category];
-    const node2 = svgFromString(fallback || sec.icon);
+    var node = svgFromString(sec.icon);
+    if (node) return svgToString(node);
+
+    var fallback = DEFAULT_ICONS[sec.category] || null;
+    var node2 = svgFromString(fallback || sec.icon);
     if (node2) return svgToString(node2);
     return svgToString(svgFromString(DEFAULT_GROUP_ICON));
   }
 
   function getDomain(rawUrl) {
     try {
-      const u = new URL(rawUrl.startsWith('http') ? rawUrl : 'https://' + rawUrl);
+      var u = new URL(rawUrl.startsWith('http') ? rawUrl : 'https://' + rawUrl);
       return u.hostname;
     } catch (e) { return ''; }
   }
 
   function getFavicon(rawUrl) {
-    const domain = getDomain(rawUrl);
+    var domain = getDomain(rawUrl);
     return domain ? 'https://icons.duckduckgo.com/ip3/' + domain + '.ico' : '';
   }
 
   function getFallback(l) {
-    const ch = (l.title || '?').trim().charAt(0).toUpperCase();
-    let hash = 0;
-    const seed = l.title || l.url || '';
-    for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-    const hue = hash % 360;
-    return { ch, hue };
+    var ch = (l.title || '?').trim().charAt(0).toUpperCase();
+    var hash = 0;
+    var seed = l.title || l.url || '';
+    for (var i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+    var hue = hash % 360;
+    return { ch: ch, hue: hue };
   }
 
+  // ============================================================
+  // 卡片模板
+  // ============================================================
   function cardTpl(l, cat, index) {
-    const fb = getFallback(l);
-    const bg = `hsl(${fb.hue}, 65%, 88%)`;
-    const fg = `hsl(${fb.hue}, 45%, 32%)`;
-    const safeUrl = (l.url || '').replace(/"/g, '&quot;');
-    return `<div class="card" draggable="true" data-cat="${cat}" data-index="${index}">
-      <div class="card-main" onclick="window.open('${safeUrl}','_blank')">
-        <div class="card-icon">
-          <img src="${l.icon}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${fb.ch}',className:'card-fallback',style:'background:${bg};color:${fg}'}))">
-        </div>
-        <div class="card-body">
-          <div class="card-title">${l.title}</div>
-          <div class="card-desc">${l.desc}</div>
-        </div>
-      </div>
-      <div class="card-actions">
-        <button class="card-act-btn" data-act="edit" data-cat="${cat}" data-index="${index}" title="编辑">${EDIT_ICON}</button>
-        <button class="card-act-btn" data-act="del" data-cat="${cat}" data-index="${index}" title="删除">${TRASH_ICON}</button>
-      </div>
-    </div>`;
+    var fb = getFallback(l);
+    var bg = 'hsl(' + fb.hue + ', 65%, 88%)';
+    var fg = 'hsl(' + fb.hue + ', 45%, 32%)';
+    var safeUrl = (l.url || '').replace(/"/g, '&quot;');
+    var hasIcon = !!(l.icon && String(l.icon).trim());
+
+    var fbEnc = encodeURIComponent(fb.ch);
+    var bgEnc = encodeURIComponent(bg);
+    var fgEnc = encodeURIComponent(fg);
+
+    var iconHtml;
+    if (hasIcon) {
+      iconHtml = '<img src="' + l.icon.replace(/"/g, '&quot;') + '" alt="" loading="lazy" data-fallback="' + fbEnc + '" data-bg="' + bgEnc + '" data-fg="' + fgEnc + '" onerror="window.__fallbackIcon(this)">';
+    } else {
+      iconHtml = '<span class="card-fallback" style="background:' + bg + ';color:' + fg + '">' + fb.ch + '</span>';
+    }
+
+    var editBtn = '<button class="card-act-btn" data-act="edit" data-cat="' + cat + '" data-index="' + index + '" title="编辑">' + EDIT_ICON + '</button>';
+    var delBtn = '<button class="card-act-btn" data-act="del" data-cat="' + cat + '" data-index="' + index + '" title="删除">' + TRASH_ICON + '</button>';
+
+    var addCard = '<div class="card add-card" data-cat="' + cat + '">' +
+      '<div class="card-icon">' + PLUS_ICON + '</div>' +
+      '<div class="card-body"><div class="card-title">添加网址</div><div class="card-desc">新增至「' + cat + '」</div></div>' +
+    '</div>';
+
+    return '<div class="card" draggable="true" data-cat="' + cat + '" data-index="' + index + '">' +
+      '<div class="card-main" onclick="window.open(\'' + safeUrl + '\',\'_blank\')">' +
+        '<div class="card-icon">' + iconHtml + '</div>' +
+        '<div class="card-body">' +
+          '<div class="card-title">' + (l.title || '') + '</div>' +
+          '<div class="card-desc">' + (l.desc || '') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-actions">' + editBtn + delBtn + '</div>' +
+    '</div>';
   }
 
-function renderContent(data) {
-  content.innerHTML = '';
-  if (!data || data.length === 0) {
-    content.innerHTML = '<div class="empty">未找到相关内容</div>';
-    return;
+  // ============================================================
+  // 渲染内容区
+  // ============================================================
+  function renderContent(data) {
+    var contentEl = document.getElementById('content');
+    if (!contentEl) return;
+    contentEl.innerHTML = '';
+
+    if (!data || data.length === 0) {
+      contentEl.innerHTML = '<div class="empty">未找到相关内容</div>';
+      return;
+    }
+
+    data.forEach(function (sec) {
+      var links = sec.links || [];
+      var title = '<h2 class="section-title">' +
+        getSectionIcon(sec) +
+        '<span>' + sec.category + '</span>' +
+        '<button class="grp-act-btn" data-act="edit" data-cat="' + sec.category + '" title="编辑分组">' + EDIT_ICON + '</button>' +
+        '<button class="grp-act-btn" data-act="del" data-cat="' + sec.category + '" title="删除分组">' + TRASH_ICON + '</button>' +
+      '</h2>';
+
+      var cards = links.map(function (l, i) { return cardTpl(l, sec.category, i); }).join('');
+      var addCard = '<div class="card add-card" data-cat="' + sec.category + '">' +
+        '<div class="card-icon">' + PLUS_ICON + '</div>' +
+        '<div class="card-body"><div class="card-title">添加网址</div><div class="card-desc">新增至「' + sec.category + '」</div></div>' +
+      '</div>';
+      contentEl.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
+    });
   }
-  data.forEach(sec => {
-    const links = sec.links || [];
-    const title = `<h2 class="section-title">
-      ${getSectionIcon(sec)}
-      <span>${sec.category}</span>
-      <span class="group-actions">
-        <button class="grp-act-btn" data-act="edit" data-cat="${sec.category}" title="编辑分组">${EDIT_ICON}</button>
-        <button class="grp-act-btn" data-act="del" data-cat="${sec.category}" title="删除分组">${TRASH_ICON}</button>
-      </span>
-    </h2>`;
-    const cards = links.map((l, i) => cardTpl(l, sec.category, i)).join('');
-const addCard =
-  '<a href="javascript:void(0)" class="card add-card" onclick="window.directOpenLinkModal(\'' + sec.category.replace(/'/g, "\\'") + '\')">' +
-    '<div class="card-icon">' + PLUS_ICON + '</div>' +
-    '<div class="card-body">' +
-      '<div class="card-title">添加网址</div>' +
-      '<div class="card-desc">新增到「' + sec.category + '」</div>' +
-    '</div>' +
-  '</a>';
-    content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
-  });
 
-  bindDragSort();
+  // ============================================================
+  // 渲染侧边栏
+  // ============================================================
+  function renderSidebar(data) {
+    var navListEl = document.getElementById('navList');
+    if (!navListEl) return;
+    navListEl.innerHTML = '';
 
-}
+    data.forEach(function (item) {
+      var div = document.createElement('div');
+      div.className = 'nav-item';
+      div.dataset.cat = item.category;
+      if (item.category === currentView) div.classList.add('active');
 
-function renderSidebar(data) {
-  navList.innerHTML = '';
-  data.forEach(item => {
-    const div = document.createElement('div');
-    div.className = 'nav-item';
-    div.draggable = true;
-    div.dataset.cat = item.category;
+      var parent = document.createElement('div');
+      parent.className = 'nav-parent';
 
-    const parent = document.createElement('div');
-    parent.className = 'nav-parent';
+      var iconWrap = document.createElement('span');
+      iconWrap.className = 'nav-icon';
+      var svgNode = svgFromString(item.icon || DEFAULT_ICONS[item.category] || DEFAULT_GROUP_ICON);
+      if (svgNode) iconWrap.appendChild(svgNode);
 
-    const iconWrap = document.createElement('span');
-    iconWrap.className = 'nav-icon';
-    const svgNode = svgFromString(item.icon || navIcons[item.category]);
-    if (svgNode) iconWrap.appendChild(svgNode);
+      var titleWrap = document.createElement('span');
+      titleWrap.className = 'nav-title';
+      titleWrap.textContent = item.category;
 
-    const titleWrap = document.createElement('span');
-    titleWrap.className = 'nav-title';
-    titleWrap.textContent = item.category;
+      parent.appendChild(iconWrap);
+      parent.appendChild(titleWrap);
 
-    parent.appendChild(iconWrap);
-    parent.appendChild(titleWrap);
+      parent.onclick = function () {
+        currentView = item.category;
+        navListEl.querySelectorAll('.nav-item').forEach(function (n) { n.classList.remove('active'); });
+        div.classList.add('active');
+        renderContent([item]);
+      };
 
-    parent.onclick = () => {
-      currentView = item.category;
-      navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      div.classList.add('active');
-      renderContent([item]);
-      if (typeof resetScrollToTop === 'function') resetScrollToTop();
-    };
+      div.appendChild(parent);
+      navListEl.appendChild(div);
+    });
 
-    div.appendChild(parent);
-    navList.appendChild(div);
-  });
+    // 添加分组按钮
+    var addDiv = document.createElement('div');
+    addDiv.className = 'nav-item add-group-item';
+    addDiv.innerHTML = '<div class="nav-parent"><span class="nav-icon">' + PLUS_ICON + '</span><span class="nav-title">添加分组</span></div>';
+    navListEl.appendChild(addDiv);
 
-  const addDiv = document.createElement('div');
-  addDiv.className = 'nav-item add-group-item';
-  addDiv.innerHTML = '<div class="nav-parent"><span class="nav-icon">' + PLUS_ICON + '</span><span class="nav-title">添加分组</span></div>';
-
-  // 直接绑定添加分组点击
-  addDiv.onclick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    openGroupModal(null);
-  };
-
-  navList.appendChild(addDiv);
-
-  const resetBtn = document.createElement('button');
-  resetBtn.className = 'reset-btn';
-  resetBtn.textContent = '重置为默认数据';
-  resetBtn.onclick = () => {
-    if (confirm('确定重置所有自定义分组和编辑内容吗？')) {
-      navData.length = 0;
-      JSON.parse(JSON.stringify(ORIGINAL)).forEach(x => navData.push(x));
-      saveNavData();
+    // 重置按钮
+    var resetBtn = document.createElement('button');
+    resetBtn.className = 'reset-btn';
+    resetBtn.textContent = '恢复默认数据';
+    resetBtn.onclick = function () {
+      if (!confirm('确定恢复默认数据？当前所有修改将丢失。')) return;
+      localStorage.removeItem(STORE_KEY);
+      replaceNavData(JSON.parse(JSON.stringify(ORIGINAL)));
       currentView = null;
-      renderSidebar(navData);
-      renderContent(navData.filter(s => (s.links || []).length > 0));
-      if (typeof logo !== 'undefined' && logo && typeof logo.onclick === 'function') logo.onclick();
-    }
-  };
-navList.appendChild(resetBtn);
+      renderSidebar(navDataRef);
+      renderContentForCurrent();
+    };
+    navListEl.appendChild(resetBtn);
 
-  // 新增：导出数据JSON按钮
-  const exportBtn = document.createElement('button');
-  exportBtn.className = 'reset-btn';
-  exportBtn.textContent = '导出数据JSON';
-  exportBtn.onclick = function() {
-    const blob = new Blob([JSON.stringify(navData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'nav.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-  navList.appendChild(exportBtn);
-
-  bindGroupDragSort();
-}
-
-
-
-  function handleGlobalClick(e) {
-    const addGroup = e.target.closest('.add-group-item');
-    if (addGroup) {
-      e.preventDefault();
-      openGroupModal(null);
-      return;
-    }
-
-    const addCard = e.target.closest('.add-card');
-    if (addCard) {
-      e.preventDefault();
-     openLinkModal(addCard.dataset.cat, null);
-      return;
-    }
-
-    const actBtn = e.target.closest('.card-act-btn');
-    if (actBtn) {
-      e.preventDefault();
-      e.stopPropagation();
-      const cat = actBtn.dataset.cat;
-      const index = parseInt(actBtn.dataset.index, 10);
-      if (actBtn.dataset.act === 'edit') openLinkModal(cat, index);
-      else if (actBtn.dataset.act === 'del') deleteLink(cat, index);
-      return;
-    }
-
-    const grpBtn = e.target.closest('.grp-act-btn');
-    if (grpBtn) {
-      e.preventDefault();
-      e.stopPropagation();
-      const cat = grpBtn.dataset.cat;
-      if (grpBtn.dataset.act === 'edit') openGroupModal(cat);
-      else if (grpBtn.dataset.act === 'del') deleteGroup(cat);
-    }
+    // 导出按钮
+    var exportBtn = document.createElement('button');
+    exportBtn.className = 'reset-btn';
+    exportBtn.textContent = '导出 nav.json';
+    exportBtn.onclick = function () {
+      var blob = new Blob([JSON.stringify(navDataRef, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'nav.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+    navListEl.appendChild(exportBtn);
   }
 
-  function bindGroupDragSort() {
-    const dragState = { sourceCat: null };
+  // ============================================================
+  // 拖拽 —— 卡片
+  // ============================================================
+  function bindCardDragSort() {
+    var contentEl = document.getElementById('content');
+    if (!contentEl) return;
 
-    navList.addEventListener('dragstart', (e) => {
-      const item = e.target.closest('.nav-item[draggable="true"]');
+    contentEl.addEventListener('dragstart', function (e) {
+      var card = e.target.closest('.card[draggable="true"]');
+      if (!card) return;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', card.dataset.cat + ':' + card.dataset.index);
+    });
+
+    contentEl.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      var card = e.target.closest('.card');
+      if (!card) return;
+      contentEl.querySelectorAll('.card').forEach(function (c) { c.classList.remove('drag-over-target'); });
+      card.classList.add('drag-over-target');
+    });
+
+    contentEl.addEventListener('drop', function (e) {
+      e.preventDefault();
+      var target = e.target.closest('.card[draggable="true"]');
+      contentEl.querySelectorAll('.card').forEach(function (c) { c.classList.remove('drag-over-target'); });
+      if (!target) return;
+
+      var data = e.dataTransfer.getData('text/plain').split(':');
+      var sourceCat = data[0];
+      var sourceIndex = parseInt(data[1], 10);
+      var targetCat = target.dataset.cat;
+      var targetIndex = parseInt(target.dataset.index, 10);
+
+      var sourceLinks = navDataRef.find(function (s) { return s.category === sourceCat; }).links;
+      var targetLinks = navDataRef.find(function (s) { return s.category === targetCat; }).links;
+
+      var moved = sourceLinks.splice(sourceIndex, 1)[0];
+      targetLinks.splice(targetIndex, 0, moved);
+
+      saveNavData();
+      renderSidebar(navDataRef);
+      renderContentForCurrent();
+    });
+
+    contentEl.addEventListener('dragend', function (e) {
+      contentEl.querySelectorAll('.card').forEach(function (c) { c.classList.remove('drag-over-target'); });
+    });
+  }
+
+  // ============================================================
+  // 拖拽 —— 分组
+  // ============================================================
+  function bindGroupDragSort() {
+    var dragState = { sourceCat: null };
+    var navListEl = document.getElementById('navList');
+    if (!navListEl) return;
+
+    navListEl.addEventListener('dragstart', function (e) {
+      var item = e.target.closest('.nav-item[draggable="true"]');
       if (!item) return;
       dragState.sourceCat = item.dataset.cat;
       item.classList.add('dragging');
@@ -267,558 +355,533 @@ navList.appendChild(resetBtn);
       e.dataTransfer.setData('text/plain', item.dataset.cat);
     });
 
-    navList.addEventListener('dragover', (e) => {
+    navListEl.addEventListener('dragover', function (e) {
       e.preventDefault();
       if (!dragState.sourceCat) return;
-      const item = e.target.closest('.nav-item[draggable="true"]');
+      var item = e.target.closest('.nav-item[draggable="true"]');
       if (!item || item.dataset.cat === dragState.sourceCat) return;
-      navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('drag-over-sidebar'));
+      navListEl.querySelectorAll('.nav-item').forEach(function (n) { n.classList.remove('drag-over-sidebar'); });
       item.classList.add('drag-over-sidebar');
     });
 
-    navList.addEventListener('drop', (e) => {
+    navListEl.addEventListener('drop', function (e) {
       e.preventDefault();
       e.stopPropagation();
-      const target = e.target.closest('.nav-item[draggable="true"]');
+      var target = e.target.closest('.nav-item[draggable="true"]');
+      navListEl.querySelectorAll('.nav-item').forEach(function (n) { n.classList.remove('drag-over-sidebar'); });
       if (!target || !dragState.sourceCat || target.dataset.cat === dragState.sourceCat) {
-        navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('drag-over-sidebar'));
         dragState.sourceCat = null;
         return;
       }
       moveGroup(dragState.sourceCat, target.dataset.cat);
       dragState.sourceCat = null;
-      navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('drag-over-sidebar'));
     });
 
-    navList.addEventListener('dragend', (e) => {
-      e.target.classList.remove('dragging');
-      navList.querySelectorAll('.nav-item').forEach(n => n.classList.remove('drag-over-sidebar'));
-      dragState.sourceCat = null;
+    navListEl.addEventListener('dragend', function (e) {
+      navListEl.querySelectorAll('.nav-item').forEach(function (n) { n.classList.remove('drag-over-sidebar'); });
     });
   }
 
   function moveGroup(sourceCat, targetCat) {
-    const fromIndex = navData.findIndex(s => s.category === sourceCat);
-    const toIndex = navData.findIndex(s => s.category === targetCat);
-    if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return;
-    const [moved] = navData.splice(fromIndex, 1);
-    navData.splice(toIndex, 0, moved);
+    var sourceIndex = navDataRef.findIndex(function (s) { return s.category === sourceCat; });
+    var targetIndex = navDataRef.findIndex(function (s) { return s.category === targetCat; });
+    if (sourceIndex < 0 || targetIndex < 0) return;
+
+    var moved = navDataRef.splice(sourceIndex, 1)[0];
+    var newTargetIndex = navDataRef.findIndex(function (s) { return s.category === targetCat; });
+    navDataRef.splice(newTargetIndex, 0, moved);
+
     saveNavData();
-    if (currentView === sourceCat) currentView = targetCat;
-    renderSidebar(navData);
+    renderSidebar(navDataRef);
     renderContentForCurrent();
   }
 
-  function bindDragSort() {
-    const dragState = { source: null };
-
-    content.addEventListener('dragstart', (e) => {
-      const card = e.target.closest('.card[draggable="true"]');
-      if (!card) return;
-      dragState.source = { cat: card.dataset.cat, index: parseInt(card.dataset.index, 10) };
-      card.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', card.dataset.cat + ':' + card.dataset.index);
-    });
-
-    content.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      if (!dragState.source) return;
-      const card = e.target.closest('.card[draggable="true"]');
-      if (!card) return;
-      const target = card.dataset;
-      if (target.cat === dragState.source.cat && parseInt(target.index, 10) === dragState.source.index) return;
-      content.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over-target'));
-      card.classList.add('drag-over-target');
-    });
-
-    content.addEventListener('drop', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const card = e.target.closest('.card[draggable="true"]');
-      const src = dragState.source;
-      dragState.source = null;
-      if (!src || !card) {
-        content.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over-target'));
-        return;
-      }
-      const target = card.dataset;
-      moveLink(src.cat, src.index, target.cat, parseInt(target.index, 10));
-      content.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over-target'));
-    });
-
-    content.addEventListener('dragend', (e) => {
-      e.target.classList.remove('dragging');
-      content.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over-target'));
-      dragState.source = null;
-    });
-  }
-
-  function moveLink(sourceCat, sourceIndex, targetCat, targetIndex) {
-    const fromGroup = navData.find(s => s.category === sourceCat);
-    const toGroup = navData.find(s => s.category === targetCat);
-    if (!fromGroup || !toGroup) return;
-    const sourceLinks = fromGroup.links || [];
-    if (sourceIndex < 0 || sourceIndex >= sourceLinks.length) return;
-    let targetLinks = toGroup.links || [];
-    const targetValid = targetIndex >= 0 && targetIndex < targetLinks.length;
-
-    if (sourceCat === targetCat) {
-      if (!targetValid || sourceIndex === targetIndex) return;
-      const [moved] = sourceLinks.splice(sourceIndex, 1);
-      sourceLinks.splice(targetIndex, 0, moved);
-    } else {
-      const [moved] = sourceLinks.splice(sourceIndex, 1);
-      if (targetValid) {
-        targetLinks.splice(targetIndex, 0, moved);
-      } else {
-        targetLinks.push(moved);
-      }
-    }
-    saveNavData();
-    renderSidebar(navData);
-    renderContentForCurrent();
-  }
-
+  // ============================================================
+  // 增删改
+  // ============================================================
   function deleteLink(cat, index) {
-    const group = navData.find(s => s.category === cat);
+    if (!confirm('确定删除该网址吗？')) return;
+    var group = navDataRef.find(function (s) { return s.category === cat; });
     if (!group) return;
-    if (confirm('确定删除这个网址吗？')) {
-      group.links.splice(index, 1);
-      saveNavData();
-      renderContentForCurrent();
-    }
+    group.links.splice(index, 1);
+    saveNavData();
+    renderSidebar(navDataRef);
+    renderContentForCurrent();
   }
 
   function deleteGroup(cat) {
     if (!confirm('确定删除分组「' + cat + '」及其所有网址吗？')) return;
-    navData = navData.filter(s => s.category !== cat);
+    var idx = navDataRef.findIndex(function (s) { return s.category === cat; });
+    if (idx < 0) return;
+    navDataRef.splice(idx, 1);
     if (currentView === cat) currentView = null;
     saveNavData();
-    renderSidebar(navData);
+    renderSidebar(navDataRef);
     renderContentForCurrent();
   }
 
+  // ============================================================
+  // 模态框 —— 遮罩不关闭，仅按钮/Esc 关闭
+  // ============================================================
+  var modalKeyHandler = null;
+
   function initModal() {
     if (!document.getElementById('navExtModal')) {
-      document.body.insertAdjacentHTML('beforeend',
-        '<div class="modal-overlay" id="navExtModal" style="display:none">' +
-          '<div class="modal-content" id="navExtModalContent"></div>' +
-        '</div>'
-      );
+      var overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.id = 'navExtModal';
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-modal', 'true');
+      overlay.style.display = 'none';
+      overlay.innerHTML = '<div class="modal-content" id="navExtModalContent"></div>';
+      document.body.appendChild(overlay);
+
+      // 遮罩点击不关闭
+      overlay.onclick = function (e) {
+        e.stopPropagation();
+      };
     }
-    document.addEventListener('click', handleGlobalClick);
-    window.addEventListener('click', e => {
-      if (e.target.id === 'navExtModal') hideModal();
-    });
   }
 
   function showModal(html) {
-    const overlay = document.getElementById('navExtModal');
-    const mContent = document.getElementById('navExtModalContent');
-    mContent.innerHTML = html;
+    var overlay = document.getElementById('navExtModal');
+    var contentBox = document.getElementById('navExtModalContent');
+    if (!overlay || !contentBox) return;
+
+    contentBox.innerHTML = html;
     overlay.style.display = 'flex';
-    const firstInput = mContent.querySelector('input, select');
+
+    if (modalKeyHandler) {
+      document.removeEventListener('keydown', modalKeyHandler);
+    }
+    modalKeyHandler = function (e) {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        e.preventDefault();
+        hideModal();
+      }
+    };
+    document.addEventListener('keydown', modalKeyHandler);
+
+    var firstInput = contentBox.querySelector('input, select, textarea, button');
     if (firstInput) firstInput.focus();
   }
 
   function hideModal() {
-    document.getElementById('navExtModal').style.display = 'none';
+    var overlay = document.getElementById('navExtModal');
+    if (overlay) overlay.style.display = 'none';
+    if (modalKeyHandler) {
+      document.removeEventListener('keydown', modalKeyHandler);
+      modalKeyHandler = null;
+    }
   }
 
+  // ============================================================
+  // 分组编辑弹窗
+  // ============================================================
   function openGroupModal(cat) {
-    const group = cat ? navData.find(s => s.category === cat) : null;
-    const titleText = group ? '编辑分组' : '新建分组';
-    const nameVal = group ? group.category : '';
-    const iconVal = group ? (group.icon || '') : '';
+    var group = cat ? navDataRef.find(function (s) { return s.category === cat; }) : null;
+    var titleText = group ? '编辑分组' : '新建分组';
+    var nameVal = group ? group.category : '';
+    var iconVal = group ? (group.icon || '') : '';
 
     showModal(
       '<h3>' + titleText + '</h3>' +
       '<label>分组名称 *</label>' +
-      '<input type="text" id="groupName" placeholder="例如：电影资源" value="' + nameVal + '">' +
+      '<input type="text" id="groupName" placeholder="例如：电影资源" value="' + nameVal.replace(/"/g, '&quot;') + '">' +
       '<label>分组图标（SVG 字符串）</label>' +
       '<input type="text" id="groupIcon" placeholder="留空使用默认文件夹图标" value="' + iconVal.replace(/"/g, '&quot;') + '">' +
       '<div class="hint">粘贴 Lucide 风格 SVG，例如：&lt;svg viewBox="0 0 24 24" ...&gt;&lt;/svg&gt;</div>' +
       '<div class="btn-row">' +
-        '<button class="btn btn-cancel" id="groupCancel">取消</button>' +
-        '<button class="btn btn-primary" id="groupSubmit">保存</button>' +
+        '<button type="button" class="btn btn-cancel" id="groupCancel">取消</button>' +
+        '<button type="button" class="btn btn-primary" id="groupSubmit">保存</button>' +
       '</div>'
     );
 
     document.getElementById('groupCancel').onclick = hideModal;
-    document.getElementById('groupSubmit').onclick = () => {
-      const name = document.getElementById('groupName').value.trim();
+    document.getElementById('groupSubmit').onclick = function () {
+      var name = document.getElementById('groupName').value.trim();
       if (!name) { document.getElementById('groupName').focus(); return; }
-      const icon = document.getElementById('groupIcon').value.trim() || DEFAULT_GROUP_ICON;
+      var icon = document.getElementById('groupIcon').value.trim() || DEFAULT_GROUP_ICON;
 
       if (group) {
         group.category = name;
         group.icon = icon;
       } else {
-        if (navData.some(s => s.category === name)) {
-          alert('该分组已存在');
-          return;
-        }
-        navData.push({ category: name, icon, links: [] });
+        navDataRef.push({ category: name, icon: icon, links: [] });
       }
 
       saveNavData();
       currentView = name;
-      renderSidebar(navData);
+      renderSidebar(navDataRef);
       renderContentForCurrent();
       hideModal();
     };
   }
 
+  // ============================================================
+  // 网址编辑弹窗
+  // ============================================================
   function openLinkModal(cat, index) {
-    let editLink = null;
-    const isEdit = index !== null && index !== undefined;
+    var group = navDataRef.find(function (s) { return s.category === cat; });
+    var link = (index !== null && index !== undefined && group) ? group.links[index] : null;
+    var isEdit = !!link;
 
-    if (isEdit) {
-      const group = navData.find(s => s.category === cat);
-      if (!group) return;
-      editLink = group.links[index];
-      if (!editLink) return;
-    }
+    var titleText = isEdit ? '编辑网址' : '新建网址';
+    var linkTitle = link ? link.title : '';
+    var linkUrl = link ? link.url : '';
+    var linkDesc = link ? (link.desc || '') : '';
+    var linkIcon = link ? (link.icon || '') : '';
 
-    const titleText = isEdit ? '编辑网址' : '添加网址';
-    const urlVal = isEdit ? editLink.url : '';
-    const titleVal = isEdit ? editLink.title : '';
-    const descVal = isEdit ? editLink.desc : '';
-    const iconVal = isEdit ? editLink.icon : '';
-    const catVal = cat || currentView || '';
-    const optionsStr = navData.map(s => {
-      const selected = s.category === catVal ? 'selected' : '';
-      return '<option value="' + s.category + '" ' + selected + '>' + s.category + '</option>';
+    var categoryOptions = navDataRef.map(function (g) {
+      return '<option value="' + g.category + '"' + (g.category === cat ? ' selected' : '') + '>' + g.category + '</option>';
     }).join('');
 
     showModal(
       '<h3>' + titleText + '</h3>' +
-      '<label>网址 *</label>' +
-      '<input type="text" id="linkUrl" placeholder="https://example.com" value="' + urlVal + '">' +
-      '<label>标题</label>' +
-      '<input type="text" id="linkTitle" placeholder="留空自动取域名" value="' + titleVal + '">' +
-      '<label>描述</label>' +
-      '<input type="text" id="linkDesc" placeholder="选填" value="' + descVal + '">' +
-      '<label>图标（URL）</label>' +
-      '<input type="text" id="linkIcon" placeholder="留空自动获取网站 favicon" value="' + iconVal + '">' +
-      '<label>分类</label>' +
-      '<select id="linkCategory">' + optionsStr + '</select>' +
+      '<label>网址（必填）<span class="req">*</span></label>' +
+      '<input type="text" id="linkUrl" placeholder="https://example.com" value="' + linkUrl.replace(/"/g, '&quot;') + '">' +
+      '<label>标题 <span class="opt">（不填则自动获取）</span></label>' +
+      '<input type="text" id="linkTitle" placeholder="例如：百度" value="' + linkTitle.replace(/"/g, '&quot;') + '">' +
+      '<label>描述 <span class="opt">（不填则自动获取）</span></label>' +
+      '<input type="text" id="linkDesc" placeholder="一句话简介" value="' + linkDesc.replace(/"/g, '&quot;') + '">' +
+      '<label>图标 <span class="opt">（不填则自动获取 favicon）</span></label>' +
+      '<input type="text" id="linkIcon" placeholder="图标 URL，留空自动获取站点图标" value="' + linkIcon.replace(/"/g, '&quot;') + '">' +
+      '<label>分组</label>' +
+      '<select id="linkCategory">' + categoryOptions + '</select>' +
+      '<div class="hint">未填写标题、描述或图标时，保存后会自动从网址抓取并填充。</div>' +
       '<div class="btn-row">' +
-        '<button class="btn btn-cancel" id="linkCancel">取消</button>' +
-        '<button class="btn btn-primary" id="linkSubmit">保存</button>' +
+        '<button type="button" class="btn btn-cancel" id="linkCancel">取消</button>' +
+        '<button type="button" class="btn btn-primary" id="linkSubmit">保存</button>' +
       '</div>'
     );
 
+    var urlInput = document.getElementById('linkUrl');
+    var titleInput = document.getElementById('linkTitle');
+    var descInput = document.getElementById('linkDesc');
+    var iconInput = document.getElementById('linkIcon');
+
+    // 离开网址输入框时，自动填充未填写的标题/描述/图标
+    if (!isEdit) {
+      urlInput.addEventListener('blur', function () {
+        var raw = urlInput.value.trim();
+        if (!raw) return;
+        var domain = getDomain(raw);
+        if (!domain) return;
+        if (!titleInput.value.trim()) titleInput.value = domain.replace(/^www\./, '');
+        if (!descInput.value.trim()) descInput.value = '来自 ' + domain;
+        if (!iconInput.value.trim()) iconInput.value = getFavicon(raw);
+      });
+    }
+
     document.getElementById('linkCancel').onclick = hideModal;
-    document.getElementById('linkSubmit').onclick = () => {
-      const url = document.getElementById('linkUrl').value.trim();
-      if (!url) { document.getElementById('linkUrl').focus(); return; }
+    document.getElementById('linkSubmit').onclick = function () {
+      var url = urlInput.value.trim();
+      var title = titleInput.value.trim();
+      var desc = descInput.value.trim();
+      var icon = iconInput.value.trim();
+      var newCat = document.getElementById('linkCategory').value.trim();
 
-      const fullUrl = url.startsWith('http') ? url : 'https://' + url;
-      const domain = getDomain(fullUrl);
-      if (!domain) { alert('网址格式不正确'); return; }
-
-      const title = document.getElementById('linkTitle').value.trim() || domain.replace(/^www\./, '');
-      const desc = document.getElementById('linkDesc').value.trim() || '';
-      let icon = document.getElementById('linkIcon').value.trim();
-      if (!icon) icon = getFavicon(fullUrl);
-      const newCat = document.getElementById('linkCategory').value;
-
-      if (isEdit) {
-        const oldGroup = navData.find(s => s.category === cat);
-        if (!oldGroup) return;
-        const oldIndex = index;
-        if (newCat === cat) {
-          oldGroup.links[oldIndex] = { title, url: fullUrl, desc, icon };
-        } else {
-          oldGroup.links.splice(oldIndex, 1);
-          const targetGroup = navData.find(s => s.category === newCat);
-          if (targetGroup) {
-            targetGroup.links.push({ title, url: fullUrl, desc, icon });
-          } else {
-            navData.push({ category: newCat, icon: DEFAULT_GROUP_ICON, links: [{ title, url: fullUrl, desc, icon }] });
-          }
-        }
-      } else {
-        const targetGroup = navData.find(s => s.category === newCat);
-        if (targetGroup) {
-          targetGroup.links.push({ title, url: fullUrl, desc, icon });
-        } else {
-          navData.push({ category: newCat, icon: DEFAULT_GROUP_ICON, links: [{ title, url: fullUrl, desc, icon }] });
-        }
+      if (!url || !newCat) {
+        alert('请填写网址和所属分组');
+        return;
       }
 
-      currentView = newCat;
+      // 保存前若仍为空，按网址兜底填充
+      if (!title) title = (getDomain(url) || '').replace(/^www\./, '') || '新网址';
+      if (!desc) desc = '来自 ' + (getDomain(url) || url);
+      if (!icon) icon = getFavicon(url);
+
+      var saved = { title: title, url: url, desc: desc, icon: icon };
+
+      if (isEdit) {
+        // 编辑现有：如果在同一分组，直接修改；否则移动
+        if (newCat === cat) {
+          group.links[index] = saved;
+        } else {
+          group.links.splice(index, 1);
+          var target = navDataRef.find(function (s) { return s.category === newCat; });
+          if (target) target.links.push(saved);
+        }
+      } else {
+        var target2 = navDataRef.find(function (s) { return s.category === newCat; });
+        if (target2) target2.links.push(saved);
+        else navDataRef.push({ category: newCat, icon: DEFAULT_GROUP_ICON, links: [saved] });
+      }
+
       saveNavData();
-      renderSidebar(navData);
+      currentView = newCat;
+      renderSidebar(navDataRef);
       renderContentForCurrent();
       hideModal();
     };
   }
 
-  initModal();
-  loadNavData();
-  renderSidebar(navData);
-  renderContentForCurrent();
-// ============ 启动 ============
-  initModal();
-  loadNavData();
-  renderSidebar(navData);
-  renderContentForCurrent();
-
-  // 🆕 新增代码从这里开始
-window.directOpenLinkModal = function(cat) {
-  console.log('直接触发添加网址，分类：', cat);
-  if (typeof openLinkModal === 'function') {
-    openLinkModal(cat, null);   // ✅ 正确：第一个参数是分组名，第二个是 null（表示新增）
-  } else {
-    alert('系统错误：找不到弹窗函数！');
-  }
-};
-
-  document.addEventListener('click', function(e) {
-    const addCard = e.target.closest('.add-card');
-    if (addCard) {
+  // ============================================================
+  // 全局点击处理
+  // ============================================================
+  function handleGlobalClick(e) {
+    var addGroup = e.target.closest('.add-group-item');
+    if (addGroup) {
       e.preventDefault();
-      e.stopPropagation();
-      const cat = addCard.getAttribute('data-cat');
-      window.directOpenLinkModal(cat);
-    }
-  });
-  // 🆕 新增代码到这里结束
-// ================= 全局保存函数（内联按钮调用） =================
-window._navSaveLink = function () {
-  try {
-    const urlInput = document.getElementById('linkUrl');
-    const catSelect = document.getElementById('linkCategory');
-    if (!urlInput || !catSelect) return;
-
-    const url = urlInput.value.trim();
-    if (!url) { urlInput.focus(); return; }
-
-    const fullUrl = url.startsWith('http') ? url : 'https://' + url;
-    let domain = '';
-    try { domain = new URL(fullUrl).hostname; } catch (e) {}
-
-    if (!domain) {
-      alert('网址格式不正确');
+      openGroupModal(null);
       return;
     }
 
-    const titleInput = document.getElementById('linkTitle');
-    const descInput = document.getElementById('linkDesc');
-    const iconInput = document.getElementById('linkIcon');
-
-    const title = titleInput.value.trim() || domain.replace(/^www\./, '');
-    const desc = descInput.value.trim() || '';
-    let icon = iconInput.value.trim();
-    if (!icon) icon = 'https://icons.duckduckgo.com/ip3/' + domain + '.ico';
-    const newCat = catSelect.value;
-
-    const state = window._navEditState || { cat: null, index: null };
-
-    if (state.index !== null) {
-      // 编辑已有书签
-      const oldGroup = navData.find(s => s.category === state.cat);
-      if (!oldGroup) return;
-
-      if (newCat === state.cat) {
-        oldGroup.links[state.index] = { title, url: fullUrl, desc, icon };
-      } else {
-        oldGroup.links.splice(state.index, 1);
-        const target = navData.find(s => s.category === newCat);
-        if (target) {
-          target.links.push({ title, url: fullUrl, desc, icon });
-        } else {
-          navData.push({ category: newCat, icon: DEFAULT_GROUP_ICON, links: [{ title, url: fullUrl, desc, icon }] });
-        }
-      }
-    } else {
-      // 新增书签
-      const target = navData.find(s => s.category === newCat);
-      if (target) {
-        target.links.push({ title, url: fullUrl, desc, icon });
-      } else {
-        navData.push({ category: newCat, icon: DEFAULT_GROUP_ICON, links: [{ title, url: fullUrl, desc, icon }] });
-      }
-    }
-
-    saveNavData();
-    currentView = newCat;
-
-    renderSidebar(navData);
-    if (typeof renderContentForCurrent === 'function') {
-      renderContentForCurrent();
-    } else {
-      renderContent(navData.filter(s => (s.links || []).length > 0));
-    }
-
-    hideModal();
-  } catch (err) {
-    alert('保存出错：' + err.message);
-  }
-};
-// ================= 独立修复补丁：添加网址/保存网址 =================
-(function () {
-  // 确保模态框容器存在
-  if (!document.getElementById('navExtModal')) {
-    var overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-    overlay.id = 'navExtModal';
-    overlay.style.display = 'none';
-    overlay.innerHTML = '<div class="modal-content" id="navExtModalContent"></div>';
-    document.body.appendChild(overlay);
-  }
-
-  // 全局打开添加网址弹窗
-window.openLinkModal = function (cat, index) {
-  if (index === undefined) index = null;
-
-  // 关键：如果没有传入分组，就用当前侧边栏选中的分组
-  if (!cat && typeof currentView !== 'undefined') {
-    cat = currentView;
-  }
-
-  window._navEditState = { cat: cat, index: index };
-  var isEdit = index !== null;
-
-  var editLink = null;
-  if (isEdit) {
-    var group = navData.find(function (s) { return s.category === cat; });
-    if (!group) return;
-    editLink = group.links[index];
-    if (!editLink) return;
-  }
-
-  // 生成分类下拉选项，cat 对应的分组自动 selected
-  var options = '';
-  navData.forEach(function (s) {
-    var sel = s.category === (cat || '') ? ' selected' : '';
-    options += '<option value="' + s.category + '"' + sel + '>' + s.category + '</option>';
-  });
-
-  var contentBox = document.getElementById('navExtModalContent');
-  contentBox.innerHTML =
-    '<h3>' + (isEdit ? '编辑网址' : '添加网址') + '</h3>' +
-    '<label>网址 *</label>' +
-    '<input type="text" id="navUrl" value="' + (editLink ? editLink.url : '') + '">' +
-    '<label>标题</label>' +
-    '<input type="text" id="navTitle" value="' + (editLink ? editLink.title : '') + '">' +
-    '<label>描述</label>' +
-    '<input type="text" id="navDesc" value="' + (editLink ? editLink.desc : '') + '">' +
-    '<label>图标 URL</label>' +
-    '<input type="text" id="navIcon" value="' + (editLink ? editLink.icon : '') + '">' +
-    '<label>分类</label>' +
-    '<select id="navCat">' + options + '</select>' +
-    '<div class="btn-row">' +
-      '<button type="button" class="btn btn-cancel" id="navCancel">取消</button>' +
-      '<button type="button" class="btn btn-primary" onclick="window._navSaveLink();">保存</button>' +
-    '</div>';
-
-  document.getElementById('navCancel').onclick = function () {
-    document.getElementById('navExtModal').style.display = 'none';
-  };
-  document.getElementById('navExtModal').style.display = 'flex';
-  document.getElementById('navUrl').focus();
-};
-
-  // 全局保存网址（保存成功后直接刷新页面显示结果）
- window._navSaveLink = function () {
-  try {
-    var url = document.getElementById('navUrl').value.trim();
-    if (!url) { document.getElementById('navUrl').focus(); return; }
-
-    var fullUrl = url.startsWith('http') ? url : 'https://' + url;
-    var domain = '';
-    try { domain = new URL(fullUrl).hostname; } catch (e) { domain = ''; }
-    if (!domain) { alert('网址格式不正确'); return; }
-
-    var title = document.getElementById('navTitle').value.trim() || domain.replace(/^www\./, '');
-    var desc = document.getElementById('navDesc').value.trim() || '';
-    var icon = document.getElementById('navIcon').value.trim();
-    if (!icon) icon = 'https://icons.duckduckgo.com/ip3/' + domain + '.ico';
-    var newCat = document.getElementById('navCat').value;
-
-    var state = window._navEditState || {};
-    var oldCat = state.cat;
-    var oldIndex = state.index;
-    var saved = { title: title, url: fullUrl, desc: desc, icon: icon };
-
-    if (oldIndex !== null && oldCat) {
-      var oldGroup = navData.find(function (g) { return g.category === oldCat; });
-      if (oldGroup) {
-        if (oldCat === newCat) {
-          oldGroup.links[oldIndex] = saved;
-        } else {
-          oldGroup.links.splice(oldIndex, 1);
-          var target = navData.find(function (g) { return g.category === newCat; });
-          if (target) target.links.push(saved);
-          else navData.push({ category: newCat, icon: DEFAULT_GROUP_ICON, links: [saved] });
-        }
-      }
-    } else {
-      var target2 = navData.find(function (g) { return g.category === newCat; });
-      if (target2) target2.links.push(saved);
-      else navData.push({ category: newCat, icon: DEFAULT_GROUP_ICON, links: [saved] });
-    }
-
-    // 写入本地存储
-    localStorage.setItem('navStoreV2', JSON.stringify(navData));
-
-    // 关键：保存后不刷新页面，而是设置当前视图为保存的分组并重新渲染
-    currentView = newCat;
-
-    if (typeof renderSidebar === 'function') renderSidebar(navData);
-    if (typeof renderContentForCurrent === 'function') {
-      renderContentForCurrent();
-    } else {
-      var data = navData.filter(function (g) { return g.category === newCat; });
-      renderContent(data);
-    }
-
-    // 高亮侧边栏当前分组
-    if (typeof navList !== 'undefined' && navList) {
-      navList.querySelectorAll('.nav-item').forEach(function (item) {
-        if (item.dataset.cat === newCat) item.classList.add('active');
-        else item.classList.remove('active');
-      });
-    }
-
-    // 关闭弹窗
-document.getElementById('navExtModal').style.display = 'none';
-alert('已保存到本机。要让别人看到，请点“导出数据JSON”并将 nav.json 上传到仓库。');
-  } catch (e) {
-    alert('保存出错：' + e.message);
-  }
-};
-
-  // 点击“添加网址”卡片时统一走这个全局函数
-  document.addEventListener('click', function (e) {
-    var card = e.target.closest ? e.target.closest('.add-card') : null;
-    if (card) {
+    var addCard = e.target.closest('.add-card');
+    if (addCard) {
       e.preventDefault();
       e.stopPropagation();
-      window.openLinkModal(card.getAttribute('data-cat'), null);
+      openLinkModal(addCard.dataset.cat, null);
+      return;
     }
-  });
-})();
-// ===== 修复：补全刷新函数（不重复声明 currentView） =====
-function renderContentForCurrent() {
-  var data;
-  if (typeof currentView !== 'undefined' && currentView) {
-    var group = navData.find(function (s) { return s.category === currentView; });
-    if (group) data = [group];
+
+    var actBtn = e.target.closest('.card-act-btn');
+    if (actBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      var cat = actBtn.dataset.cat;
+      var index = parseInt(actBtn.dataset.index, 10);
+      if (actBtn.dataset.act === 'edit') openLinkModal(cat, index);
+      else if (actBtn.dataset.act === 'del') deleteLink(cat, index);
+      return;
+    }
+
+    var grpBtn = e.target.closest('.grp-act-btn');
+    if (grpBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      var gcat = grpBtn.dataset.cat;
+      if (grpBtn.dataset.act === 'edit') openGroupModal(gcat);
+      else if (grpBtn.dataset.act === 'del') deleteGroup(gcat);
+    }
   }
-  if (!data) {
-    data = navData.filter(function (s) { return (s.links || []).length > 0; });
+
+  // ============================================================
+  // 搜索过滤
+  // ============================================================
+  function filterData(data, keyword) {
+    if (!keyword) return data;
+    var kw = keyword.toLowerCase();
+    return data.map(function (sec) {
+      var matched = (sec.links || []).filter(function (l) {
+        return (l.title || '').toLowerCase().indexOf(kw) >= 0 ||
+               (l.url || '').toLowerCase().indexOf(kw) >= 0 ||
+               (l.desc || '').toLowerCase().indexOf(kw) >= 0;
+      });
+      return { category: sec.category, icon: sec.icon, links: matched };
+    }).filter(function (sec) { return sec.links.length > 0; });
   }
-  renderContent(data);
-}
-(async function bootNav() {
-  await loadNavData();
-  renderSidebar(navData);
-  renderContent(navData.filter(s => (s.links || []).length > 0));
-})();
+
+
+  // ============================================================
+  // Logo 点击 → 显示全部
+  // ============================================================
+  function bindLogoClick() {
+    var logo = document.getElementById('logo');
+    if (logo) {
+      logo.onclick = function () {
+        currentView = null;
+        var input = document.getElementById('subSearchInput');
+        if (input) input.value = '';
+        renderSidebar(navDataRef);
+        renderContent(navDataRef.filter(function (s) { return (s.links || []).length > 0; }));
+      };
+      logo.style.cursor = 'pointer';
+    }
+  }
+
+  // ============================================================
+  // 搜索功能
+  // ============================================================
+  // ============================================================
+  // 搜索引擎切换
+  // ============================================================
+  var SEARCH_ENGINES = {
+    site: { url: null, placeholder: '按 / 快速唤起站内搜索' },
+    bing: { url: 'https://www.bing.com/search?q=', placeholder: 'Bing 搜索' },
+    baidu: { url: 'https://www.baidu.com/s?wd=', placeholder: '百度一下' },
+    google: { url: 'https://www.google.com/search?q=', placeholder: 'Google 搜索' }
+  };
+  var currentEngine = 'site';
+
+  function bindSearchEngines() {
+    var container = document.getElementById('searchTags');
+    if (!container) return;
+    var input = document.getElementById('subSearchInput');
+
+    function updatePlaceholder() {
+      if (input) input.placeholder = SEARCH_ENGINES[currentEngine].placeholder;
+    }
+
+    container.querySelectorAll('.tag').forEach(function (btn) {
+      btn.onclick = function () {
+        container.querySelectorAll('.tag').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        currentEngine = btn.dataset.engine;
+        updatePlaceholder();
+        // 切换引擎时只更新 placeholder，不自动跳转
+      };
+    });
+
+    updatePlaceholder();
+  }
+
+  function doSearchWithEngine(keyword) {
+    // 空关键词不跳转，也不搜索
+    if (!keyword) return;
+    if (currentEngine === 'site') {
+      var filtered = filterData(navDataRef, keyword);
+      renderContent(filtered);
+    } else {
+      var url = SEARCH_ENGINES[currentEngine].url + encodeURIComponent(keyword);
+      window.open(url, '_blank');
+    }
+  }
+
+  // ============================================================
+  // 搜索功能
+  // ============================================================
+  function bindSearch() {
+    var input = document.getElementById('subSearchInput');
+    var btn = document.getElementById('subSearchBtn');
+    if (!input) return;
+
+    function doSearch() {
+      var keyword = input.value.trim();
+      doSearchWithEngine(keyword);
+    }
+
+    // input 事件只做站内实时搜索（站内模式），不跳转外部
+    input.addEventListener('input', function () {
+      if (currentEngine === 'site') {
+        var keyword = input.value.trim();
+        var filtered = filterData(navDataRef, keyword);
+        renderContent(filtered);
+      }
+      // 外部搜索引擎模式下，input 不触发任何操作
+    });
+
+    // 回车提交搜索
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        doSearch();
+      }
+    });
+
+    // 点击搜索按钮提交
+    if (btn) btn.onclick = doSearch;
+
+    // 按 / 快速聚焦搜索框
+    document.addEventListener('keydown', function (e) {
+      if (e.key === '/' && document.activeElement !== input) {
+        e.preventDefault();
+        input.focus();
+      }
+      if (e.key === 'Escape' && document.activeElement === input) {
+        input.blur();
+      }
+    });
+  }
+
+  // ============================================================
+  // 渲染当前视图
+  // ============================================================
+  function renderContentForCurrent() {
+    var data;
+    if (currentView) {
+      var group = navDataRef.find(function (s) { return s.category === currentView; });
+      if (group) data = [group];
+    }
+    if (!data) {
+      data = navDataRef.filter(function (s) { return (s.links || []).length > 0; });
+    }
+    renderContent(data);
+  }
+
+  // ============================================================
+  // 主题切换
+  // ============================================================
+  function initTheme() {
+    var themeBtn = document.getElementById('themeBtn');
+    var themeIcon = document.querySelector('.theme-icon');
+    var themeText = document.querySelector('.theme-text');
+
+    // 注入日月图标
+    if (themeIcon && !themeIcon.querySelector('svg')) {
+      themeIcon.innerHTML = SUN_ICON + MOON_ICON;
+    }
+
+    // 读取保存的主题
+    var savedTheme = localStorage.getItem('navTheme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeButton(savedTheme);
+
+    if (themeBtn) {
+      themeBtn.onclick = function () {
+        var current = document.documentElement.getAttribute('data-theme') || 'light';
+        var next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('navTheme', next);
+        updateThemeButton(next);
+      };
+    }
+
+    function updateThemeButton(theme) {
+      if (!themeText) return;
+      themeText.textContent = theme === 'dark' ? '浅色模式' : '深色模式';
+    }
+  }
+
+  // ============================================================
+  // ============================================================
+  // 全局：图片加载失败时替换为首字母图标
+  // ============================================================
+  window.__fallbackIcon = function (img) {
+    if (!img || img.dataset.fallbackHandled) return;
+    img.dataset.fallbackHandled = '1';
+    var span = document.createElement('span');
+    span.className = 'card-fallback';
+    span.textContent = decodeURIComponent(img.dataset.fallback || '?');
+    span.style.background = decodeURIComponent(img.dataset.bg || '');
+    span.style.color = decodeURIComponent(img.dataset.fg || '');
+    if (img.parentNode) img.parentNode.replaceChild(span, img);
+  };
+
+  // ============================================================
+  // 启动 —— 只执行一次
+  // ============================================================
+  async function bootNav() {
+    if (BOOTED) return;
+    BOOTED = true;
+
+    initTheme();
+    bindLogoClick();
+    bindSearchEngines();
+    bindSearch();
+    initModal();
+    document.addEventListener('click', handleGlobalClick);
+    bindCardDragSort();
+    bindGroupDragSort();
+
+    await loadNavData();
+
+    if (!Array.isArray(navDataRef) || navDataRef.length === 0) {
+      replaceNavData(JSON.parse(JSON.stringify(ORIGINAL)));
+    }
+
+    renderSidebar(navDataRef);
+    renderContentForCurrent();
+  }
+
+  // 暴露全局 API
+  window.openLinkModal = openLinkModal;
+  window.openGroupModal = openGroupModal;
+  window.directOpenLinkModal = function (cat) {
+    openLinkModal(cat, null);
+  };
+
+  // 启动
+  bootNav();
 
 })();

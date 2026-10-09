@@ -6,57 +6,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231677ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z'></path></svg>" type="image/svg+xml"> 
- <title>网址导航后台管理</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>网址导航后台管理</title>
+  <link rel="stylesheet" href="styles.css?v=22">
 </head>
-
-<style>
-:root {
-  --overlay-bg: #f2f3f5; /* 默认浅色模式下的背景 */
-  --overlay-text: #1f2329;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --overlay-bg: #141518; /* 深色模式下的背景 */
-    --overlay-text: #e8eaed;
-  }
-}
-</style>
-
-<!-- 登录弹窗 -->
-<div id="loginOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--overlay-bg); display:flex; align-items:center; justify-content:center; z-index:999999;">
-  <div style="background:#fff; padding:30px; border-radius:8px; box-shadow:0 5px 15px rgba(0,0,0,0.3); text-align:center; width:320px;">
-    <h2 style="margin:0 0 15px;">管理登录</h2>
-    <input type="password" id="adminPwd" autofocus placeholder="请输入密码" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:4px; box-sizing:border-box;">
-    <button id="loginBtn" style="width:100%; padding:10px; background:#1677ff; color:#fff; border:none; border-radius:4px; cursor:pointer;">登录</button>
-    <p id="loginMsg" style="color:red; font-size:13px; margin-top:10px; display:none;">密码错误</p>
-  </div>
-</div>
-
-<script>
-(function(){
-  // 在这里修改你的管理密码
-  var correctPassword = '******';
-
-  function checkLogin() {
-    var input = document.getElementById('adminPwd').value;
-    if (input === correctPassword) {
-      document.getElementById('loginOverlay').style.display = 'none';
-    } else {
-      document.getElementById('loginMsg').style.display = 'block';
-    }
-  }
-
-  document.getElementById('loginBtn').onclick = checkLogin;
-  document.getElementById('adminPwd').onkeydown = function(e) {
-    if (e.key === 'Enter') checkLogin();
-  };
-
-  // 页面打开后自动让光标跳到密码框
-  document.getElementById('adminPwd').focus();
-})();
-</script>
-
 <body>
   <div class="layout">
     <aside class="sidebar">
@@ -77,7 +29,12 @@
 
     <main class="main">
       <div class="search-box">
-        <div class="search-tags" id="searchTags"></div>
+        <div class="search-tags" id="searchTags">
+          <button class="tag active" data-engine="site">站内</button><span class="arrow">&gt;</span>
+          <button class="tag" data-engine="bing">Bing</button><span class="arrow">&gt;</span>
+          <button class="tag" data-engine="baidu">百度</button><span class="arrow">&gt;</span>
+          <button class="tag" data-engine="google">Google</button>
+        </div>
         <div class="search-input-row">
           <input type="text" class="search-input" id="subSearchInput" placeholder="按 / 快速唤起站内搜索">
           <button class="search-btn" id="subSearchBtn">
@@ -88,8 +45,8 @@
       <div class="content" id="content"></div>
     </main>
   </div>
-  <script src="data.js"></script>
-  <script src="app.js"></script>
-  <script src="custom.js"></script>
+  <!-- 后台管理页面：custom.js 为自包含完整版（展示+编辑），无需 app.js -->
+  <script src="data.js?v=22"></script>
+  <script src="custom.js?v=22"></script>
 </body>
 </html>
