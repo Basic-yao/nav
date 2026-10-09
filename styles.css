@@ -266,7 +266,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 }
 
 .arrow {
-  padding: 0 6px;
+  padding: 0 14px;
   color: var(--text-sub);
   opacity: 0.4;
   pointer-events: none;
