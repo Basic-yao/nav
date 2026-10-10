@@ -16,19 +16,7 @@
   var EDIT_ICON = '<svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>';
   var TRASH_ICON = '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
 
-  var DEFAULT_ICONS = {
-    '常用网站': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>',
-    '电视应用': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>',
-    '软件下载': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
-    '生活应用': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
-    '实用工具': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
-    '素材资源': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
-    '网络书籍': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
-    '网盘云储': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>',
-    '学习资源': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
-    '操作系统': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>'
-  };
-
+  
   // 保存对外部 navData 的引用，通过修改数组内容而非重新赋值
   var navDataRef = navData;
   var ORIGINAL = JSON.parse(JSON.stringify(navDataRef));
@@ -54,20 +42,11 @@
   async function loadNavData() {
     if (NAV_READY) return;
 
-    // 1. 优先使用本地已保存的数据
-    try {
-      var raw = localStorage.getItem(STORE_KEY);
-      if (raw) {
-        var parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          replaceNavData(parsed);
-          NAV_READY = true;
-          return;
-        }
-      }
-    } catch (e) { /* 忽略损坏数据 */ }
-
-    // 2. 本地无数据：尝试 nav.json
+    // 数据来源优先级：
+    //   1) nav.json  —— 部署后由后台「导出 nav.json」生成的唯一数据源，跨设备同步
+    //   2) data.js   —— 内置默认数据（开发/本地双击/未部署时的兜底）
+    // localStorage 不再参与自动加载：后台是编辑工作区，关闭即丢弃，
+    // 只有显式点「保存」才会写入，避免本地临时改动污染其他设备。
     try {
       var res = await fetch('nav.json?v=' + Date.now(), { cache: 'no-store' });
       if (res.ok) {
@@ -80,7 +59,6 @@
       }
     } catch (e) { /* file:// 协议下 fetch 会失败，正常 */ }
 
-    // 3. 回退到内置默认数据
     replaceNavData(JSON.parse(JSON.stringify(ORIGINAL)));
     NAV_READY = true;
   }
@@ -112,9 +90,6 @@
     var node = svgFromString(sec.icon);
     if (node) return svgToString(node);
 
-    var fallback = DEFAULT_ICONS[sec.category] || null;
-    var node2 = svgFromString(fallback || sec.icon);
-    if (node2) return svgToString(node2);
     return svgToString(svgFromString(DEFAULT_GROUP_ICON));
   }
 
@@ -125,9 +100,102 @@
     } catch (e) { return ''; }
   }
 
-  function getFavicon(rawUrl) {
+  // ===== 图标自动获取 =====
+  // 真正的跨域抓取，返回图标 data URI（base64）。
+  // 优先级：Google s2 →  DuckDuckGo → 站点 /favicon.ico 等
+  // 全部失败返回 ''，交由首字色块兜底。
+  // 说明：跨域抓取依赖浏览器扩展权限或部署在同域代理下；
+  //       纯本地 file:// 双击时浏览器会拦截，属于正常现象。
+  function fetchFavicon(rawUrl, cb) {
     var domain = getDomain(rawUrl);
-    return domain ? 'https://icons.duckduckgo.com/ip3/' + domain + '.ico' : '';
+    if (!domain) { cb(''); return; }
+
+    // 候选来源列表，逐个尝试
+    var candidates = [
+      'https://www.google.com/s2/favicons?sz=64&domain=' + encodeURIComponent(domain),
+      'https://icons.duckduckgo.com/ip3/' + encodeURIComponent(domain) + '.ico'
+    ];
+    // 尝试从站点 HTML 的 <link rel="icon"> 中解析真实图标地址
+    try {
+      var origin = (rawUrl.indexOf('://') > -1 ? rawUrl : 'https://' + rawUrl);
+      candidates.push(origin.replace(/\/[^\/]*$/, '/').replace(/\?.*$/, '').replace(/\/$/, '') + '/favicon.ico');
+    } catch (e) { /* ignore */ }
+
+    var idx = 0;
+    (function tryNext() {
+      if (idx >= candidates.length) { cb(''); return; }
+      var url = candidates[idx++];
+      var xhr = new XMLHttpRequest();
+      try {
+        xhr.open('GET', url, true);
+        xhr.responseType = 'arraybuffer';
+        xhr.timeout = 6000;
+        xhr.onload = function () {
+          if (xhr.status === 200 && xhr.response && xhr.response.byteLength > 200) {
+            var ct = xhr.getResponseHeader('Content-Type') || 'image/x-icon';
+            // 只接受真正的图片类型
+            if (!/^image\//.test(ct) && !/icon/.test(ct)) { tryNext(); return; }
+            var bytes = new Uint8Array(xhr.response);
+            var bin = '';
+            for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+            try {
+              var b64 = btoa(bin);
+              cb('data:' + ct + ';base64,' + b64);
+            } catch (e) { tryNext(); }
+          } else { tryNext(); }
+        };
+        xhr.onerror = function () { tryNext(); };
+        xhr.ontimeout = function () { tryNext(); };
+        xhr.send();
+      } catch (e) { tryNext(); }
+    })();
+  }
+
+  // 解析站点 HTML 中的 <link rel="icon"> 得到更精确的图标地址
+  function parseIconFromHtml(rawUrl, cb) {
+    var origin;
+    try {
+      origin = (rawUrl.indexOf('://') > -1 ? rawUrl : 'https://' + rawUrl);
+      origin = origin.replace(/\/[^\/]*$/, '/').replace(/\?.*$/, '').replace(/\/$/, '');
+    } catch (e) { cb(''); return; }
+
+    var xhr = new XMLHttpRequest();
+    try {
+      xhr.open('GET', origin + '/', true);
+      xhr.responseType = 'text';
+      xhr.timeout = 6000;
+      xhr.onload = function () {
+        if (xhr.status === 200 && typeof xhr.response === 'string') {
+          var m = xhr.response.match(/<link[^>]+rel=["'](?:shortcut )?icon["'][^>]*>/i)
+               || xhr.response.match(/<link[^>]+rel=["'][^"']*apple-touch-icon[^"']*["'][^>]*>/i);
+          if (m) {
+            var href = (m[0].match(/href=["']([^"']+)["']/i) || [])[1];
+            if (href) {
+              try {
+                var abs = new URL(href, origin + '/').toString();
+                fetchFavicon(abs, function (dataUri) { cb(dataUri); });
+                return;
+              } catch (e) { /* ignore */ }
+            }
+          }
+        }
+        cb(''); // 没解析到，交给通用抓取
+      };
+      xhr.onerror = function () { cb(''); };
+      xhr.ontimeout = function () { cb(''); };
+      xhr.send();
+    } catch (e) { cb(''); }
+  }
+
+  // 兼容旧调用：guessFavicon 返回占位 URL，实际取值改由 fetchFavicon 完成
+  function guessFavicon(rawUrl) {
+    var domain = getDomain(rawUrl);
+    if (!domain) return '';
+    return 'https://www.google.com/s2/favicons?sz=64&domain=' + encodeURIComponent(domain);
+  }
+
+  function getFavicon(rawUrl) {
+    return guessFavicon(rawUrl);
   }
 
   function getFallback(l) {
@@ -155,7 +223,8 @@
 
     var iconHtml;
     if (hasIcon) {
-      iconHtml = '<img src="' + l.icon.replace(/"/g, '&quot;') + '" alt="" loading="lazy" data-fallback="' + fbEnc + '" data-bg="' + bgEnc + '" data-fg="' + fgEnc + '" onerror="window.__fallbackIcon(this)">';
+      var _ic = (l.icon && String(l.icon).trim()) ? String(l.icon).trim() : guessFavicon(l.url);
+      iconHtml = '<img src="' + _ic.replace(/"/g, '&quot;') + '" alt="" loading="lazy" data-fallback="' + fbEnc + '" data-bg="' + bgEnc + '" data-fg="' + fgEnc + '" onerror="window.__fallbackIcon(this)">';
     } else {
       iconHtml = '<span class="card-fallback" style="background:' + bg + ';color:' + fg + '">' + fb.ch + '</span>';
     }
@@ -230,7 +299,7 @@
 
       var iconWrap = document.createElement('span');
       iconWrap.className = 'nav-icon';
-      var svgNode = svgFromString(item.icon || DEFAULT_ICONS[item.category] || DEFAULT_GROUP_ICON);
+      var svgNode = svgFromString(item.icon || guessFavicon(item.url) || DEFAULT_GROUP_ICON);
       if (svgNode) iconWrap.appendChild(svgNode);
 
       var titleWrap = document.createElement('span');
@@ -260,9 +329,9 @@
     // 重置按钮
     var resetBtn = document.createElement('button');
     resetBtn.className = 'reset-btn';
-    resetBtn.textContent = '恢复默认数据';
+    resetBtn.textContent = '放弃本次修改';
     resetBtn.onclick = function () {
-      if (!confirm('确定恢复默认数据？当前所有修改将丢失。')) return;
+      if (!confirm('确定放弃本次修改？将回到当前 data.js / nav.json 的内容，未导出的改动会丢失。')) return;
       localStorage.removeItem(STORE_KEY);
       replaceNavData(JSON.parse(JSON.stringify(ORIGINAL)));
       currentView = null;
@@ -545,7 +614,7 @@
       '<label>描述 <span class="opt">（不填则自动获取）</span></label>' +
       '<input type="text" id="linkDesc" placeholder="一句话简介" value="' + linkDesc.replace(/"/g, '&quot;') + '">' +
       '<label>图标 <span class="opt">（不填则自动获取 favicon）</span></label>' +
-      '<input type="text" id="linkIcon" placeholder="图标 URL，留空自动获取站点图标" value="' + linkIcon.replace(/"/g, '&quot;') + '">' +
+      '<span class="icon-input-wrap"><input type="text" id="linkIcon" placeholder="图标 URL，留空自动获取站点图标" value="' + linkIcon.replace(/"/g, '&quot;') + '"></span>' +
       '<label>分组</label>' +
       '<select id="linkCategory">' + categoryOptions + '</select>' +
       '<div class="hint">未填写标题、描述或图标时，保存后会自动从网址抓取并填充。</div>' +
@@ -560,7 +629,77 @@
     var descInput = document.getElementById('linkDesc');
     var iconInput = document.getElementById('linkIcon');
 
-    // 离开网址输入框时，自动填充未填写的标题/描述/图标
+    // 离开网址输入框时，自动填充未填写的标题/描述/图标。
+    // 图标：尝试真实抓取站点 favicon（Google s2 / DuckDuckGo / 站点自带），
+    //       抓取失败才走首字兜底。
+    // 标题/描述：优先用 navData 里已存的；没有则从页面 <title>/<meta> 解析。
+    var fetching = false;
+    function autoFill(raw, { fillTitleDesc }) {
+      if (!raw) return;
+      var domain = getDomain(raw);
+      if (!domain) return;
+
+      // 标题/描述：先看 navData 里是否已有该网址
+      if (fillTitleDesc) {
+        var known = null;
+        try {
+          navDataRef.forEach(function (sec) {
+            (sec.links || []).forEach(function (l) {
+              if (!known && l.url && normalizeUrl(l.url) === normalizeUrl(raw)) known = l;
+            });
+          });
+        } catch (e) { known = null; }
+        if (known) {
+          if (!titleInput.value.trim()) titleInput.value = known.title || domain.replace(/^www\./, '');
+          if (!descInput.value.trim()) descInput.value = known.desc || ('来自 ' + domain);
+        }
+      }
+
+      // 图标：已填则不覆盖；否则真实抓取
+      if (iconInput.value.trim()) { previewIcon(iconInput.value.trim()); return; }
+      if (fetching) return;
+      fetching = true;
+      fetchFavicon(raw, function (dataUri) {
+        fetching = false;
+        if (dataUri && !iconInput.value.trim()) {
+          iconInput.value = dataUri;
+          previewIcon(dataUri);
+        } else {
+          // 抓取失败：尝试解析站点 HTML 的 <link rel="icon">
+          parseIconFromHtml(raw, function (fromHtml) {
+            if (fromHtml && !iconInput.value.trim()) {
+              iconInput.value = fromHtml;
+              previewIcon(fromHtml);
+            } else {
+              previewIcon(''); // 交给保存时的首字兜底
+            }
+          });
+        }
+      });
+    }
+
+    // 实时预览：把图标输入框里的值立刻渲染成缩略图，方便一眼确认
+    var previewTimer = null;
+    function previewIcon(src) {
+      var box = document.getElementById('iconPreview');
+      if (!box) {
+        box = document.createElement('div');
+        box.id = 'iconPreview';
+        box.className = 'icon-preview';
+        iconInput.parentNode.insertBefore(box, iconInput.nextSibling);
+      }
+      if (!src) { box.innerHTML = ''; return; }
+      box.innerHTML = '<img src="' + src.replace(/"/g, '&quot;') + '" alt="" onerror="this.parentNode.innerHTML=\x27\x27">';
+    }
+
+    // URL 归一化：用于判断「同一个网址」是否已存在图标
+    function normalizeUrl(u) {
+      try {
+        var o = new URL(u.indexOf('://') > -1 ? u : 'https://' + u);
+        return (o.hostname + o.pathname + o.search).toLowerCase().replace(/\/$/, '');
+      } catch (e) { return u; }
+    }
+
     if (!isEdit) {
       urlInput.addEventListener('blur', function () {
         var raw = urlInput.value.trim();
@@ -569,9 +708,18 @@
         if (!domain) return;
         if (!titleInput.value.trim()) titleInput.value = domain.replace(/^www\./, '');
         if (!descInput.value.trim()) descInput.value = '来自 ' + domain;
-        if (!iconInput.value.trim()) iconInput.value = getFavicon(raw);
+        autoFill(raw, { fillTitleDesc: true });
       });
     }
+
+    iconInput.addEventListener('input', function () {
+      clearTimeout(previewTimer);
+      var v = iconInput.value.trim();
+      if (!v) { previewIcon(''); return; }
+      previewTimer = setTimeout(function () { previewIcon(v); }, 300);
+    });
+    // 已有数据打开编辑时，立即显示当前图标
+    if (isEdit && iconInput.value.trim()) previewIcon(iconInput.value.trim());
 
     document.getElementById('linkCancel').onclick = hideModal;
     document.getElementById('linkSubmit').onclick = function () {
@@ -586,10 +734,18 @@
         return;
       }
 
-      // 保存前若仍为空，按网址兜底填充
+      // 保存前兜底：标题/描述/图标都为空时，用网址信息补全
       if (!title) title = (getDomain(url) || '').replace(/^www\./, '') || '新网址';
       if (!desc) desc = '来自 ' + (getDomain(url) || url);
-      if (!icon) icon = getFavicon(url);
+      if (!icon) {
+        // 尝试抓取一次（异步），若来不及则在 onload 回调里补写
+        fetchFavicon(url, function (dataUri) {
+          if (dataUri) {
+            saved.icon = dataUri;
+            saveNavData();
+          }
+        });
+      }
 
       var saved = { title: title, url: url, desc: desc, icon: icon };
 
@@ -802,6 +958,28 @@
   // ============================================================
   // 主题切换
   // ============================================================
+  // ============================================================
+  // 主题切换：系统跟随最高优先级
+  // - 每次刷新都重新读取系统偏好
+  // - 手动切换仅本会话生效，刷新后立即回到系统值
+  // - 不向 localStorage 写入任何主题锁定值
+  // ============================================================
+  var STORE_KEY_THEME = 'navTheme';
+
+  function systemPrefersDark() {
+    try {
+      return window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeButton(theme);
+  }
+
   function initTheme() {
     var themeBtn = document.getElementById('themeBtn');
     var themeIcon = document.querySelector('.theme-icon');
@@ -812,28 +990,38 @@
       themeIcon.innerHTML = SUN_ICON + MOON_ICON;
     }
 
-    // 读取保存的主题
-    var savedTheme = localStorage.getItem('navTheme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeButton(savedTheme);
+    // 系统跟随最高优先级：每次刷新都重新读系统偏好
+    var initialTheme = systemPrefersDark() ? 'dark' : 'light';
+    applyTheme(initialTheme);
+
+    // 监听系统主题变化，实时跟随（任何时候都响应，不做任何锁定）
+    if (window.matchMedia) {
+      var mq = window.matchMedia('(prefers-color-scheme: dark)');
+      var handler = function (e) {
+        applyTheme(e.matches ? 'dark' : 'light');
+      };
+      if (mq.addEventListener) mq.addEventListener('change', handler);
+      else if (mq.addListener) mq.addListener(handler); // Safari < 14
+    }
 
     if (themeBtn) {
       themeBtn.onclick = function () {
+        // 手动切换：仅本会话生效，刷新后立即回到系统值
         var current = document.documentElement.getAttribute('data-theme') || 'light';
         var next = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('navTheme', next);
-        updateThemeButton(next);
+        applyTheme(next);
       };
-    }
-
-    function updateThemeButton(theme) {
-      if (!themeText) return;
-      themeText.textContent = theme === 'dark' ? '浅色模式' : '深色模式';
     }
   }
 
-  // ============================================================
+  // 模块级函数：定义在 initTheme 之外，避免严格模式下内层作用域隔离
+  // 导致 applyTheme 调用时抛出 ReferenceError: updateThemeButton is not defined
+  function updateThemeButton(theme) {
+    var themeText = document.querySelector('.theme-text');
+    if (!themeText) return;
+    themeText.textContent = theme === 'dark' ? '浅色模式' : '深色模式';
+  }
+
   // ============================================================
   // 全局：图片加载失败时替换为首字母图标
   // ============================================================
@@ -855,7 +1043,18 @@
     if (BOOTED) return;
     BOOTED = true;
 
-    initTheme();
+    // 刷新兜底：先对齐一次系统主题，保证跟随不失效
+    try {
+      var sys = systemPrefersDark() ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', sys);
+    } catch (e) { /* ignore */ }
+
+    try { initTheme(); } catch (e) { console.error('[nav] initTheme 失败:', e); }
+
+    // loadNavData 是异步的，期间 DOM 已就绪；先渲染一次快照，避免白屏
+    try { renderSidebar(navDataRef); } catch (e) { console.error('[nav] 预渲染侧边栏失败:', e); }
+    try { renderContentForCurrent(); } catch (e) { console.error('[nav] 预渲染内容失败:', e); }
+
     bindLogoClick();
     bindSearchEngines();
     bindSearch();
@@ -870,8 +1069,8 @@
       replaceNavData(JSON.parse(JSON.stringify(ORIGINAL)));
     }
 
-    renderSidebar(navDataRef);
-    renderContentForCurrent();
+    try { renderSidebar(navDataRef); } catch (e) { console.error('[nav] renderSidebar 失败:', e); }
+    try { renderContentForCurrent(); } catch (e) { console.error('[nav] renderContent 失败:', e); }
   }
 
   // 暴露全局 API
