@@ -100,102 +100,9 @@
     } catch (e) { return ''; }
   }
 
-  // ===== 图标自动获取 =====
-  // 真正的跨域抓取，返回图标 data URI（base64）。
-  // 优先级：Google s2 →  DuckDuckGo → 站点 /favicon.ico 等
-  // 全部失败返回 ''，交由首字色块兜底。
-  // 说明：跨域抓取依赖浏览器扩展权限或部署在同域代理下；
-  //       纯本地 file:// 双击时浏览器会拦截，属于正常现象。
-  function fetchFavicon(rawUrl, cb) {
-    var domain = getDomain(rawUrl);
-    if (!domain) { cb(''); return; }
-
-    // 候选来源列表，逐个尝试
-    var candidates = [
-      'https://www.google.com/s2/favicons?sz=64&domain=' + encodeURIComponent(domain),
-      'https://icons.duckduckgo.com/ip3/' + encodeURIComponent(domain) + '.ico'
-    ];
-    // 尝试从站点 HTML 的 <link rel="icon"> 中解析真实图标地址
-    try {
-      var origin = (rawUrl.indexOf('://') > -1 ? rawUrl : 'https://' + rawUrl);
-      candidates.push(origin.replace(/\/[^\/]*$/, '/').replace(/\?.*$/, '').replace(/\/$/, '') + '/favicon.ico');
-    } catch (e) { /* ignore */ }
-
-    var idx = 0;
-    (function tryNext() {
-      if (idx >= candidates.length) { cb(''); return; }
-      var url = candidates[idx++];
-      var xhr = new XMLHttpRequest();
-      try {
-        xhr.open('GET', url, true);
-        xhr.responseType = 'arraybuffer';
-        xhr.timeout = 6000;
-        xhr.onload = function () {
-          if (xhr.status === 200 && xhr.response && xhr.response.byteLength > 200) {
-            var ct = xhr.getResponseHeader('Content-Type') || 'image/x-icon';
-            // 只接受真正的图片类型
-            if (!/^image\//.test(ct) && !/icon/.test(ct)) { tryNext(); return; }
-            var bytes = new Uint8Array(xhr.response);
-            var bin = '';
-            for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-            try {
-              var b64 = btoa(bin);
-              cb('data:' + ct + ';base64,' + b64);
-            } catch (e) { tryNext(); }
-          } else { tryNext(); }
-        };
-        xhr.onerror = function () { tryNext(); };
-        xhr.ontimeout = function () { tryNext(); };
-        xhr.send();
-      } catch (e) { tryNext(); }
-    })();
-  }
-
-  // 解析站点 HTML 中的 <link rel="icon"> 得到更精确的图标地址
-  function parseIconFromHtml(rawUrl, cb) {
-    var origin;
-    try {
-      origin = (rawUrl.indexOf('://') > -1 ? rawUrl : 'https://' + rawUrl);
-      origin = origin.replace(/\/[^\/]*$/, '/').replace(/\?.*$/, '').replace(/\/$/, '');
-    } catch (e) { cb(''); return; }
-
-    var xhr = new XMLHttpRequest();
-    try {
-      xhr.open('GET', origin + '/', true);
-      xhr.responseType = 'text';
-      xhr.timeout = 6000;
-      xhr.onload = function () {
-        if (xhr.status === 200 && typeof xhr.response === 'string') {
-          var m = xhr.response.match(/<link[^>]+rel=["'](?:shortcut )?icon["'][^>]*>/i)
-               || xhr.response.match(/<link[^>]+rel=["'][^"']*apple-touch-icon[^"']*["'][^>]*>/i);
-          if (m) {
-            var href = (m[0].match(/href=["']([^"']+)["']/i) || [])[1];
-            if (href) {
-              try {
-                var abs = new URL(href, origin + '/').toString();
-                fetchFavicon(abs, function (dataUri) { cb(dataUri); });
-                return;
-              } catch (e) { /* ignore */ }
-            }
-          }
-        }
-        cb(''); // 没解析到，交给通用抓取
-      };
-      xhr.onerror = function () { cb(''); };
-      xhr.ontimeout = function () { cb(''); };
-      xhr.send();
-    } catch (e) { cb(''); }
-  }
-
-  // 兼容旧调用：guessFavicon 返回占位 URL，实际取值改由 fetchFavicon 完成
-  function guessFavicon(rawUrl) {
-    var domain = getDomain(rawUrl);
-    if (!domain) return '';
-    return 'https://www.google.com/s2/favicons?sz=64&domain=' + encodeURIComponent(domain);
-  }
-
   function getFavicon(rawUrl) {
-    return guessFavicon(rawUrl);
+    var domain = getDomain(rawUrl);
+    return domain ? 'https://icons.duckduckgo.com/ip3/' + domain + '.ico' : '';
   }
 
   function getFallback(l) {
@@ -223,8 +130,7 @@
 
     var iconHtml;
     if (hasIcon) {
-      var _ic = (l.icon && String(l.icon).trim()) ? String(l.icon).trim() : guessFavicon(l.url);
-      iconHtml = '<img src="' + _ic.replace(/"/g, '&quot;') + '" alt="" loading="lazy" data-fallback="' + fbEnc + '" data-bg="' + bgEnc + '" data-fg="' + fgEnc + '" onerror="window.__fallbackIcon(this)">';
+      iconHtml = '<img src="' + l.icon.replace(/"/g, '&quot;') + '" alt="" loading="lazy" data-fallback="' + fbEnc + '" data-bg="' + bgEnc + '" data-fg="' + fgEnc + '" onerror="window.__fallbackIcon(this)">';
     } else {
       iconHtml = '<span class="card-fallback" style="background:' + bg + ';color:' + fg + '">' + fb.ch + '</span>';
     }
@@ -299,7 +205,7 @@
 
       var iconWrap = document.createElement('span');
       iconWrap.className = 'nav-icon';
-      var svgNode = svgFromString(item.icon || guessFavicon(item.url) || DEFAULT_GROUP_ICON);
+      var svgNode = svgFromString(item.icon || DEFAULT_GROUP_ICON);
       if (svgNode) iconWrap.appendChild(svgNode);
 
       var titleWrap = document.createElement('span');
@@ -614,7 +520,7 @@
       '<label>描述 <span class="opt">（不填则自动获取）</span></label>' +
       '<input type="text" id="linkDesc" placeholder="一句话简介" value="' + linkDesc.replace(/"/g, '&quot;') + '">' +
       '<label>图标 <span class="opt">（不填则自动获取 favicon）</span></label>' +
-      '<span class="icon-input-wrap"><input type="text" id="linkIcon" placeholder="图标 URL，留空自动获取站点图标" value="' + linkIcon.replace(/"/g, '&quot;') + '"></span>' +
+      '<input type="text" id="linkIcon" placeholder="图标 URL，留空自动获取站点图标" value="' + linkIcon.replace(/"/g, '&quot;') + '">' +
       '<label>分组</label>' +
       '<select id="linkCategory">' + categoryOptions + '</select>' +
       '<div class="hint">未填写标题、描述或图标时，保存后会自动从网址抓取并填充。</div>' +
@@ -629,77 +535,8 @@
     var descInput = document.getElementById('linkDesc');
     var iconInput = document.getElementById('linkIcon');
 
-    // 离开网址输入框时，自动填充未填写的标题/描述/图标。
-    // 图标：尝试真实抓取站点 favicon（Google s2 / DuckDuckGo / 站点自带），
-    //       抓取失败才走首字兜底。
-    // 标题/描述：优先用 navData 里已存的；没有则从页面 <title>/<meta> 解析。
-    var fetching = false;
-    function autoFill(raw, { fillTitleDesc }) {
-      if (!raw) return;
-      var domain = getDomain(raw);
-      if (!domain) return;
-
-      // 标题/描述：先看 navData 里是否已有该网址
-      if (fillTitleDesc) {
-        var known = null;
-        try {
-          navDataRef.forEach(function (sec) {
-            (sec.links || []).forEach(function (l) {
-              if (!known && l.url && normalizeUrl(l.url) === normalizeUrl(raw)) known = l;
-            });
-          });
-        } catch (e) { known = null; }
-        if (known) {
-          if (!titleInput.value.trim()) titleInput.value = known.title || domain.replace(/^www\./, '');
-          if (!descInput.value.trim()) descInput.value = known.desc || ('来自 ' + domain);
-        }
-      }
-
-      // 图标：已填则不覆盖；否则真实抓取
-      if (iconInput.value.trim()) { previewIcon(iconInput.value.trim()); return; }
-      if (fetching) return;
-      fetching = true;
-      fetchFavicon(raw, function (dataUri) {
-        fetching = false;
-        if (dataUri && !iconInput.value.trim()) {
-          iconInput.value = dataUri;
-          previewIcon(dataUri);
-        } else {
-          // 抓取失败：尝试解析站点 HTML 的 <link rel="icon">
-          parseIconFromHtml(raw, function (fromHtml) {
-            if (fromHtml && !iconInput.value.trim()) {
-              iconInput.value = fromHtml;
-              previewIcon(fromHtml);
-            } else {
-              previewIcon(''); // 交给保存时的首字兜底
-            }
-          });
-        }
-      });
-    }
-
-    // 实时预览：把图标输入框里的值立刻渲染成缩略图，方便一眼确认
-    var previewTimer = null;
-    function previewIcon(src) {
-      var box = document.getElementById('iconPreview');
-      if (!box) {
-        box = document.createElement('div');
-        box.id = 'iconPreview';
-        box.className = 'icon-preview';
-        iconInput.parentNode.insertBefore(box, iconInput.nextSibling);
-      }
-      if (!src) { box.innerHTML = ''; return; }
-      box.innerHTML = '<img src="' + src.replace(/"/g, '&quot;') + '" alt="" onerror="this.parentNode.innerHTML=\x27\x27">';
-    }
-
-    // URL 归一化：用于判断「同一个网址」是否已存在图标
-    function normalizeUrl(u) {
-      try {
-        var o = new URL(u.indexOf('://') > -1 ? u : 'https://' + u);
-        return (o.hostname + o.pathname + o.search).toLowerCase().replace(/\/$/, '');
-      } catch (e) { return u; }
-    }
-
+    // 离开网址输入框时，自动填充未填写的标题/描述/图标
+    if (!isEdit) {
       urlInput.addEventListener('blur', function () {
         var raw = urlInput.value.trim();
         if (!raw) return;
@@ -707,17 +544,9 @@
         if (!domain) return;
         if (!titleInput.value.trim()) titleInput.value = domain.replace(/^www\./, '');
         if (!descInput.value.trim()) descInput.value = '来自 ' + domain;
-        autoFill(raw, { fillTitleDesc: true });
+        if (!iconInput.value.trim()) iconInput.value = getFavicon(raw);
       });
-
-    iconInput.addEventListener('input', function () {
-      clearTimeout(previewTimer);
-      var v = iconInput.value.trim();
-      if (!v) { previewIcon(''); return; }
-      previewTimer = setTimeout(function () { previewIcon(v); }, 300);
-    });
-    // 已有数据打开编辑时，立即显示当前图标
-    if (isEdit && iconInput.value.trim()) previewIcon(iconInput.value.trim());
+    }
 
     document.getElementById('linkCancel').onclick = hideModal;
     document.getElementById('linkSubmit').onclick = function () {
@@ -732,18 +561,10 @@
         return;
       }
 
-      // 保存前兜底：标题/描述/图标都为空时，用网址信息补全
+      // 保存前若仍为空，按网址兜底填充
       if (!title) title = (getDomain(url) || '').replace(/^www\./, '') || '新网址';
       if (!desc) desc = '来自 ' + (getDomain(url) || url);
-      if (!icon) {
-        // 尝试抓取一次（异步），若来不及则在 onload 回调里补写
-        fetchFavicon(url, function (dataUri) {
-          if (dataUri) {
-            saved.icon = dataUri;
-            saveNavData();
-          }
-        });
-      }
+      if (!icon) icon = getFavicon(url);
 
       var saved = { title: title, url: url, desc: desc, icon: icon };
 

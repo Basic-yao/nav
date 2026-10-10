@@ -105,24 +105,7 @@
     } catch (e) { return ''; }
   }
 
-  // 图标解析顺序（三段，全部纯前端，无需任何后端/代理）：
-  //   1) data.js 显式配置的 icon  → 用它
-  //   2) 主域名/favicon.ico       → 站点自己的 favicon，最能代表站点
-  //   3) 首字色块                 → 兜底，绝不显示破图
-  // 第 2 段会被跨域策略拦截 → 触发 <img onerror> → 第 3 段首字兜底。
-  // 站点自己的 favicon 若是合法可访问资源，则正常显示，无需任何中转服务。
-  function guessFavicon(rawUrl) {
-    var domain = getDomain(rawUrl);
-    if (!domain) return '';
-    var origin = 'https://' + domain;
-    try {
-      var u = new URL(rawUrl.indexOf('://') > -1 ? rawUrl : 'https://' + rawUrl);
-      origin = u.origin;
-    } catch (e) { /* keep default */ }
-    return origin + '/favicon.ico';
-  }
-
-    function getFallback(l) {
+  function getFallback(l) {
     var ch = (l.title || '?').trim().charAt(0).toUpperCase();
     var hash = 0;
     var seed = l.title || l.url || '';
@@ -139,20 +122,7 @@
     var bg = 'hsl(' + fb.hue + ', 65%, 88%)';
     var fg = 'hsl(' + fb.hue + ', 45%, 32%)';
     var safeUrl = (l.url || '').replace(/"/g, '&quot;');
-    // 图标优先级：data.js 显式配置 > 主域名/favicon.ico > 首字色块
-    // 图标取值顺序：
-    //   1) data.js / nav.json 里该 link 已存的 icon → 用它
-    //   2) 主域名/favicon.ico                     → 站点自己的 favicon
-    //   3) <img onerror> 触发首字色块               → 兜底，永不破图
-    // resolvedIcon 先用「占位 URL」渲染（保证立即有图），
-    // 再异步真实抓取并替换，避免破图。
-    var resolvedIcon = (l.icon && String(l.icon).trim())
-      ? String(l.icon).trim()
-      : guessFavicon(l.url);
-    var hasIcon = !!resolvedIcon;
-    if (hasIcon && /^https?:\/\/(www\.google\.com\/s2\/|icons\.duckduckgo\.com\/)/.test(resolvedIcon)) {
-      hasIcon = true; // 保持占位渲染，稍后由 fetchFavicon 替换
-    }
+    var hasIcon = !!(l.icon && String(l.icon).trim());
     var fbJson = JSON.stringify(fb.ch);
     var bgJson = JSON.stringify(bg);
     var fgJson = JSON.stringify(fg);
@@ -163,25 +133,9 @@
 
     var iconHtml;
     if (hasIcon) {
-      iconHtml = '<img src="' + resolvedIcon.replace(/"/g, '&quot;') + '" alt="" loading="lazy" data-fallback="' + fbEnc + '" data-bg="' + bgEnc + '" data-fg="' + fgEnc + '" onerror="window.__fallbackIcon(this)">';
+      iconHtml = '<img src="' + l.icon.replace(/"/g, '&quot;') + '" alt="" loading="lazy" data-fallback="' + fbEnc + '" data-bg="' + bgEnc + '" data-fg="' + fgEnc + '" onerror="window.__fallbackIcon(this)">';
     } else {
       iconHtml = '<span class="card-fallback" style="background:' + bg + ';color:' + fg + '">' + fb.ch + '</span>';
-    }
-
-    // 异步真实抓取 favicon：若成功则把占位 URL 替换为 data URI
-    if (hasIcon && l.url && /^https?:\/\/(www\.google\.com\/s2\/|icons\.duckduckgo\.com\/)/.test(resolvedIcon)) {
-      var _realUrl = l.url;
-      var _placeholder = resolvedIcon;
-      setTimeout(function () {
-        try {
-          fetchFavicon(_realUrl, function (dataUri) {
-            if (!dataUri) return;
-            document.querySelectorAll('.card[data-cat="' + cat + '"][data-index="' + index + '"] img').forEach(function (img) {
-              if (img.src === _placeholder || img.src === _realUrl) img.src = dataUri;
-            });
-          });
-        } catch (e) { /* 静默失败，保留占位 */ }
-      }, 0);
     }
 
     return '<div class="card" data-cat="' + cat + '" data-index="' + index + '">' +
@@ -588,4 +542,5 @@
       document.documentElement.setAttribute('data-theme', (_mq && _mq.matches) ? 'dark' : 'light');
     }
   } catch (e) {}
+
 })();
