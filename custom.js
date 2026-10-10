@@ -700,7 +700,6 @@
       } catch (e) { return u; }
     }
 
-    if (!isEdit) {
       urlInput.addEventListener('blur', function () {
         var raw = urlInput.value.trim();
         if (!raw) return;
@@ -710,7 +709,6 @@
         if (!descInput.value.trim()) descInput.value = '来自 ' + domain;
         autoFill(raw, { fillTitleDesc: true });
       });
-    }
 
     iconInput.addEventListener('input', function () {
       clearTimeout(previewTimer);
