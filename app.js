@@ -32,28 +32,34 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
   //   避免不同设备读到不同版本导致前后端图标不一致。
   async function loadNavData() {
     // ① 真实数据源：nav.json（加时间戳与 no-store 绕过 CDN/浏览器缓存）
-    //    注意：file:// 协议下浏览器会拦截 fetch，此处必然走 catch，属正常现象，
-    //    这时静默回退到 data.js，不要打印成红色错误吓到用户。
+    //    后台保存 = 下载 nav.json → 手动上传覆盖仓库，此后所有端 fetch 到同一份。
+    // ② nav.json 不可用 → 回退到 data.js 内置数据（本地预览 / 文件缺失时的降级）
+    // ③ localStorage 仅存“编辑草稿”，不参与数据源判定，避免各端读到不同版本。
+    let data = null;
+    let reason = '';
     try {
       const res = await fetch(DATA_SOURCE + '?v=' + Date.now(), { cache: 'no-store' });
       if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          navData = data;
-          console.log('[数据源] nav.json ✓  共 ' + data.length + ' 组');
-          return;
-        }
-        console.warn('[数据源] nav.json 内容为空或格式不是数组，改用 data.js');
+        data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) { data = null; reason = 'nav.json 内容为空或不是数组'; }
       } else {
-        console.warn('[数据源] nav.json 响应异常（状态 ' + res.status + '），改用 data.js');
+        reason = 'nav.json 响应异常（状态 ' + res.status + '）';
       }
     } catch (e) {
-      console.log('[数据源] nav.json 不可达（' + e.message + '），改用 data.js');
+      reason = 'nav.json 不可达（' + e.message + '）';
     }
 
-    // ② 兜底：data.js 内置数据（本地双击预览 / nav.json 缺失时的降级）
+    if (data) {
+      navData = data;
+      console.log('[数据源] nav.json ✓  共 ' + navData.length + ' 组');
+      // 以 nav.json 为准刷新草稿，保证下次编辑基于最新版本
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(navData)); } catch (e) {}
+      return;
+    }
+
+    // ② 兜底：data.js 内置数据（仅 nav.json 确实不可用时）
     navData = JSON.parse(JSON.stringify(ORIGINAL));
-    console.log('[数据源] 回退到 data.js，共 ' + navData.length + ' 组');
+    console.warn('[数据源] 回退到 data.js，共 ' + navData.length + ' 组 —— ' + reason);
   }
 
   // 保存：仅写入本机 localStorage（静态托管无法写回仓库文件）
@@ -139,7 +145,7 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
     document.documentElement.setAttribute('data-theme', theme);
     const themeText = document.querySelector('.theme-text');
     if (themeText) themeText.textContent = theme === 'dark' ? '浅色模式' : '深色模式';
-    try { localStorage.setItem('navTheme', theme); } catch (e) {}
+    try { localStorage.setItem('nav-theme', theme); } catch (e) {}
   }
 
   function initTheme() {
@@ -150,7 +156,7 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
     }
 
     let theme = 'light';
-    try { theme = localStorage.getItem('navTheme') || 'light'; } catch (e) {}
+    try { theme = localStorage.getItem('nav-theme') || localStorage.getItem('navTheme') || 'light'; } catch (e) {}
     applyTheme(theme);
 
     const themeBtn = document.getElementById('themeBtn');
