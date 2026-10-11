@@ -74,6 +74,18 @@
         "url": "https://pc.qq.com/",
         "desc": "腾讯官方软件下载平台",
         "icon": "https://www.google.com/s2/favicons?domain=pc.qq.com"
+      },
+      {
+        "title": "423Down",
+        "url": "https://www.423down.com/",
+        "desc": "安全下载超1000款绿色便携软件。始于2014，专注软件净化12年，所有资源经三重检测，提供纯净、去广告的正版替代方案。| 423DOWN",
+        "icon": "https://www.423down.com/wp-content/themes/D7/favicon.ico?v=202610051715"
+      },
+      {
+        "title": "Appstorrent.ru",
+        "url": "https://appstorrent.ru/",
+        "desc": "俄罗斯苹果软件下载站",
+        "icon": ""
       }
     ]
   },

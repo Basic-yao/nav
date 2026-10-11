@@ -257,3 +257,6 @@ const navData =
     ]
   }
 ];
+
+// data.js 末尾追加
+window.__NAV_ORIGINAL__ = JSON.parse(JSON.stringify(navData));
