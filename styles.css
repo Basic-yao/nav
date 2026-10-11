@@ -266,7 +266,6 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 }
 
 .arrow {
-  padding: 0 6px;
   color: var(--text-sub);
   opacity: 0.4;
   pointer-events: none;
@@ -384,6 +383,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   box-shadow: var(--shadow);
   transition: transform 0.15s, box-shadow 0.15s;
   min-width: 0;
+  max-width:300px;
 }
 
 .card:hover {
