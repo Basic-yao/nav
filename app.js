@@ -141,30 +141,119 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
   const SUN_ICON = '<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
   const MOON_ICON = '<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
+  // 主题切换：系统跟随最高优先级（与 custom.js 后台保持一致）
+  // - 每次刷新都重新读取系统偏好
+  // - 手动切换仅本会话生效，刷新后立即回到系统值
+  // - 不向 localStorage 写入任何主题锁定值
+  function systemPrefersDark() {
+    try {
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch (e) { return false; }
+  }
+
+  function updateThemeButton(theme) {
     const themeText = document.querySelector('.theme-text');
     if (themeText) themeText.textContent = theme === 'dark' ? '浅色模式' : '深色模式';
-    try { localStorage.setItem('nav-theme', theme); } catch (e) {}
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeButton(theme);
   }
 
   function initTheme() {
+    const themeBtn = document.getElementById('themeBtn');
     const themeIcon = document.querySelector('.theme-icon');
-    // 避免重复注入（热加载 / 多次调用时保护）
+
+    // 注入日月图标（避免重复注入）
     if (themeIcon && !themeIcon.querySelector('svg')) {
       themeIcon.innerHTML = SUN_ICON + MOON_ICON;
     }
 
-    let theme = 'light';
-    try { theme = localStorage.getItem('nav-theme') || localStorage.getItem('navTheme') || 'light'; } catch (e) {}
-    applyTheme(theme);
+    // 系统跟随最高优先级：每次刷新都重新读系统偏好
+    applyTheme(systemPrefersDark() ? 'dark' : 'light');
 
-    const themeBtn = document.getElementById('themeBtn');
+    // 监听系统主题变化，实时跟随（任何时候都响应，不做任何锁定）
+    if (window.matchMedia) {
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      const handler = function (e) { applyTheme(e.matches ? 'dark' : 'light'); };
+      if (mq.addEventListener) mq.addEventListener('change', handler);
+      else if (mq.addListener) mq.addListener(handler); // Safari < 14
+    }
+
     if (themeBtn) {
       themeBtn.onclick = function () {
+        // 手动切换：仅本会话生效，刷新后立即回到系统值
         const current = document.documentElement.getAttribute('data-theme') || 'light';
         applyTheme(current === 'dark' ? 'light' : 'dark');
       };
+    }
+  }
+
+
+  // Logo 点击 → 显示全部（与 custom.js 后台行为一致）
+  function bindLogoClick() {
+    if (!logo) return;
+    logo.onclick = function () {
+      currentView = null;
+      renderSidebar(navData);
+      renderContent(navData.filter(function (s) { return (s.links || []).length > 0; }));
+    };
+    logo.style.cursor = 'pointer';
+  }
+
+  // 搜索引擎切换（与 custom.js 后台逻辑一致）
+  // 依赖 HTML 结构：#searchTags 容器内的 .tag 按钮带 data-engine 属性
+  var SEARCH_ENGINES = {
+    site:   { url: null,                                   placeholder: '按 / 快速唤起站内搜索' },
+    bing:   { url: 'https://www.bing.com/search?q=',       placeholder: 'Bing 搜索' },
+    baidu:  { url: 'https://www.baidu.com/s?wd=',         placeholder: '百度一下' },
+    google: { url: 'https://www.google.com/search?q=',     placeholder: 'Google 搜索' }
+  };
+  var currentEngine = 'site';
+
+  function bindSearchEngines() {
+    var container = document.getElementById('searchTags');
+    if (!container) return;
+    var input = document.getElementById('subSearchInput');
+
+    function updatePlaceholder() {
+      if (input && SEARCH_ENGINES[currentEngine]) {
+        input.placeholder = SEARCH_ENGINES[currentEngine].placeholder;
+      }
+    }
+
+    container.querySelectorAll('.tag').forEach(function (btn) {
+      btn.onclick = function () {
+        container.querySelectorAll('.tag').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        currentEngine = btn.dataset.engine;
+        updatePlaceholder();
+      };
+    });
+
+    updatePlaceholder();
+  }
+
+  // 站内搜索过滤（仅搜索 title / url / desc 字段）
+  function filterData(data, keyword) {
+    var kw = (keyword || '').toLowerCase();
+    return (data || []).map(function (sec) {
+      var matched = (sec.links || []).filter(function (l) {
+        return (l.title || '').toLowerCase().indexOf(kw) >= 0 ||
+               (l.url || '').toLowerCase().indexOf(kw) >= 0 ||
+               (l.desc || '').toLowerCase().indexOf(kw) >= 0;
+      });
+      return { category: sec.category, icon: sec.icon, links: matched };
+    }).filter(function (sec) { return sec.links.length > 0; });
+  }
+
+  function doSearchWithEngine(keyword) {
+    if (!keyword) return;
+    if (currentEngine === 'site') {
+      renderContent(filterData(navData, keyword));
+    } else if (SEARCH_ENGINES[currentEngine]) {
+      window.open(SEARCH_ENGINES[currentEngine].url + encodeURIComponent(keyword), '_blank');
     }
   }
 
@@ -663,8 +752,13 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
     content = document.getElementById('content');
     logo = document.getElementById('logo');
 
-    initModal();
+    // 刷新兜底：先对齐一次系统主题，保证跟随不失效
+    try { document.documentElement.setAttribute('data-theme', (systemPrefersDark() ? 'dark' : 'light')); } catch (e) {}
+
     initTheme();
+    bindLogoClick();       // 修复②：Logo 点击回首页（显示全部）
+    bindSearchEngines();   // 修复③：搜索栏引擎切换
+    initModal();
     document.addEventListener('click', handleGlobalClick);
 
     loadNavData().then(function () {
