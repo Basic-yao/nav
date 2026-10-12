@@ -276,7 +276,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 
 .tag {
   position: relative;
-  padding: 4px 8px;
+  padding: 4px 5px;
   border: none;
   border-bottom: 3px solid transparent;
   border-radius: 0 0 6px 6px;
@@ -299,7 +299,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 }
 
 .search-input-row {
-  width: 50%;
+  width: 60%;
   min-width: 320px;
   display: flex;
   align-items: center;
@@ -899,12 +899,12 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   }
 
   .tag {
-    padding: 5px 14px;
+    padding: 5px 8px;
     font-size: 13px;
   }
 
   .search-input-row {
-    width: 100%;
+    width: 90%;
     min-width: unset;
   }
 
