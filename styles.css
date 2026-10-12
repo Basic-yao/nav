@@ -234,7 +234,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   overflow-y: auto;
   overflow-x: clip;
   scrollbar-gutter: stable;
-  padding: 0 32px 48px !important;
+  padding: 0 32px 0 !important;
   background: var(--bg);
 }
 
@@ -879,8 +879,8 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
     height: 100dvh;
     padding: 16px;
     overflow-y: auto;
-    overflow-x: clip;
-  }
+    overflow-x: clip; 
+ }
 
   .search-box {
     padding: 8px 0 16px !important;
@@ -912,4 +912,42 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 10px;
   }
+}
+
+/* ============ 页脚：免责申明 ============ */
+.footer-legal {
+  margin-top: auto !important;      /* 强制沉底 */
+  padding: 16px 20px !important;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-weak, #888);
+  border: none !important;          /* 彻底强制去掉横线 */
+  background: transparent !important; /* 去掉可能的背景色 */
+  box-shadow: none !important;
+}
+
+.footer-legal p {
+  margin: 0 !important;
+}
+
+/* 深色模式 */
+[data-theme="dark"] .footer-legal {
+  color: var(--text-weak, #6b6b6b);
+}
+
+/* 窄屏自适应 */
+@media (max-width: 640px) {
+  .footer-legal {
+    padding: 14px 12px !important;
+    font-size: 11px;
+  }
+}
+
+/* 沉底核心：直接对审查元素确认的直接父容器生效 */
+body > .content, 
+.content {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: calc(100vh - 80px); /* 视口高度减去顶部搜索栏，可微调 */
 }

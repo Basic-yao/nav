@@ -318,9 +318,15 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
             '</div></a>'
         : '';
 
-      content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
+content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     });
     if (EDIT_MODE) bindDragSort();
+
+    // 版权 + 免责声明（始终在卡片内容最底部）
+    content.innerHTML += '<div class="footer-legal">' +
+      '<p>© ' + new Date().getFullYear() + ' 个人导航页 · 保留所有权利</p>' +
+      '<p>免责声明：本站仅作个人网址索引，不存储第三方内容，亦不对各链接网页的真实性、准确性、合法性负责，侵权请联系移除。</p>' +
+    '</div>';
   }
 
   function renderContentForCurrent() {
@@ -769,5 +775,14 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
       renderSidebar(navData);
       renderContentForCurrent();
     });
+  })();
+// 声明样式 + 修复废弃 meta 标签（只改 app.js，不动 HTML）
+  (function () {
+    var style = document.createElement('style');
+    style.textContent = '.footer-legal{margin-top:24px;padding:16px 20px;text-align:center;font-size:12px;line-height:1.7;color:#888;border-top:1px solid rgba(127,127,127,0.25)}.footer-legal p{margin:4px 0}@media (prefers-color-scheme: dark){.footer-legal{color:#999;border-top-color:rgba(255,255,255,0.15)}}';
+    document.head.appendChild(style);
+
+    var meta = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
+    if (meta) meta.setAttribute('name', 'mobile-web-app-capable');
   })();
 })();
