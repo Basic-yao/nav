@@ -36,8 +36,8 @@
       {
         "title": "王二小放牛娃",
         "url": "https://9280.kstore.space/newwex.json",
-        "desc": "TVBox数据源",
-        "icon": "https://icons.duckduckgo.com/ip3/9280.kstore.space.ico"
+        "desc": "TVBox自用采集数据源",
+        "icon": ""
       },
       {
         "title": "IPTV 直播源",
@@ -56,6 +56,12 @@
         "url": "https://taoiptv.com/",
         "desc": "全网自动搜集酒店源和组播源，过滤低分辨率保留1920x1080高清，筛选播放速度优质流畅源，IPTV频道每天2次自动检测、发布最新的有效源。",
         "icon": "https://taoiptv.com/upload/20240312/ab83c2f29ff9c2.jpg"
+      },
+      {
+        "title": "tv.iptv2026.cc.cd",
+        "url": "https://tv.iptv2026.cc.cd/",
+        "desc": "SOCKS5 代理池 · 总端 Quake / 鹰图采集 · 测速验活自愈 · 播放列表注入 · 多账号部署 ｜ 范围：台湾 / 香港 / 全球(排除中国大陆)",
+        "icon": ""
       }
     ]
   },
@@ -63,18 +69,6 @@
     "category": "软件下载",
     "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><polyline points=\"7 10 12 15 17 10\"/><line x1=\"12\" y1=\"15\" x2=\"12\" y2=\"3\"/></svg>",
     "links": [
-      {
-        "title": "果核剥壳",
-        "url": "https://www.ghxi.com/",
-        "desc": "互联网的净土。PC软件，手机软件，正版软件，破解软件",
-        "icon": "https://www.google.com/s2/favicons?domain=ghxi.com"
-      },
-      {
-        "title": "腾讯软件中心",
-        "url": "https://pc.qq.com/",
-        "desc": "腾讯官方软件下载平台",
-        "icon": "https://www.google.com/s2/favicons?domain=pc.qq.com"
-      },
       {
         "title": "423Down",
         "url": "https://www.423down.com/",
@@ -85,6 +79,18 @@
         "title": "Appstorrent.ru",
         "url": "https://appstorrent.ru/",
         "desc": "俄罗斯苹果软件下载站",
+        "icon": "https://appstorrent.ru/ph/a2937891ed5d.svg"
+      },
+      {
+        "title": "果核剥壳",
+        "url": "https://www.ghxi.com/",
+        "desc": "互联网的净土。PC软件，手机软件，正版软件，破解软件",
+        "icon": ""
+      },
+      {
+        "title": "腾讯软件中心",
+        "url": "https://pc.qq.com/",
+        "desc": "腾讯官方软件下载平台",
         "icon": ""
       }
     ]
@@ -133,7 +139,7 @@
         "title": "倪海厦大全集",
         "url": "http://www.finalhopes.com/",
         "desc": "经方派倪海厦大全集和医案在线查询,下载,自学中医和中医入门经验分享指导",
-        "icon": "http://www.finalhopes.com/favicon.ico"
+        "icon": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231677ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z'></path></svg>"
       }
     ]
   },
@@ -218,6 +224,12 @@
         "url": "https://pan666.cn",
         "desc": "阿里云盘资源共享站。人人为我，我为人人的共享资源社区",
         "icon": "https://www.google.com/s2/favicons?domain=pan666.cn"
+      },
+      {
+        "title": "百度网盘",
+        "url": "https://pan.baidu.com/s/15RKNU_u4kSCACbO1uUgQlw?pwd=6666#list/path=%2F",
+        "desc": "李忠义老师资料（含答案解析）_免费高速下载|百度网盘-分享无限制",
+        "icon": "https://pan.baidu.com/m-static/base/static/images/favicon.ico"
       }
     ]
   },
@@ -229,7 +241,7 @@
         "title": "Fmhy.net",
         "url": "https://fmhy.net/",
         "desc": "互联网上的免费资源收藏！",
-        "icon": "https://fmhy.net/hall.png"
+        "icon": "https://fmhy.net/fmhy.ico"
       },
       {
         "title": "新华字典",
@@ -250,16 +262,22 @@
         "icon": "https://www.microsoft.com/favicon.ico?v2"
       },
       {
+        "title": "macOS",
+        "url": "https://support.apple.com/zh-cn/102662",
+        "desc": "如何下载和安装 macOS - 使用下面任一方式在兼容的 Mac 电脑上下载并安装最新或以前版本的 Mac 操作系统。每个 macOS 版本都包含适用于该版本的最新内置 App，包括 Safari 浏览器、备忘录、信息和 Apple Music。",
+        "icon": "https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202609132104"
+      },
+      {
         "title": "Ubuntu",
         "url": "https://ubuntu.com/download/desktop",
         "desc": "Linux 桌面发行版",
-        "icon": "https://www.google.com/s2/favicons?domain=ubuntu.com"
+        "icon": "https://ubuntu.com/static/favicons/COF-favicon-48x48.png?v=fa3c63f"
       },
       {
-        "title": "macOS",
-        "url": "https://www.apple.com/macos/",
-        "desc": "Apple 官方 macOS 页面",
-        "icon": "https://www.google.com/s2/favicons?domain=apple.com"
+        "title": "专注Windows",
+        "url": "https://iwin11.cn/",
+        "desc": "专注于Win10,专注于Win11,专注于Win7,吻妻,吻妻系统,iwin10,iwin11,纯净版系统下载",
+        "icon": "https://iwin10.net/favicon.ico"
       }
     ]
   }
