@@ -764,6 +764,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
     max-width: calc(100vw - 56px);
     max-width: calc(100dvw - 56px);
     margin-left: 56px;
+    padding: 0 18px 0;
   }
 }
 
