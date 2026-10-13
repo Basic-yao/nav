@@ -44,10 +44,10 @@ html[data-theme="dark"] {
   box-sizing: border-box;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden; 
 }
 
 html {
@@ -229,13 +229,25 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 .main {
   flex: 1 1 auto;
   width: auto;
-  min-width: 0;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+
   height: 100vh;
+  height: 100dvh;
+  box-sizing: border-box;
+
+  /* 底部内边距归零，让声明贴底 */
+  padding: 0 38px 0;
+
+  /* 沉底关键：Flex 纵向布局 */
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0;
+
   overflow-y: auto;
   overflow-x: clip;
-  scrollbar-gutter: stable;
-  padding: 0 32px 0 !important;
-  background: var(--bg);
+
 }
 
 /* ===== 搜索栏 ===== */
@@ -341,8 +353,16 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 
 /* ===== 内容区 ===== */
 .content {
-  max-width: 1500px;
-  margin: 0 auto;
+  /* 移除 max-width: 1500px 和 margin: 0 auto 的限制 */
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
 }
 
 .section-title {
@@ -365,8 +385,8 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
 }
 
 /* ===== 卡片 ===== */
@@ -737,6 +757,28 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
    响应式布局
    - 768px 以下统一采用左侧固定图标栏
    ========================================================= */
+/* ===== 移动端/窄屏：侧栏固定为 56px 图标栏，主内容需要让位 ===== */
+@media (max-width: 768px) {
+  .main {
+    width: calc(100vw - 56px);
+    width: calc(100dvw - 56px);
+    max-width: calc(100vw - 56px);
+    max-width: calc(100dvw - 56px);
+    margin-left: 56px;
+  }
+}
+
+/* ===== 移动端/窄屏：侧栏固定为 56px 图标栏，主内容需要让位 ===== */
+@media (max-width: 768px) {
+  .main {
+    width: calc(100vw - 56px);
+    width: calc(100dvw - 56px);
+    max-width: calc(100vw - 56px);
+    max-width: calc(100dvw - 56px);
+    margin-left: 56px;
+  }
+}
+
 @media (max-width: 768px) {
   .sidebar .nav-title,
   .logo > span,
@@ -867,21 +909,6 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
     height: 20px;
   }
 
-  .main {
-    flex: 1 1 auto;
-    width: calc(100vw - 56px);
-    width: calc(100dvw - 56px);
-    max-width: calc(100vw - 56px);
-    max-width: calc(100dvw - 56px);
-    margin-left: 56px;
-    margin-right: 0;
-    height: 100vh;
-    height: 100dvh;
-    padding: 16px;
-    overflow-y: auto;
-    overflow-x: clip; 
- }
-
   .search-box {
     padding: 8px 0 16px !important;
     margin-bottom: 12px;
@@ -917,7 +944,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 /* ============ 页脚：免责申明 ============ */
 .footer-legal {
   margin-top: auto !important;      /* 强制沉底 */
-  padding: 16px 20px !important;
+  padding: 20px 20px 10px  !important;
   text-align: center;
   font-size: 12px;
   line-height: 1.7;
@@ -942,12 +969,4 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
     padding: 14px 12px !important;
     font-size: 11px;
   }
-}
-
-/* 沉底核心：直接对审查元素确认的直接父容器生效 */
-body > .content, 
-.content {
-  display: flex !important;
-  flex-direction: column !important;
-  min-height: calc(100vh - 80px); /* 视口高度减去顶部搜索栏，可微调 */
 }
