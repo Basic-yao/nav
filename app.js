@@ -324,7 +324,7 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
 
     // 版权 + 免责声明（始终在卡片内容最底部）
     content.innerHTML += '<div class="footer-legal">' +
-      '<p>© ' + new Date().getFullYear() + ' 个人导航页 · 保留所有权利</p>' +
+      '<p> Copyright © ' + new Date().getFullYear() + ' Basic-yao 个人导航页 · 保留所有权利</p>' +
       '<p>免责声明：本站仅作个人网址索引，不存储第三方内容，亦不对各链接网页的真实性、准确性、合法性负责，侵权请联系移除。</p>' +
     '</div>';
   }
