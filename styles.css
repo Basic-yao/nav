@@ -259,7 +259,6 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   max-width: none;
   margin-left: -32px;
   margin-right: -32px;
-  margin-bottom: 24px;
   padding: 12px 32px 16px;
   background: var(--bg) !important;
   display: flex;
@@ -386,7 +385,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 18px;
+  gap: 28px;
 }
 
 /* ===== 卡片 ===== */
@@ -910,8 +909,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   }
 
   .search-box {
-    padding: 8px 0 16px !important;
-    margin-bottom: 12px;
+    padding: 8px 0 8px !important;
     width: calc(100% + 32px);
     margin-left: -16px;
     margin-right: -16px;
