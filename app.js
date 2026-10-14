@@ -843,15 +843,93 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     initModal();
     document.addEventListener('click', handleGlobalClick);
 
+    // 清理卡片上的 title 属性，避免浏览器原生 tooltip 遮挡悬浮展开内容
+    document.querySelectorAll('.card[title]').forEach(function (el) { el.removeAttribute('title'); });
+
     loadNavData().then(function () {
       renderSidebar(navData);
       renderContentForCurrent();
+      document.querySelectorAll('.card[title]').forEach(function (el) { el.removeAttribute('title'); });
     }).catch(function (e) {
       console.error('[启动] 数据加载失败:', e);
       renderSidebar(navData);
       renderContentForCurrent();
     });
   })();
+
+// 卡片悬浮浮层：固定在卡片上方，不跟随鼠标，不扰动布局
+(function () {
+  var TIP_DELAY = 300, tipTimer = null, hideTimer = null;
+  var tip = null;
+
+  function getTip() {
+    if (!tip) {
+      tip = document.createElement('div');
+      tip.className = 'nav-card-tip';
+      document.body.appendChild(tip);
+      tip.addEventListener('mouseenter', function () { clearTimeout(hideTimer); tip.classList.add('show'); });
+      tip.addEventListener('mouseleave', function () { hideTimer = setTimeout(hideTip, 120); });
+    }
+    return tip;
+  }
+
+  function buildTip(card) {
+    var title = card.querySelector('.card-title');
+    var desc  = card.querySelector('.card-desc');
+    var url   = card.querySelector('.card-url');
+    var html = '';
+    if (title && title.textContent) html += '<span class="tip-title">' + title.textContent.trim() + '</span>';
+    if (desc  && desc.textContent)   html += '<span class="tip-desc">'  + desc.textContent.trim()  + '</span>';
+    if (url   && url.textContent)    html += '<span class="tip-url">'   + url.textContent.trim()   + '</span>';
+    return html;
+  }
+
+  function positionTip(card) {
+    if (!tip) return;
+    var r = card.getBoundingClientRect();
+    tip.style.width = r.width + 'px';      // ★ 浮层宽度 = 卡片宽度
+    tip.style.left  = '0px';
+    tip.style.top   = '-9999px';
+    tip.classList.add('show');             // 先显示才能读到真实高度
+    var th = tip.offsetHeight;
+    var left = r.left + window.pageXOffset;
+    var top  = r.top + window.pageYOffset - th - 12;
+    if (top < window.pageYOffset) top = r.bottom + window.pageYOffset + 12;
+    var maxLeft = document.documentElement.clientWidth - tip.offsetWidth - 12;
+    if (left > maxLeft) left = maxLeft;
+    if (left < 12) left = 12;
+    tip.style.left = left + 'px';
+    tip.style.top  = top  + 'px';
+  }
+
+  function showTip(card) {
+    var html = buildTip(card);
+    if (!html) return;
+    tip = getTip();
+    tip.innerHTML = html;
+    positionTip(card);
+  }
+
+  function hideTip() { if (tip) tip.classList.remove('show'); }
+
+  document.addEventListener('mouseover', function (e) {
+    var card = e.target.closest && e.target.closest('.card');
+    if (!card) return;
+    clearTimeout(hideTimer);
+    tipTimer = setTimeout(function () { showTip(card); }, TIP_DELAY);
+  });
+
+  document.addEventListener('mouseout', function (e) {
+    if (e.target.closest && e.target.closest('.card')) {
+      clearTimeout(tipTimer);
+      hideTimer = setTimeout(hideTip, 120);
+    }
+  });
+
+  window.addEventListener('scroll', function () { if (tip && tip.classList.contains('show')) hideTip(); }, true);
+  window.addEventListener('resize', function () { if (tip && tip.classList.contains('show')) hideTip(); });
+})();
+
 // 声明样式 + 修复废弃 meta 标签（只改 app.js，不动 HTML）
   (function () {
     var style = document.createElement('style');

@@ -278,13 +278,11 @@
       '</div>';
       contentEl.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     });
-
     // 版权 + 免责声明（始终在卡片内容最底部）
     content.innerHTML += '<div class="footer-legal">' +
       '<p> Copyright © ' + new Date().getFullYear() + ' Basic-yao</p>' +
       '<p>免责声明：本站仅作个人网址索引，不存储第三方内容，亦不对各网址的真实性、准确性、合法性负责!</p>' +
     '</div>';
-
   }
 
   // ============================================================
@@ -1089,8 +1087,14 @@
       replaceNavData(JSON.parse(JSON.stringify(ORIGINAL)));
     }
 
+    // 清理卡片上的 title 属性，避免浏览器原生 tooltip 遮挡悬浮展开内容
+    try { document.querySelectorAll('.card[title]').forEach(function (el) { el.removeAttribute('title'); }); } catch (e) {}
+
     try { renderSidebar(navDataRef); } catch (e) { console.error('[nav] renderSidebar 失败:', e); }
     try { renderContentForCurrent(); } catch (e) { console.error('[nav] renderContent 失败:', e); }
+
+    // 动态渲染后再次清理（新增 / 编辑 / 拖拽重排都会重绘）
+    try { document.querySelectorAll('.card[title]').forEach(function (el) { el.removeAttribute('title'); }); } catch (e) {}
   }
 
   // 暴露全局 API
@@ -1105,9 +1109,76 @@
 
 })();
 
-// 页脚样式（与 app.js 保持一致）
-  (function () {
-    var style = document.createElement('style');
-    style.textContent = '.footer-legal{margin-top:24px;padding:16px 20px;text-align:center;font-size:12px;line-height:1.7;color:#888;border-top:1px solid rgba(127,127,127,0.25)}.footer-legal p{margin:4px 0}@media (prefers-color-scheme: dark){.footer-legal{color:#999;border-top-color:rgba(255,255,255,0.15)}}';
-    document.head.appendChild(style);
-  })();
+// 卡片悬浮浮层：固定在卡片上方，不跟随鼠标，不扰动布局
+(function () {
+  var TIP_DELAY = 300, tipTimer = null, hideTimer = null;
+  var tip = null;
+
+  function getTip() {
+    if (!tip) {
+      tip = document.createElement('div');
+      tip.className = 'nav-card-tip';
+      document.body.appendChild(tip);
+      tip.addEventListener('mouseenter', function () { clearTimeout(hideTimer); tip.classList.add('show'); });
+      tip.addEventListener('mouseleave', function () { hideTimer = setTimeout(hideTip, 120); });
+    }
+    return tip;
+  }
+
+  function buildTip(card) {
+    var title = card.querySelector('.card-title');
+    var desc  = card.querySelector('.card-desc');
+    var url   = card.querySelector('.card-url');
+    var html = '';
+    if (title && title.textContent) html += '<span class="tip-title">' + title.textContent.trim() + '</span>';
+    if (desc  && desc.textContent)   html += '<span class="tip-desc">'  + desc.textContent.trim()  + '</span>';
+    if (url   && url.textContent)    html += '<span class="tip-url">'   + url.textContent.trim()   + '</span>';
+    return html;
+  }
+
+  function positionTip(card) {
+    if (!tip) return;
+    var r = card.getBoundingClientRect();
+    tip.style.width = r.width + 'px';      // ★ 浮层宽度 = 卡片宽度
+    tip.style.left  = '0px';
+    tip.style.top   = '-9999px';
+    tip.classList.add('show');             // 先显示才能读到真实高度
+    var th = tip.offsetHeight;
+    var left = r.left + window.pageXOffset;
+    var top  = r.top + window.pageYOffset - th - 12;
+    if (top < window.pageYOffset) top = r.bottom + window.pageYOffset + 12;
+    var maxLeft = document.documentElement.clientWidth - tip.offsetWidth - 12;
+    if (left > maxLeft) left = maxLeft;
+    if (left < 12) left = 12;
+    tip.style.left = left + 'px';
+    tip.style.top  = top  + 'px';
+  }
+
+  function showTip(card) {
+    var html = buildTip(card);
+    if (!html) return;
+    tip = getTip();
+    tip.innerHTML = html;
+    positionTip(card);
+  }
+
+  function hideTip() { if (tip) tip.classList.remove('show'); }
+
+  document.addEventListener('mouseover', function (e) {
+    var card = e.target.closest && e.target.closest('.card');
+    if (!card) return;
+    clearTimeout(hideTimer);
+    tipTimer = setTimeout(function () { showTip(card); }, TIP_DELAY);
+  });
+
+  document.addEventListener('mouseout', function (e) {
+    if (e.target.closest && e.target.closest('.card')) {
+      clearTimeout(tipTimer);
+      hideTimer = setTimeout(hideTip, 120);
+    }
+  });
+
+  window.addEventListener('scroll', function () { if (tip && tip.classList.contains('show')) hideTip(); }, true);
+  window.addEventListener('resize', function () { if (tip && tip.classList.contains('show')) hideTip(); });
+})();
+
