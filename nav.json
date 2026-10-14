@@ -110,6 +110,12 @@
         "url": "https://macapp.org.cn/",
         "desc": "MacApp分享频道是一个专注于分享精品Mac资源的频道",
         "icon": "https://macapp.org.cn/wp-content/uploads/2024/09/a6e5b49cb355225.png"
+      },
+      {
+        "title": "MacWk - 精品mac软件下载",
+        "url": "https://www.macwk.com/",
+        "desc": "MacWK 官网专注于 Mac 应用软件下载，每日更新大量精品 macOS 软件，提供优质的 Mac 软件资源、热门应用及 Mac 破解版软件下载服务，帮助用户快速发现和获取实用的 Mac 软件。",
+        "icon": "https://www.macwk.com/favicon.ico"
       }
     ]
   },
@@ -158,6 +164,18 @@
         "url": "http://www.finalhopes.com/",
         "desc": "经方派倪海厦大全集和医案在线查询,下载,自学中医和中医入门经验分享指导",
         "icon": "icons/nhx.png"
+      },
+      {
+        "title": "鲁班尺在线查询",
+        "url": "https://lubanchi.bmcx.com/",
+        "desc": "鲁班尺，全称“鲁班营造尺”，相传为春秋鲁国公鲁班所作，后经风水界加入八字，以丈量房宅吉凶，并呼之为“门公尺”，又称“角尺”。",
+        "icon": "https://f.bmcx.com/file/lubanchi/i_c_o_114x114.png"
+      },
+      {
+        "title": "国家知识产权局商标局",
+        "url": "https://sbj.cnipa.gov.cn/sbj/index.html",
+        "desc": "国家知识产权局商标局 · 官方门户 · 商标业务一网通办",
+        "icon": "icos/sbj.png"
       }
     ]
   },
@@ -212,6 +230,24 @@
         "url": "https://paywallbuster.me/",
         "desc": "许多网站都提供了新闻文章内容付费功能。我们将它们全部汇集在一个方便的地方。所以，你可以尝试它们，找到最适合你喜欢的网站的服务。",
         "icon": "https://paywallbuster.me/assets/favicon-C5znJkUV.svg"
+      },
+      {
+        "title": "Everything",
+        "url": "https://www.voidtools.com/zh-cn/downloads/",
+        "desc": "\"Everything\" 是 Windows 上最快的文件名搜索引擎之一。",
+        "icon": "https://www.voidtools.com/favicon.ico"
+      },
+      {
+        "title": "Windows Memory Cleaner",
+        "url": "https://winmemorycleaner.com/",
+        "desc": "Windows内存自动清除工具",
+        "icon": "https://winmemorycleaner.com/assets/images/win-memory-cleaner.ico"
+      },
+      {
+        "title": "HiBitSoftware",
+        "url": "https://www.hibitsoft.ir/",
+        "desc": "免费的HiBit Uninstaller软件卸载和HiBit Startup Manager启动项管理，提供安装版和便携版，能够清理注册表。",
+        "icon": "https://www.hibitsoft.ir/favicon.ico"
       }
     ]
   },
@@ -250,12 +286,6 @@
     "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z\"/></svg>",
     "links": [
       {
-        "title": "阿里小站",
-        "url": "https://pan666.cn",
-        "desc": "阿里云盘资源共享站。人人为我，我为人人的共享资源社区",
-        "icon": ""
-      },
-      {
         "title": "百度网盘",
         "url": "https://pan.baidu.com/s/15RKNU_u4kSCACbO1uUgQlw?pwd=6666#list/path=%2F",
         "desc": "李忠义老师资料（含答案解析）_免费高速下载|百度网盘-分享无限制",
@@ -275,9 +305,9 @@
       },
       {
         "title": "新华字典",
-        "url": "https://www.hao86.com/",
-        "desc": "新华字典,成语,诗词,在线翻译,谜语,歇后语",
-        "icon": "https://www.hao86.com/favicon.ico"
+        "url": "https://www.hao86.com/zi/",
+        "desc": "新华字典,查字典,汉字拼音,部首查字,笔画查字,提供汉字读音、部首、笔画、结构、解释、组词等查询。",
+        "icon": "icos/xhzd.png"
       },
       {
         "title": "Z2H字帖",
