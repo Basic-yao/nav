@@ -278,6 +278,13 @@
       '</div>';
       contentEl.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     });
+
+    // 版权 + 免责声明（始终在卡片内容最底部）
+    content.innerHTML += '<div class="footer-legal">' +
+      '<p> Copyright © ' + new Date().getFullYear() + ' Basic-yao</p>' +
+      '<p>免责声明：本站仅作个人网址索引，不存储第三方内容，亦不对各网址的真实性、准确性、合法性负责!</p>' +
+    '</div>';
+
   }
 
   // ============================================================
@@ -882,9 +889,19 @@
     updatePlaceholder();
   }
 
+  // 搜索完成后清空输入框
+  function clearSearchInput() {
+    var input = document.getElementById('subSearchInput');
+    if (input) input.value = '';
+  }
+
   function doSearchWithEngine(keyword) {
-    // 空关键词不跳转，也不搜索
-    if (!keyword) return;
+    // 空关键词：退出搜索态，回到当前视图
+    if (!keyword) {
+      renderContentForCurrent();
+      clearSearchInput();
+      return;
+    }
     if (currentEngine === 'site') {
       var filtered = filterData(navDataRef, keyword);
       renderContent(filtered);
@@ -892,6 +909,7 @@
       var url = SEARCH_ENGINES[currentEngine].url + encodeURIComponent(keyword);
       window.open(url, '_blank');
     }
+    clearSearchInput();
   }
 
   // ============================================================
@@ -928,13 +946,15 @@
     // 点击搜索按钮提交
     if (btn) btn.onclick = doSearch;
 
-    // 按 / 快速聚焦搜索框
+    // 按 / 快速聚焦搜索框；Esc 清空并退出搜索态
     document.addEventListener('keydown', function (e) {
       if (e.key === '/' && document.activeElement !== input) {
         e.preventDefault();
         input.focus();
       }
       if (e.key === 'Escape' && document.activeElement === input) {
+        input.value = '';
+        renderContentForCurrent();
         input.blur();
       }
     });
@@ -1085,4 +1105,9 @@
 
 })();
 
-
+// 页脚样式（与 app.js 保持一致）
+  (function () {
+    var style = document.createElement('style');
+    style.textContent = '.footer-legal{margin-top:24px;padding:16px 20px;text-align:center;font-size:12px;line-height:1.7;color:#888;border-top:1px solid rgba(127,127,127,0.25)}.footer-legal p{margin:4px 0}@media (prefers-color-scheme: dark){.footer-legal{color:#999;border-top-color:rgba(255,255,255,0.15)}}';
+    document.head.appendChild(style);
+  })();

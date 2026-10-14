@@ -16,6 +16,7 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
   // 全局状态
   let navData = [];
   let currentView = null;
+  let currentFiltered = null; // 站内搜索的筛选结果，null 表示未搜索
 
   // ORIGINAL：data.js 内置数据的深拷贝，作为 nav.json 不可用时的唯一兜底
   let ORIGINAL = window.__NAV_ORIGINAL__ || [];
@@ -196,6 +197,7 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
     if (!logo) return;
     logo.onclick = function () {
       currentView = null;
+      currentFiltered = null;
       renderSidebar(navData);
       renderContent(navData.filter(function (s) { return (s.links || []).length > 0; }));
     };
@@ -248,13 +250,80 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
     }).filter(function (sec) { return sec.links.length > 0; });
   }
 
+  // 搜索完成后清空输入框
+  function clearSearchInput() {
+    var input = document.getElementById('subSearchInput');
+    if (input) input.value = '';
+  }
+
+  // 站内搜索：记录筛选结果，使分组切换/Logo 点击能正确退出搜索态
+  function enterSearchState(filtered) {
+    currentFiltered = filtered;
+    renderContent(filtered);
+  }
+
+  function exitSearchState() {
+    currentFiltered = null;
+    renderContentForCurrent();
+  }
+
   function doSearchWithEngine(keyword) {
-    if (!keyword) return;
+    if (!keyword) {
+      exitSearchState();
+      clearSearchInput();
+      return;
+    }
     if (currentEngine === 'site') {
-      renderContent(filterData(navData, keyword));
+      enterSearchState(filterData(navData, keyword));
     } else if (SEARCH_ENGINES[currentEngine]) {
       window.open(SEARCH_ENGINES[currentEngine].url + encodeURIComponent(keyword), '_blank');
     }
+    clearSearchInput();
+  }
+
+  // 前台搜索绑定：按钮点击 + 回车 + 实时筛选 + / 聚焦
+  function bindSearchInput() {
+    var input = document.getElementById('subSearchInput');
+    var btn = document.getElementById('subSearchBtn');
+    if (!input) return;
+
+    function doSearch() {
+      doSearchWithEngine(input.value.trim());
+    }
+
+    // 站内模式：输入即实时筛选；外部引擎模式不实时跳转
+    input.addEventListener('input', function () {
+      if (currentEngine === 'site') {
+        var kw = input.value.trim();
+        if (kw) {
+          enterSearchState(filterData(navData, kw));
+        } else {
+          exitSearchState();
+        }
+      }
+    });
+
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        doSearch();
+      }
+      if (e.key === 'Escape') {
+        input.value = '';
+        exitSearchState();
+        input.blur();
+      }
+    });
+
+    if (btn) btn.onclick = doSearch;
+
+    // 按 / 快速聚焦搜索框（不与中文输入冲突）
+    document.addEventListener('keydown', function (e) {
+      if (e.key === '/' && document.activeElement !== input) {
+        e.preventDefault();
+        input.focus();
+      }
+    });
   }
 
   // ================= 渲染层 =================
@@ -324,12 +393,17 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
 
     // 版权 + 免责声明（始终在卡片内容最底部）
     content.innerHTML += '<div class="footer-legal">' +
-      '<p> Copyright © ' + new Date().getFullYear() + ' Basic-yao 个人导航页 · 保留所有权利</p>' +
-      '<p>免责声明：本站仅作个人网址索引，不存储第三方内容，亦不对各链接网页的真实性、准确性、合法性负责，侵权请联系移除。</p>' +
+      '<p> Copyright © ' + new Date().getFullYear() + ' Basic-yao</p>' +
+      '<p>免责声明：本站仅作个人网址索引，不存储第三方内容，亦不对各网址的真实性、准确性、合法性负责！</p>' +
     '</div>';
   }
 
   function renderContentForCurrent() {
+    // 搜索态优先：保持当前筛选结果，避免搜完后被分组渲染覆盖
+    if (currentFiltered) {
+      renderContent(currentFiltered);
+      return;
+    }
     let data;
     if (currentView) {
       const group = navData.find(function (s) { return s.category === currentView; });
@@ -364,6 +438,7 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
       parent.appendChild(titleWrap);
       parent.onclick = function () {
         currentView = item.category;
+        currentFiltered = null;
         navList.querySelectorAll('.nav-item').forEach(function (n) { n.classList.remove('active'); });
         div.classList.add('active');
         renderContent([item]);
@@ -764,6 +839,7 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     initTheme();
     bindLogoClick();       // 修复②：Logo 点击回首页（显示全部）
     bindSearchEngines();   // 修复③：搜索栏引擎切换
+    bindSearchInput();    // 修复④：搜索输入绑定（回车 / 按钮 / 实时筛选）
     initModal();
     document.addEventListener('click', handleGlobalClick);
 
