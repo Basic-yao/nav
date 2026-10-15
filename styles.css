@@ -314,7 +314,8 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   min-width: 320px;
   display: flex;
   align-items: center;
-  background: #ffffff;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 999px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
@@ -326,7 +327,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   border: none;
   border-radius: 999px 0 0 999px;
   background: transparent;
-  color: #333333;
+  color: var(--text-main);
   font-size: 15px;
   outline: none;
 }
@@ -339,7 +340,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   height: 54px;
   border: none;
   border-radius: 0 999px 999px 0;
-  background: #0066ff;
+  background: var(--primary);
   color: #ffffff;
   cursor: pointer;
   flex: 0 0 auto;
@@ -391,7 +392,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 /* ===== 卡片 ===== */
 .card {
   display: flex;
-  align-items: center; 
+  align-items: center;
   gap: 8px;
   padding: 14px;
   background: var(--card-bg);
@@ -403,7 +404,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   transition: transform 0.15s, box-shadow 0.15s;
   box-sizing: border-box;
   min-width: 0;
-  max-width: 300px;
+  max-width:300px;
 }
 
 .card:hover {
@@ -464,10 +465,10 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 .card-body {
   min-width: 0;
   flex: 1 1 auto;
-  display: flex;                    /* ★ 新增 */
-  flex-direction: column;           /* ★ 新增 */
-  justify-content: center;          /* ★ 新增：标题+描述整体垂直居中 */
-  align-self: stretch;              /* ★ 新增：占满卡片高度 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: stretch;
 }
 
 .card-title {
@@ -757,6 +758,10 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   background-color: rgba(0, 0, 0, 0.35);
 }
 
+/* 搜索框：placeholder 跟随主题 + 深色下加深阴影 */
+.search-input-row input::placeholder { color: var(--text-sub); opacity: 1; }
+html[data-theme="dark"] .search-input-row { box-shadow: 0 1px 10px rgba(0, 0, 0, 0.5); }
+
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
@@ -975,7 +980,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 /* 窄屏自适应 */
 @media (max-width: 640px) {
   .footer-legal {
-    padding: 5px 0 5px !important;
+    padding: 14px 12px !important;
     font-size: 11px;
   }
 }
