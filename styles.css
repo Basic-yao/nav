@@ -402,6 +402,8 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   color: var(--text-main);
   box-shadow: var(--shadow);
   transition: transform 0.15s, box-shadow 0.15s;
+  align-items: flex-start;
+  height: 78px;
   box-sizing: border-box;
   min-width: 0;
   max-width:300px;
@@ -465,10 +467,6 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 .card-body {
   min-width: 0;
   flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-self: stretch;
 }
 
 .card-title {
@@ -484,9 +482,9 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   font-size: 12px;
   color: var(--text-sub);
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  height: 1.45em;
+  height: 2.9em;
   line-height: 1.45;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -632,6 +630,58 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   background: var(--hover);
 }
 
+
+/* ===== 触摸排序（手机） ===== */
+body.touch-sorting {
+  cursor: grabbing !important;
+  overflow: hidden;          /* 排序中禁止页面随手指滚动 */
+  touch-action: none;
+}
+
+body.touch-sorting .card,
+body.touch-sorting .nav-item { pointer-events: none; }
+
+body.touch-sorting .touch-sort-ph {
+  visibility: hidden;        /* 占位条占位但不渲染，避免抖动 */
+}
+
+.card.dragging,
+.nav-item.dragging {
+  position: relative;
+  z-index: 900;
+  opacity: 0.92;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  border-color: var(--primary);
+}
+
+html[data-theme="dark"] .card.dragging,
+html[data-theme="dark"] .nav-item.dragging {
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.65);
+}
+
+/* 触屏下的拖拽手柄：默认隐藏，长按后由 JS 添加 .touch-sorting 显示 */
+.drag-handle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-left: auto;
+  color: var(--text-sub);
+  opacity: 0.55;
+}
+
+.drag-handle svg { width: 16px; height: 16px; }
+
+@media (hover: none) and (pointer: coarse) {
+  .card[draggable="true"] .drag-handle,
+  .nav-item[draggable="true"] .drag-handle { display: inline-flex; }
+  body.touch-sorting .drag-handle { display: none !important; }
+
+  /* 触屏下分组项留出手柄空间，避免文字贴边 */
+  .nav-parent { padding-right: 10px; }
+}
+
 /* ===== 弹窗 ===== */
 .modal-overlay {
   position: fixed;
@@ -757,10 +807,6 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.35);
 }
-
-/* 搜索框：placeholder 跟随主题 + 深色下加深阴影 */
-.search-input-row input::placeholder { color: var(--text-sub); opacity: 1; }
-html[data-theme="dark"] .search-input-row { box-shadow: 0 1px 10px rgba(0, 0, 0, 0.5); }
 
 * {
   scrollbar-width: thin;

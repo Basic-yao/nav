@@ -296,6 +296,7 @@
     data.forEach(function (item) {
       var div = document.createElement('div');
       div.className = 'nav-item';
+      div.draggable = true;
       div.dataset.cat = item.category;
       if (item.category === currentView) div.classList.add('active');
 
@@ -1073,8 +1074,273 @@
     bindSearch();
     initModal();
     document.addEventListener('click', handleGlobalClick);
+
+  // ============================================================
+  // 触摸排序（手机）：长按 420ms 进入排序模式，松手落位
+  // 同时覆盖卡片与分组，复用已有的 moveLink / moveGroup 与 saveNavData
+  // ============================================================
+  var TOUCH_LONG_PRESS = 420;
+  var TOUCH_AUTOSCROLL_EDGE = 56;
+  var TOUCH_AUTOSCROLL_MAX = 18;
+
+  var touchSort = {
+    enabled: false,
+    kind: null,          // 'card' | 'group'
+    sourceEl: null,
+    sourceKey: null,     // 卡片: "cat:index"  分组: cat
+    placeholder: null,
+    lastY: 0,
+    longTimer: null,
+    autoscrollTimer: null,
+    scrollEl: null
+  };
+
+  function isTouchDevice() {
+    return window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  }
+
+  // 仅触屏启用；PC 走 HTML5 drag
+  function bindTouchSort() {
+    if (!isTouchDevice()) return;
+
+    var contentEl = document.getElementById('content');
+    var navListEl = document.getElementById('navList');
+
+    if (contentEl) {
+      contentEl.addEventListener('touchstart', onTouchStart, { passive: false });
+      contentEl.addEventListener('touchmove', onTouchMove, { passive: false });
+      contentEl.addEventListener('touchend', onTouchEnd);
+      contentEl.addEventListener('touchcancel', onTouchEnd);
+    }
+    if (navListEl) {
+      navListEl.addEventListener('touchstart', onTouchStart, { passive: false });
+      navListEl.addEventListener('touchmove', onTouchMove, { passive: false });
+      navListEl.addEventListener('touchend', onTouchEnd);
+      navListEl.addEventListener('touchcancel', onTouchEnd);
+    }
+  }
+
+  function targetInfo(el) {
+    if (!el) return null;
+    var card = el.closest('.card[draggable="true"]');
+    if (card) {
+      return {
+        kind: 'card',
+        el: card,
+        key: card.dataset.cat + ':' + card.dataset.index,
+        container: document.getElementById('content')
+      };
+    }
+    var item = el.closest('.nav-item[draggable="true"]');
+    if (item) {
+      return {
+        kind: 'group',
+        el: item,
+        key: item.dataset.cat,
+        container: document.getElementById('navList')
+      };
+    }
+    return null;
+  }
+
+  function onTouchStart(e) {
+    if (e.touches.length !== 1) return;
+    var t = targetInfo(e.target);
+    if (!t) return;
+
+    // 点击控件（编辑/删除/手柄/链接）不进入排序
+    if (e.target.closest('a, button, .card-act-btn, .drag-handle, input, textarea, label')) return;
+
+    touchSort.kind = t.kind;
+    touchSort.sourceEl = t.el;
+    touchSort.sourceKey = t.key;
+    touchSort.lastY = e.touches[0].clientY;
+    touchSort.scrollEl = findScrollParent(t.el);
+
+    clearTimeout(touchSort.longTimer);
+    touchSort.longTimer = setTimeout(function () {
+      enterSortMode(t);
+    }, TOUCH_LONG_PRESS);
+  }
+
+  function enterSortMode(t) {
+    touchSort.enabled = true;
+    t.el.classList.add('dragging');
+    t.el.style.transition = 'none';
+
+    var ph = document.createElement('div');
+    ph.className = t.kind === 'card' ? 'touch-sort-ph card' : 'touch-sort-ph nav-item';
+    ph.style.height = t.el.offsetHeight + 'px';
+    t.el.parentNode.insertBefore(ph, t.el.nextSibling);
+    touchSort.placeholder = ph;
+
+    document.body.classList.add('touch-sorting');
+    vibrate(40);
+  }
+
+  function onTouchMove(e) {
+    if (!touchSort.enabled) {
+      // 尚未激活时允许轻滑滚动；一旦移动过大则取消长按
+      if (touchSort.sourceEl) {
+        var dy = Math.abs(e.touches[0].clientY - touchSort.lastY);
+        if (dy > 10) cancelSort();
+      }
+      return;
+    }
+    e.preventDefault();
+
+    var y = e.touches[0].clientY;
+    moveSourceWithTouch(y);
+    autoscroll(y);
+    updateDropTarget(y);
+  }
+
+  function moveSourceWithTouch(y) {
+    var ph = touchSort.placeholder;
+    if (!ph) return;
+    var rect = ph.getBoundingClientRect();
+    var offset = y - (rect.top + rect.height / 2);
+    touchSort.sourceEl.style.transform = 'translateY(' + offset + 'px) scale(1.02)';
+  }
+
+  function updateDropTarget(y) {
+    var info = currentSortInfo();
+    if (!info) return;
+    var items = info.container.querySelectorAll(
+      info.kind === 'card' ? '.card' : '.nav-item'
+    );
+    var best = null, bestDist = Infinity;
+    items.forEach(function (it) {
+      if (it === touchSort.sourceEl || it.classList.contains('touch-sort-ph')) return;
+      var r = it.getBoundingClientRect();
+      var cy = r.top + r.height / 2;
+      var d = Math.abs(y - cy);
+      if (d < bestDist) { bestDist = d; best = it; }
+    });
+
+    info.container.querySelectorAll('.drag-over-target, .drag-over-sidebar').forEach(function (n) {
+      n.classList.remove('drag-over-target', 'drag-over-sidebar');
+    });
+    if (best) best.classList.add(info.kind === 'card' ? 'drag-over-target' : 'drag-over-sidebar');
+  }
+
+  function onTouchEnd(e) {
+    clearTimeout(touchSort.longTimer);
+    if (!touchSort.enabled) {
+      touchSort.sourceEl = null;
+      return;
+    }
+
+    var info = currentSortInfo();
+    var target = info
+      ? info.container.querySelector(
+          info.kind === 'card' ? '.card.drag-over-target' : '.nav-item.drag-over-sidebar'
+        )
+      : null;
+
+    exitSortMode();
+
+    if (target && target !== touchSort.sourceEl) {
+      commitSort(info.kind, touchSort.sourceKey, target);
+    } else {
+      vibrate(15);
+    }
+
+    touchSort.enabled = false;
+    touchSort.sourceEl = null;
+    touchSort.sourceKey = null;
+  }
+
+  function commitSort(kind, sourceKey, targetEl) {
+    if (kind === 'card') {
+      var parts = sourceKey.split(':');
+      var src = { cat: parts[0], index: parseInt(parts[1], 10) };
+      var dst = { cat: targetEl.dataset.cat, index: parseInt(targetEl.dataset.index, 10) };
+      if (src.cat !== dst.cat || src.index !== dst.index) {
+        moveLink(src.cat, src.index, dst.cat, dst.index);
+      }
+    } else {
+      var fromCat = sourceKey, toCat = targetEl.dataset.cat;
+      if (fromCat !== toCat) moveGroup(fromCat, toCat);
+    }
+  }
+
+  function currentSortInfo() {
+    if (!touchSort.kind) return null;
+    return {
+      kind: touchSort.kind,
+      container: touchSort.kind === 'card'
+        ? document.getElementById('content')
+        : document.getElementById('navList')
+    };
+  }
+
+  function exitSortMode() {
+    clearInterval(touchSort.autoscrollTimer);
+    var src = touchSort.sourceEl;
+    if (src) {
+      src.classList.remove('dragging');
+      src.style.transition = '';
+      src.style.transform = '';
+    }
+    if (touchSort.placeholder && touchSort.placeholder.parentNode) {
+      touchSort.placeholder.parentNode.removeChild(touchSort.placeholder);
+    }
+    touchSort.placeholder = null;
+    document.body.classList.remove('touch-sorting');
+    var info = currentSortInfo();
+    if (info) {
+      info.container.querySelectorAll('.drag-over-target, .drag-over-sidebar').forEach(function (n) {
+        n.classList.remove('drag-over-target', 'drag-over-sidebar');
+      });
+    }
+  }
+
+  function cancelSort() {
+    clearTimeout(touchSort.longTimer);
+    if (touchSort.enabled) exitSortMode();
+    touchSort.enabled = false;
+    touchSort.sourceEl = null;
+  }
+
+  function autoscroll(y) {
+    var el = touchSort.scrollEl;
+    if (!el) return;
+    var rect = el.getBoundingClientRect();
+    var dy = 0;
+    if (y - rect.top < TOUCH_AUTOSCROLL_EDGE) {
+      dy = -TOUCH_AUTOSCROLL_MAX * (1 - (y - rect.top) / TOUCH_AUTOSCROLL_EDGE);
+    } else if (rect.bottom - y < TOUCH_AUTOSCROLL_EDGE) {
+      dy = TOUCH_AUTOSCROLL_MAX * (1 - (rect.bottom - y) / TOUCH_AUTOSCROLL_EDGE);
+    }
+    clearInterval(touchSort.autoscrollTimer);
+    if (dy !== 0) {
+      touchSort.autoscrollTimer = setInterval(function () {
+        el.scrollTop += dy;
+        moveSourceWithTouch(y);
+      }, 16);
+    }
+  }
+
+  function findScrollParent(el) {
+    var node = el.parentNode;
+    while (node && node !== document.body) {
+      var overflow = window.getComputedStyle(node).overflowY;
+      if ((overflow === 'auto' || overflow === 'scroll') && node.scrollHeight > node.clientHeight) {
+        return node;
+      }
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  function vibrate(ms) {
+    if (navigator.vibrate) { try { navigator.vibrate(ms); } catch (e) { /* ignore */ } }
+  }
+
     bindCardDragSort();
     bindGroupDragSort();
+    bindTouchSort();
 
     await loadNavData();
 
@@ -1159,24 +1425,33 @@
 
   function hideTip() { if (tip) tip.classList.remove('show'); }
 
-// ★ 触屏设备：不弹浮层，点卡片直接跳转
+  // ★ 触屏：点图标弹浮层，点卡片主体直接跳转；非触屏：保持原 hover 逻辑
   if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
-    return;
+    document.addEventListener('click', function (e) {
+      var icon = e.target.closest && e.target.closest('.card-icon');
+      if (!icon) { hideTip(); return; }
+      var card = icon.closest('.card');
+      if (!card) return;
+      e.stopPropagation();
+      e.preventDefault();
+      clearTimeout(hideTimer);
+      showTip(card);
+    });
+  } else {
+    document.addEventListener('mouseover', function (e) {
+      var card = e.target.closest && e.target.closest('.card');
+      if (!card) return;
+      clearTimeout(hideTimer);
+      tipTimer = setTimeout(function () { showTip(card); }, TIP_DELAY);
+    });
+
+    document.addEventListener('mouseout', function (e) {
+      if (e.target.closest && e.target.closest('.card')) {
+        clearTimeout(tipTimer);
+        hideTimer = setTimeout(hideTip, 120);
+      }
+    });
   }
-
-  document.addEventListener('mouseover', function (e) {
-    var card = e.target.closest && e.target.closest('.card');
-    if (!card) return;
-    clearTimeout(hideTimer);
-    tipTimer = setTimeout(function () { showTip(card); }, TIP_DELAY);
-  });
-
-  document.addEventListener('mouseout', function (e) {
-    if (e.target.closest && e.target.closest('.card')) {
-      clearTimeout(tipTimer);
-      hideTimer = setTimeout(hideTip, 120);
-    }
-  });
 
   window.addEventListener('scroll', function () { if (tip && tip.classList.contains('show')) hideTip(); }, true);
   window.addEventListener('resize', function () { if (tip && tip.classList.contains('show')) hideTip(); });
