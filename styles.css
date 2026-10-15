@@ -973,7 +973,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 /* 窄屏自适应 */
 @media (max-width: 640px) {
   .footer-legal {
-    padding: 14px 12px !important;
+    padding: 8px 0 8px !important;
     font-size: 11px;
   }
 }
