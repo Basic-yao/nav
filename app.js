@@ -887,10 +887,10 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
   function positionTip(card) {
     if (!tip) return;
     var r = card.getBoundingClientRect();
-    tip.style.width = r.width + 'px';      // ★ 浮层宽度 = 卡片宽度
+    tip.style.width = r.width + 'px';
     tip.style.left  = '0px';
     tip.style.top   = '-9999px';
-    tip.classList.add('show');             // 先显示才能读到真实高度
+    tip.classList.add('show');
     var th = tip.offsetHeight;
     var left = r.left + window.pageXOffset;
     var top  = r.top + window.pageYOffset - th - 12;
@@ -912,14 +912,7 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
 
   function hideTip() { if (tip) tip.classList.remove('show'); }
 
-  document.addEventListener('mouseover', function (e) {
-    var card = e.target.closest && e.target.closest('.card');
-    if (!card) return;
-    clearTimeout(hideTimer);
-    tipTimer = setTimeout(function () { showTip(card); }, TIP_DELAY);
-  });
-
-// ★ 触屏设备：点击图标弹出浮层，点击卡片主体直接跳转（不弹浮层）
+  // ★ 触屏：点图标弹浮层，点卡片主体直接跳转；非触屏：保持原 hover 逻辑
   if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
     document.addEventListener('click', function (e) {
       var icon = e.target.closest && e.target.closest('.card-icon');
@@ -928,38 +921,24 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
       if (!card) return;
       e.stopPropagation();
       e.preventDefault();
-      clearTimeout(hideTimer); 
+      clearTimeout(hideTimer);
       showTip(card);
     });
-    // 后续 mouseover/mouseout 绑定不再执行
   } else {
+    document.addEventListener('mouseover', function (e) {
+      var card = e.target.closest && e.target.closest('.card');
+      if (!card) return;
+      clearTimeout(hideTimer);
+      tipTimer = setTimeout(function () { showTip(card); }, TIP_DELAY);
+    });
 
-  document.addEventListener('mouseover', function (e) {
-    var card = e.target.closest && e.target.closest('.card');
-    if (!card) return;
-    clearTimeout(hideTimer);
-    tipTimer = setTimeout(function () { showTip(card); }, TIP_DELAY);
-  });
-
-  document.addEventListener('mouseout', function (e) {
-    if (e.target.closest && e.target.closest('.card')) {
-      clearTimeout(tipTimer);
-      hideTimer = setTimeout(hideTip, 120);
-    }
-  });
-
-  }  // ← 结束 if/else 分支
-
-  window.addEventListener('scroll', function () { if (tip && tip.classList.contains('show')) hideTip(); }, true);
-  window.addEventListener('resize', function () { if (tip && tip.classList.contains('show')) hideTip(); });
-})();
-
-  document.addEventListener('mouseout', function (e) {
-    if (e.target.closest && e.target.closest('.card')) {
-      clearTimeout(tipTimer);
-      hideTimer = setTimeout(hideTip, 120);
-    }
-  });
+    document.addEventListener('mouseout', function (e) {
+      if (e.target.closest && e.target.closest('.card')) {
+        clearTimeout(tipTimer);
+        hideTimer = setTimeout(hideTip, 120);
+      }
+    });
+  }
 
   window.addEventListener('scroll', function () { if (tip && tip.classList.contains('show')) hideTip(); }, true);
   window.addEventListener('resize', function () { if (tip && tip.classList.contains('show')) hideTip(); });
