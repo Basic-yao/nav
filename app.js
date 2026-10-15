@@ -207,7 +207,7 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
   // 搜索引擎切换（与 custom.js 后台逻辑一致）
   // 依赖 HTML 结构：#searchTags 容器内的 .tag 按钮带 data-engine 属性
   var SEARCH_ENGINES = {
-    site:   { url: null,                                   placeholder: '按 / 快速唤起站内搜索' },
+    site:   { url: null,                                   placeholder: '按 \\ 快速唤起搜索' },
     bing:   { url: 'https://www.bing.com/search?q=',       placeholder: 'Bing 搜索' },
     baidu:  { url: 'https://www.baidu.com/s?wd=',         placeholder: '百度一下' },
     google: { url: 'https://www.google.com/search?q=',     placeholder: 'Google 搜索' }
@@ -317,9 +317,9 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
 
     if (btn) btn.onclick = doSearch;
 
-    // 按 / 快速聚焦搜索框（不与中文输入冲突）
+    // 按 \ 快速聚焦搜索框（不与中文输入冲突）
     document.addEventListener('keydown', function (e) {
-      if (e.key === '/' && document.activeElement !== input) {
+      if ((e.key === '\\' || e.code === 'Backslash') && document.activeElement !== input) {
         e.preventDefault();
         input.focus();
       }
@@ -918,6 +918,41 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     clearTimeout(hideTimer);
     tipTimer = setTimeout(function () { showTip(card); }, TIP_DELAY);
   });
+
+// ★ 触屏设备：点击图标弹出浮层，点击卡片主体直接跳转（不弹浮层）
+  if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+    document.addEventListener('click', function (e) {
+      var icon = e.target.closest && e.target.closest('.card-icon');
+      if (!icon) { hideTip(); return; }
+      var card = icon.closest('.card');
+      if (!card) return;
+      e.stopPropagation();
+      e.preventDefault();
+      clearTimeout(hideTimer); 
+      showTip(card);
+    });
+    // 后续 mouseover/mouseout 绑定不再执行
+  } else {
+
+  document.addEventListener('mouseover', function (e) {
+    var card = e.target.closest && e.target.closest('.card');
+    if (!card) return;
+    clearTimeout(hideTimer);
+    tipTimer = setTimeout(function () { showTip(card); }, TIP_DELAY);
+  });
+
+  document.addEventListener('mouseout', function (e) {
+    if (e.target.closest && e.target.closest('.card')) {
+      clearTimeout(tipTimer);
+      hideTimer = setTimeout(hideTip, 120);
+    }
+  });
+
+  }  // ← 结束 if/else 分支
+
+  window.addEventListener('scroll', function () { if (tip && tip.classList.contains('show')) hideTip(); }, true);
+  window.addEventListener('resize', function () { if (tip && tip.classList.contains('show')) hideTip(); });
+})();
 
   document.addEventListener('mouseout', function (e) {
     if (e.target.closest && e.target.closest('.card')) {
