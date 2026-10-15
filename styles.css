@@ -391,7 +391,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 /* ===== 卡片 ===== */
 .card {
   display: flex;
-  align-items: center;
+  align-items: center; 
   gap: 8px;
   padding: 14px;
   background: var(--card-bg);
@@ -401,11 +401,9 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   color: var(--text-main);
   box-shadow: var(--shadow);
   transition: transform 0.15s, box-shadow 0.15s;
-  align-items: flex-start;
-  height: 78px;
   box-sizing: border-box;
   min-width: 0;
-  max-width:300px;
+  max-width: 300px;
 }
 
 .card:hover {
@@ -466,6 +464,10 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 .card-body {
   min-width: 0;
   flex: 1 1 auto;
+  display: flex;                    /* ★ 新增 */
+  flex-direction: column;           /* ★ 新增 */
+  justify-content: center;          /* ★ 新增：标题+描述整体垂直居中 */
+  align-self: stretch;              /* ★ 新增：占满卡片高度 */
 }
 
 .card-title {
