@@ -1159,33 +1159,24 @@
 
   function hideTip() { if (tip) tip.classList.remove('show'); }
 
-  // ★ 触屏：点图标弹浮层，点卡片主体直接跳转；非触屏：保持原 hover 逻辑
+// ★ 触屏设备：不弹浮层，点卡片直接跳转
   if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
-    document.addEventListener('click', function (e) {
-      var icon = e.target.closest && e.target.closest('.card-icon');
-      if (!icon) { hideTip(); return; }
-      var card = icon.closest('.card');
-      if (!card) return;
-      e.stopPropagation();
-      e.preventDefault();
-      clearTimeout(hideTimer);
-      showTip(card);
-    });
-  } else {
-    document.addEventListener('mouseover', function (e) {
-      var card = e.target.closest && e.target.closest('.card');
-      if (!card) return;
-      clearTimeout(hideTimer);
-      tipTimer = setTimeout(function () { showTip(card); }, TIP_DELAY);
-    });
-
-    document.addEventListener('mouseout', function (e) {
-      if (e.target.closest && e.target.closest('.card')) {
-        clearTimeout(tipTimer);
-        hideTimer = setTimeout(hideTip, 120);
-      }
-    });
+    return;
   }
+
+  document.addEventListener('mouseover', function (e) {
+    var card = e.target.closest && e.target.closest('.card');
+    if (!card) return;
+    clearTimeout(hideTimer);
+    tipTimer = setTimeout(function () { showTip(card); }, TIP_DELAY);
+  });
+
+  document.addEventListener('mouseout', function (e) {
+    if (e.target.closest && e.target.closest('.card')) {
+      clearTimeout(tipTimer);
+      hideTimer = setTimeout(hideTip, 120);
+    }
+  });
 
   window.addEventListener('scroll', function () { if (tip && tip.classList.contains('show')) hideTip(); }, true);
   window.addEventListener('resize', function () { if (tip && tip.classList.contains('show')) hideTip(); });
