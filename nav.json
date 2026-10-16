@@ -248,6 +248,24 @@
         "url": "https://www.hibitsoft.ir/",
         "desc": "免费的HiBit Uninstaller软件卸载和HiBit Startup Manager启动项管理，提供安装版和便携版，能够清理注册表。",
         "icon": "https://www.hibitsoft.ir/favicon.ico"
+      },
+      {
+        "title": "文件管理工具",
+        "url": "https://dirdeck.com/",
+        "desc": "苹果系统文件管理界的瑞士军刀，Finder 的最佳平替。多标签页、多层级收藏夹、12 种分屏布局、超级预览与文件处理工具，专为 Mac 打造的一站式文件管理工作台。",
+        "icon": "https://dirdeck.com/assets/brand/favicon-32.png"
+      },
+      {
+        "title": "开发者免费服务资源大全",
+        "url": "https://free-for-dev.com/zh/",
+        "desc": "free-for.dev 是一个非常实用且知名的资源网站，专门为软件开发者和技术人员收集整理免费的服务和工具，内容覆盖了开发者从构建、测试、部署到协作的所有环节，该项目在 GitHub 已经获得了 110K Stars。",
+        "icon": "icons/free.png"
+      },
+      {
+        "title": "Node.js",
+        "url": "https://nodejs.org/zh-cn",
+        "desc": "在任何地方运行 JavaScript Node.js® 是一个免费、开源、跨平台的 JavaScript 运行时环境，它让开发人员能够创建服务器、 Web 应用、命令行工具和脚本。",
+        "icon": "https://nodejs.org/static/images/favicons/favicon.png"
       }
     ]
   },
