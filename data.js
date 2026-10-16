@@ -67,6 +67,12 @@ const navData =
         "url": "https://tv.iptv2026.cc.cd/",
         "desc": "SOCKS5 代理池 · 总端 Quake / 鹰图采集 · 测速验活自愈 · 播放列表注入 · 多账号部署 ｜ 范围：台湾 / 香港 / 全球(排除中国大陆)",
         "icon": ""
+      },
+      {
+        "title": "电视直播源搜索引擎",
+        "url": "https://tonkiang.us/",
+        "desc": "最新直播源分享平台。一个免费且易于使用的在线工具，专门用于搜索和提供公共的 IPTV 频道直播源分享。用户可以通过简单的步骤快速找到并播放所需的电视直播节目。电视直播源搜索引擎｜最新直播源分享平台, 国内外m3u8电视直播源网址每日更新",
+        "icon": "https://tonkiang.us/favicon1.ico"
       }
     ]
   },
@@ -90,13 +96,31 @@ const navData =
         "title": "果核剥壳",
         "url": "https://www.ghxi.com/",
         "desc": "互联网的净土。PC软件，手机软件，正版软件，破解软件",
-        "icon": ""
+        "icon": "https://www.ghxi.com/favicon.ico"
       },
       {
-        "title": "腾讯软件中心",
-        "url": "https://pc.qq.com/",
-        "desc": "腾讯官方软件下载平台",
-        "icon": ""
+        "title": "软仓 | RuanCang.Net",
+        "url": "https://www.ruancang.net",
+        "desc": "常用软件，Adobe，CAD制图，三维建模，图像设计，建筑BIM，视频音频，数据分析，机械工业，电子电路",
+        "icon": "https://www.ruancang.net/favicon.ico"
+      },
+      {
+        "title": "佛系软件",
+        "url": "https://foxirj.com/",
+        "desc": "精品Windows,macOS破解软件下载，每天更新大量精品mac应用软件,macOS破解软件,Windows破解软件,音频插件,视频插件,图像插件",
+        "icon": "https://foxirj.com/favicon.ico"
+      },
+      {
+        "title": "MacApp分享频道",
+        "url": "https://macapp.org.cn/",
+        "desc": "MacApp分享频道是一个专注于分享精品Mac资源的频道",
+        "icon": "https://macapp.org.cn/wp-content/uploads/2024/09/a6e5b49cb355225.png"
+      },
+      {
+        "title": "MacWk - 精品mac软件下载",
+        "url": "https://www.macwk.com/",
+        "desc": "MacWK 官网专注于 Mac 应用软件下载，每日更新大量精品 macOS 软件，提供优质的 Mac 软件资源、热门应用及 Mac 破解版软件下载服务，帮助用户快速发现和获取实用的 Mac 软件。",
+        "icon": "https://www.macwk.com/favicon.ico"
       }
     ]
   },
@@ -144,7 +168,19 @@ const navData =
         "title": "倪海厦大全集",
         "url": "http://www.finalhopes.com/",
         "desc": "经方派倪海厦大全集和医案在线查询,下载,自学中医和中医入门经验分享指导",
-        "icon": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231677ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z'></path></svg>"
+        "icon": "icons/nhx.png"
+      },
+      {
+        "title": "鲁班尺在线查询",
+        "url": "https://lubanchi.bmcx.com/",
+        "desc": "鲁班尺，全称“鲁班营造尺”，相传为春秋鲁国公鲁班所作，后经风水界加入八字，以丈量房宅吉凶，并呼之为“门公尺”，又称“角尺”。",
+        "icon": "https://f.bmcx.com/file/lubanchi/i_c_o_114x114.png"
+      },
+      {
+        "title": "国家知识产权局商标局",
+        "url": "https://sbj.cnipa.gov.cn/sbj/index.html",
+        "desc": "国家知识产权局商标局 · 官方门户 · 商标业务一网通办",
+        "icon": "icons/sbj.png"
       }
     ]
   },
@@ -193,6 +229,30 @@ const navData =
         "url": "https://www.locrdp.cn/",
         "desc": "让每一台windows电脑安全启用远程桌面和远程协助",
         "icon": "https://www.locrdp.cn/favicon.ico"
+      },
+      {
+        "title": "移除内容付费",
+        "url": "https://paywallbuster.me/",
+        "desc": "许多网站都提供了新闻文章内容付费功能。我们将它们全部汇集在一个方便的地方。所以，你可以尝试它们，找到最适合你喜欢的网站的服务。",
+        "icon": "https://paywallbuster.me/assets/favicon-C5znJkUV.svg"
+      },
+      {
+        "title": "Everything",
+        "url": "https://www.voidtools.com/zh-cn/downloads/",
+        "desc": "\"Everything\" 是 Windows 上最快的文件名搜索引擎之一。",
+        "icon": "https://www.voidtools.com/favicon.ico"
+      },
+      {
+        "title": "Windows Memory Cleaner",
+        "url": "https://winmemorycleaner.com/",
+        "desc": "Windows内存自动清除工具",
+        "icon": "https://winmemorycleaner.com/assets/images/win-memory-cleaner.ico"
+      },
+      {
+        "title": "HiBitSoftware",
+        "url": "https://www.hibitsoft.ir/",
+        "desc": "免费的HiBit Uninstaller软件卸载和HiBit Startup Manager启动项管理，提供安装版和便携版，能够清理注册表。",
+        "icon": "https://www.hibitsoft.ir/favicon.ico"
       }
     ]
   },
@@ -216,7 +276,13 @@ const navData =
         "title": "Z-Library",
         "url": "https://zh.101isfj.ru/",
         "desc": "世界上最大的电子图书馆。自由访问知识和文化。",
-        "icon": "https://zh.101isfj.ru/img/favicons/apple-touch-icon.png?v=1"
+        "icon": "icons/Z-Library.svg"
+      },
+      {
+        "title": "读书派",
+        "url": "https://www.dushupai.com/",
+        "desc": "电子书下载,epub电子书,azw3电子书,mobi电子书,pdf电子书下载去哪儿？上读书派! 靠谱的电子书下载,了解更多免费好用的电子书下载网站。",
+        "icon": "https://www.dushupai.com/favicon.ico"
       }
     ]
   },
@@ -224,12 +290,6 @@ const navData =
     "category": "网盘云储",
     "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z\"/></svg>",
     "links": [
-      {
-        "title": "阿里小站",
-        "url": "https://pan666.cn",
-        "desc": "阿里云盘资源共享站。人人为我，我为人人的共享资源社区",
-        "icon": "https://www.google.com/s2/favicons?domain=pan666.cn"
-      },
       {
         "title": "百度网盘",
         "url": "https://pan.baidu.com/s/15RKNU_u4kSCACbO1uUgQlw?pwd=6666#list/path=%2F",
@@ -246,13 +306,19 @@ const navData =
         "title": "Fmhy.net",
         "url": "https://fmhy.net/",
         "desc": "互联网上的免费资源收藏！",
-        "icon": "https://fmhy.net/fmhy.ico"
+        "icon": "icons/fmhy.ico"
       },
       {
         "title": "新华字典",
-        "url": "https://www.hao86.com/",
-        "desc": "新华字典,成语,诗词,在线翻译,谜语,歇后语",
-        "icon": "https://www.hao86.com/favicon.ico"
+        "url": "https://www.hao86.com/zi/",
+        "desc": "新华字典,查字典,汉字拼音,部首查字,笔画查字,提供汉字读音、部首、笔画、结构、解释、组词等查询。",
+        "icon": "icons/xhzd.png"
+      },
+      {
+        "title": "Z2H字帖",
+        "url": "https://z2h.cn/",
+        "desc": "这是一个优雅实用的在线字帖生成工具，可轻松自定义所需字帖，支持汉字和英文任意排版、灵活设置描红样式和大小、自选字体、生成控笔练习字帖、导出图片等。",
+        "icon": "https://z2h.cn/favicon.svg"
       }
     ]
   },
@@ -283,6 +349,18 @@ const navData =
         "url": "https://iwin11.cn/",
         "desc": "专注于Win10,专注于Win11,专注于Win7,吻妻,吻妻系统,iwin10,iwin11,纯净版系统下载",
         "icon": "https://iwin10.net/favicon.ico"
+      },
+      {
+        "title": "HelloWindows",
+        "url": "https://hellowindows.cn/",
+        "desc": "HelloWindows是一个完整极致的Windows纯净系统下载站，不夹带任何私货，系统全部来源于微软官方原版，本站只是收录官方发布的系统以及工具，方便大家下载，请放心使用。永久在线：www.hellowindows.cn",
+        "icon": "https://hellowindows.cn/favicon.ico"
+      },
+      {
+        "title": "MSDN, 我告诉你",
+        "url": "https://msdn.itellyou.cn/",
+        "desc": "本站仅为个人性质的windows原版软件信息收录站点。2007年开始至今，从未有意标榜或冒充是微软官方网站，微软官方标识请认准：Microsoft。",
+        "icon": "https://msdn.itellyou.cn/favicon.ico"
       }
     ]
   }

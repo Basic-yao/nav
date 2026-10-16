@@ -1456,4 +1456,3 @@
   window.addEventListener('scroll', function () { if (tip && tip.classList.contains('show')) hideTip(); }, true);
   window.addEventListener('resize', function () { if (tip && tip.classList.contains('show')) hideTip(); });
 })();
-

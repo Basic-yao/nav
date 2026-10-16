@@ -419,7 +419,7 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     (data || []).forEach(function (item) {
       const div = document.createElement('div');
       div.className = 'nav-item';
-      div.draggable = true;
+      if (EDIT_MODE) div.draggable = true;
       div.dataset.cat = item.category || '';
 
       const parent = document.createElement('div');
@@ -872,6 +872,7 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
   }
 
   function bindTouchSort() {
+    if (!EDIT_MODE) return;          /* 前台展示页不需要长按拖动排序 */
     if (!isTouchDevice()) return;
     const contentEl = document.getElementById('content');
     const navListEl = document.getElementById('navList');
@@ -900,6 +901,7 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
   }
 
   function onTouchStart(e) {
+    if (!EDIT_MODE) return;          /* 前台：不接管任何触摸，保留原生点击/滚动 */
     if (e.touches.length !== 1) return;
     const t = targetInfo(e.target);
     if (!t) return;
