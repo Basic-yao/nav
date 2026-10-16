@@ -259,7 +259,7 @@
         "title": "开发者免费服务资源大全",
         "url": "https://free-for-dev.com/zh/",
         "desc": "free-for.dev 是一个非常实用且知名的资源网站，专门为软件开发者和技术人员收集整理免费的服务和工具，内容覆盖了开发者从构建、测试、部署到协作的所有环节，该项目在 GitHub 已经获得了 110K Stars。",
-        "icon": "icons/free.png"
+        "icon": "icons/ffd.png"
       },
       {
         "title": "Node.js",
