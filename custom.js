@@ -21,6 +21,8 @@
   var navDataRef = navData;
   var ORIGINAL = JSON.parse(JSON.stringify(navDataRef));
   var currentView = null;
+  // 搜索态快照：与 app.js 对齐，避免手机滚动/切换分类时搜索结果被覆盖重绘
+  var currentFiltered = null;
 
   // ============================================================
   // 保存与加载
@@ -931,13 +933,14 @@
   function doSearchWithEngine(keyword) {
     // 空关键词：退出搜索态，回到当前视图
     if (!keyword) {
+      currentFiltered = null;      // ★ 清空搜索态
       renderContentForCurrent();
       clearSearchInput();
       return;
     }
     if (currentEngine === 'site') {
-      var filtered = filterData(navDataRef, keyword);
-      renderContent(filtered);
+      currentFiltered = filterData(navDataRef, keyword);  // ★ 保存快照
+      renderContent(currentFiltered);
     } else {
       var url = SEARCH_ENGINES[currentEngine].url + encodeURIComponent(keyword);
       window.open(url, '_blank');
@@ -962,8 +965,13 @@
     input.addEventListener('input', function () {
       if (currentEngine === 'site') {
         var keyword = input.value.trim();
-        var filtered = filterData(navDataRef, keyword);
-        renderContent(filtered);
+        if (!keyword) {
+          currentFiltered = null;                       // ★ 退出搜索态
+          renderContentForCurrent();                     // ★ 回到当前分类/全部视图
+          return;
+        }
+        currentFiltered = filterData(navDataRef, keyword);  // ★ 保存快照
+        renderContent(currentFiltered);
       }
       // 外部搜索引擎模式下，input 不触发任何操作
     });
@@ -992,6 +1000,11 @@
   // 渲染当前视图
   // ============================================================
   function renderContentForCurrent() {
+    // ★ 搜索态优先：手机滚动/resize/touchend 触发重绘时，搜索结果不丢
+    if (currentFiltered) {
+      renderContent(currentFiltered);
+      return;
+    }
     var data;
     if (currentView) {
       var group = navDataRef.find(function (s) { return s.category === currentView; });
@@ -1386,7 +1399,11 @@
     try { document.querySelectorAll('.card[title]').forEach(function (el) { el.removeAttribute('title'); }); } catch (e) {}
 
     try { renderSidebar(navDataRef); } catch (e) { console.error('[nav] renderSidebar 失败:', e); }
-    try { renderContentForCurrent(); } catch (e) { console.error('[nav] renderContent 失败:', e); }
+    // ★ 数据加载完成后不再无条件重绘：避免手机端二次渲染导致页面跳动；
+    //   搜索态由 renderContentForCurrent 内的 currentFiltered 保护
+    if (!NAV_READY) {
+      try { renderContentForCurrent(); } catch (e) { console.error('[nav] renderContent 失败:', e); }
+    }
 
     // 动态渲染后再次清理（新增 / 编辑 / 拖拽重排都会重绘）
     try { document.querySelectorAll('.card[title]').forEach(function (el) { el.removeAttribute('title'); }); } catch (e) {}
