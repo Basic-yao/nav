@@ -49,7 +49,13 @@ html[data-theme="dark"] {
 html, body {
   margin: 0 !important;
   padding: 0 !important;
-  overflow: hidden; 
+}
+
+/* 移动端必须允许页面滚动；body 保持可滚动，overflow 交给 .layout / .main 各自管理 */
+html { overflow: auto; }
+body {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 html {
@@ -240,7 +246,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   box-sizing: border-box;
 
   /* 底部内边距归零，让声明贴底 */
-  padding: 0 38px 0;
+  padding: 12px 38px 0;
 
   /* 沉底关键：Flex 纵向布局 */
   display: flex !important;
@@ -255,7 +261,8 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 /* ===== 搜索栏 ===== */
 .search-box {
   position: sticky;
-  top: 0;
+  /* 吸顶时让出刘海/状态栏；非刘海机型 env() 取值为 0，布局不受影响 */
+  top: calc(0px + env(safe-area-inset-top, 0px));
   z-index: 100;
   width: calc(100% + 64px);
   max-width: none;
@@ -829,18 +836,8 @@ html[data-theme="dark"] .nav-item.dragging {
     max-width: calc(100vw - 56px);
     max-width: calc(100dvw - 56px);
     margin-left: 56px;
-    padding: 0 18px 0;
-  }
-}
-
-/* ===== 移动端/窄屏：侧栏固定为 56px 图标栏，主内容需要让位 ===== */
-@media (max-width: 768px) {
-  .main {
-    width: calc(100vw - 56px);
-    width: calc(100dvw - 56px);
-    max-width: calc(100vw - 56px);
-    max-width: calc(100dvw - 56px);
-    margin-left: 56px;
+    /* 顶部让出侧栏首行(56px) + 刘海安全区，避免搜索栏吸顶后被刘海切掉 */
+    padding: calc(56px + env(safe-area-inset-top, 0px)) 18px 0;
   }
 }
 
