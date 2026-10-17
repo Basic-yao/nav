@@ -13,16 +13,14 @@
 
   var DEFAULT_GROUP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
   var PLUS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
-  var EDIT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>';
-  var TRASH_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+  var EDIT_ICON = '<svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>';
+  var TRASH_ICON = '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
 
   
   // 保存对外部 navData 的引用，通过修改数组内容而非重新赋值
   var navDataRef = navData;
   var ORIGINAL = JSON.parse(JSON.stringify(navDataRef));
   var currentView = null;
-  // 搜索态快照：与 app.js 对齐，避免手机滚动/切换分类时搜索结果被覆盖重绘
-  var currentFiltered = null;
 
   // ============================================================
   // 保存与加载
@@ -239,7 +237,7 @@
       '<div class="card-body"><div class="card-title">添加网址</div><div class="card-desc">新增至「' + cat + '」</div></div>' +
     '</div>';
 
-    return '<div class="card" draggable="true" data-cat="' + cat + '" data-index="' + index + '" style="position:relative">' +
+    return '<div class="card" draggable="true" data-cat="' + cat + '" data-index="' + index + '">' +
       '<div class="card-main" onclick="window.open(\'' + safeUrl + '\',\'_blank\')">' +
         '<div class="card-icon">' + iconHtml + '</div>' +
         '<div class="card-body">' +
@@ -247,43 +245,9 @@
           '<div class="card-desc">' + (l.desc || '') + '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="card-actions-float">' + editBtn + delBtn + '</div>' +
+      '<div class="card-actions">' + editBtn + delBtn + '</div>' +
     '</div>';
   }
-
-  // ============================================================
-  // 后台卡片编辑/删除按钮：浮动在卡片右上角，不占文档流
-  // 与 app.js 前台行为一致；移动端触摸设备始终显示，桌面端悬停才显示
-  // ============================================================
-  (function injectCardActionsStyle() {
-    // 防止重复注入（renderContent 会多次调用，但样式只需一次）
-    if (document.querySelector('style[data-nav-card-actions="1"]')) return;
-    var css = [
-      '.card-actions-float{',
-        'position:absolute; top:8px; right:8px;',
-        'display:flex; gap:4px; z-index:5;',
-        'opacity:0; transition:opacity .15s;',
-      '}',
-      '.card-actions-float .card-act-btn{ width:30px; height:30px; padding:4px; }',
-      '.card:hover .card-actions-float,',
-      '.card:focus-within .card-actions-float{ opacity:1; }',
-      '@media (hover:none) and (pointer:coarse){',
-        '.card-actions-float{ opacity:1; }',
-        '.card-actions-float .card-act-btn{ width:34px; height:34px; }',
-      '}',
-      '.card-actions{ display:none !important; }',
-      '.card-main{ position:relative; z-index:1; }',
-      '.add-card{ position:relative; z-index:1; }',
-      '.card-actions-float svg{ width:18px; height:18px; }',
-      '.card-actions-float .card-act-btn svg{ width:18px; height:18px; stroke:currentColor; stroke-width:2; }',
-      '.card{ overflow:visible; }',
-      ''
-    ];
-    var st = document.createElement('style');
-    st.setAttribute('data-nav-card-actions', '1');
-    st.textContent = css.join('\n');
-    document.head.appendChild(st);
-  })();
 
   // ============================================================
   // 渲染内容区
@@ -314,8 +278,8 @@
       '</div>';
       contentEl.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     });
-    // 版权 + 免责声明（始终在卡片内容最底部）
-    content.innerHTML += '<div class="footer-legal">' +
+  // 版权 + 免责声明（始终在卡片内容最底部）
+    contentEl.innerHTML += '<div class="footer-legal">' +
       '<p> Copyright © ' + new Date().getFullYear() + ' Basic-yao</p>' +
       '<p>免责声明：本站仅作个人网址索引，不存储第三方内容，亦不对各网址的真实性、准确性、合法性负责!</p>' +
     '</div>';
@@ -933,14 +897,13 @@
   function doSearchWithEngine(keyword) {
     // 空关键词：退出搜索态，回到当前视图
     if (!keyword) {
-      currentFiltered = null;      // ★ 清空搜索态
       renderContentForCurrent();
       clearSearchInput();
       return;
     }
     if (currentEngine === 'site') {
-      currentFiltered = filterData(navDataRef, keyword);  // ★ 保存快照
-      renderContent(currentFiltered);
+      var filtered = filterData(navDataRef, keyword);
+      renderContent(filtered);
     } else {
       var url = SEARCH_ENGINES[currentEngine].url + encodeURIComponent(keyword);
       window.open(url, '_blank');
@@ -965,13 +928,8 @@
     input.addEventListener('input', function () {
       if (currentEngine === 'site') {
         var keyword = input.value.trim();
-        if (!keyword) {
-          currentFiltered = null;                       // ★ 退出搜索态
-          renderContentForCurrent();                     // ★ 回到当前分类/全部视图
-          return;
-        }
-        currentFiltered = filterData(navDataRef, keyword);  // ★ 保存快照
-        renderContent(currentFiltered);
+        var filtered = filterData(navDataRef, keyword);
+        renderContent(filtered);
       }
       // 外部搜索引擎模式下，input 不触发任何操作
     });
@@ -1000,11 +958,6 @@
   // 渲染当前视图
   // ============================================================
   function renderContentForCurrent() {
-    // ★ 搜索态优先：手机滚动/resize/touchend 触发重绘时，搜索结果不丢
-    if (currentFiltered) {
-      renderContent(currentFiltered);
-      return;
-    }
     var data;
     if (currentView) {
       var group = navDataRef.find(function (s) { return s.category === currentView; });
@@ -1399,11 +1352,7 @@
     try { document.querySelectorAll('.card[title]').forEach(function (el) { el.removeAttribute('title'); }); } catch (e) {}
 
     try { renderSidebar(navDataRef); } catch (e) { console.error('[nav] renderSidebar 失败:', e); }
-    // ★ 数据加载完成后不再无条件重绘：避免手机端二次渲染导致页面跳动；
-    //   搜索态由 renderContentForCurrent 内的 currentFiltered 保护
-    if (!NAV_READY) {
-      try { renderContentForCurrent(); } catch (e) { console.error('[nav] renderContent 失败:', e); }
-    }
+    try { renderContentForCurrent(); } catch (e) { console.error('[nav] renderContent 失败:', e); }
 
     // 动态渲染后再次清理（新增 / 编辑 / 拖拽重排都会重绘）
     try { document.querySelectorAll('.card[title]').forEach(function (el) { el.removeAttribute('title'); }); } catch (e) {}
@@ -1506,4 +1455,45 @@
 
   window.addEventListener('scroll', function () { if (tip && tip.classList.contains('show')) hideTip(); }, true);
   window.addEventListener('resize', function () { if (tip && tip.classList.contains('show')) hideTip(); });
+// ============================================================
+// admin 移动端布局补丁
+// ============================================================
+(function () {
+  'use strict';
+
+  function applyMobilePatch() {
+    if (document.getElementById('admin-mobile-layout-fix')) return;
+
+    var isSmall = window.matchMedia('(max-width: 768px)').matches;
+    if (!isSmall) return;
+
+    var style = document.createElement('style');
+    style.id = 'admin-mobile-layout-fix';
+    style.textContent = [
+      '@media (max-width: 768px) {',
+      '  .sidebar {',
+      '    width: 56px !important;',
+      '  }',
+      '  .sidebar .nav-title,',
+      '  .sidebar .reset-btn,',
+      '  .sidebar .add-group-item .nav-title {',
+      '    display: none !important;',
+      '  }',
+      '  .main {',
+      '    width: calc(100vw - 56px) !important;',
+      '    max-width: calc(100vw - 56px) !important;',
+      '    margin-left: 56px !important;',
+      '    box-sizing: border-box !important;',
+      '  }',
+      '}'
+    ].join('\n');
+    document.head.appendChild(style);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyMobilePatch);
+  } else {
+    applyMobilePatch();
+  }
+})();
 })();
