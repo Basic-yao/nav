@@ -252,44 +252,48 @@
   // ============================================================
   // 渲染内容区
   // ============================================================
-function renderContent(data) {
-  var contentEl = document.getElementById('content');
-  if (!contentEl) return;
+// ============================================================
+  // 渲染内容区
+  // ============================================================
+  function renderContent(data) {
+    var contentEl = document.getElementById('content');
+    if (!contentEl) return;
 
-  if (!data || data.length === 0) {
-    contentEl.innerHTML = '<div class="empty">未找到相关内容</div>';
-    return;
+    if (!data || data.length === 0) {
+      contentEl.innerHTML = '<div class="empty">未找到相关内容</div>';
+      return;
+    }
+
+    // ★ 关键：用字符串累加，循环内不碰 DOM，杜绝重复重排导致的布局抖动
+    var html = '';
+    data.forEach(function (sec) {
+      var links = sec.links || [];
+      var title = '<h2 class="section-title">' +
+        getSectionIcon(sec) +
+        '<span>' + sec.category + '</span>' +
+        '<button class="grp-act-btn" data-act="edit" data-cat="' + sec.category + '" title="编辑分组">' + EDIT_ICON + '</button>' +
+        '<button class="grp-act-btn" data-act="del" data-cat="' + sec.category + '" title="删除分组">' + TRASH_ICON + '</button>' +
+      '</h2>';
+
+      var cards = links.map(function (l, i) { return cardTpl(l, sec.category, i); }).join('');
+      var addCard = '<div class="card add-card" data-cat="' + sec.category + '">' +
+        '<div class="card-icon">' + PLUS_ICON + '</div>' +
+        '<div class="card-body"><div class="card-title">添加网址</div><div class="card-desc">新增至「' + sec.category + '」</div></div>' +
+      '</div>';
+      html += title + '<div class="grid">' + cards + addCard + '</div>';
+    });
+
+    // ★ 版权幂等：已存在就不再挂，避免手机上越刷越多、内容被撑高顶飞搜索栏
+    if (!contentEl.querySelector('.footer-legal')) {
+      html += '<div class="footer-legal">' +
+        '<p> Copyright © ' + new Date().getFullYear() + ' Basic-yao</p>' +
+        '<p>免责声明：本站仅作个人网址索引，不存储第三方内容，亦不对各网址的真实性、准确性、合法性负责!</p>' +
+      '</div>';
+    }
+
+    // ★ 一次写入，不再依赖可能失效的 content 引用
+    contentEl.innerHTML = html;
   }
-
-  // ① 用字符串累加，循环内不碰 DOM，杜绝重复重排
-  var html = '';
-  data.forEach(function (sec) {
-    var links = sec.links || [];
-    var title = '<h2 class="section-title">' +
-      getSectionIcon(sec) +
-      '<span>' + sec.category + '</span>' +
-      '<button class="grp-act-btn" data-act="edit" data-cat="' + sec.category + '" title="编辑分组">' + EDIT_ICON + '</button>' +
-      '<button class="grp-act-btn" data-act="del" data-cat="' + sec.category + '" title="删除分组">' + TRASH_ICON + '</button>' +
-    '</h2>';
-
-    var cards = links.map(function (l, i) { return cardTpl(l, sec.category, i); }).join('');
-    var addCard = '<div class="card add-card" data-cat="' + sec.category + '">' +
-      '<div class="card-icon">' + PLUS_ICON + '</div>' +
-      '<div class="card-body"><div class="card-title">添加网址</div><div class="card-desc">新增至「' + sec.category + '」</div></div>' +
-    '</div>';
-    html += title + '<div class="grid">' + cards + addCard + '</div>';
-  });
-
-  // ② 一次性写入；③ 版权幂等，重复调用不堆积
-  if (!contentEl.querySelector('.footer-legal')) {
-    html += '<div class="footer-legal">' +
-      '<p> Copyright © ' + new Date().getFullYear() + ' Basic-yao</p>' +
-      '<p>免责声明：本站仅作个人网址索引，不存储第三方内容，亦不对各网址的真实性、准确性、合法性负责!</p>' +
-    '</div>';
-  }
-  contentEl.innerHTML = html;
-}
-
   // ============================================================
   // 渲染侧边栏
   // ============================================================
