@@ -174,14 +174,6 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-
-  /* 移动端：取消独立滚动容器，让页面整体滚动，搜索栏自然跟随 */
-  @media (max-width: 768px) {
-    height: auto;
-    min-height: 100vh;
-    min-height: 100dvh;
-    overflow-y: visible;
-  }
 }
 
 .nav-item {
@@ -838,15 +830,6 @@ html[data-theme="dark"] .nav-item.dragging {
     max-width: calc(100dvw - 56px);
     margin-left: 56px;
     padding: 0 18px 0;
-  }
-
-  /* 搜索栏取消吸顶与负边距，避免文字被裁、被顶出视口 */
-  .search-box {
-    position: static;
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    padding: 10px 0 12px;
   }
 }
 
