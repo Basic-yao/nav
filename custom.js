@@ -13,8 +13,8 @@
 
   var DEFAULT_GROUP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
   var PLUS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
-  var EDIT_ICON = '<svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>';
-  var TRASH_ICON = '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+  var EDIT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>';
+  var TRASH_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
 
   
   // 保存对外部 navData 的引用，通过修改数组内容而非重新赋值
@@ -237,7 +237,7 @@
       '<div class="card-body"><div class="card-title">添加网址</div><div class="card-desc">新增至「' + cat + '」</div></div>' +
     '</div>';
 
-    return '<div class="card" draggable="true" data-cat="' + cat + '" data-index="' + index + '">' +
+    return '<div class="card" draggable="true" data-cat="' + cat + '" data-index="' + index + '" style="position:relative">' +
       '<div class="card-main" onclick="window.open(\'' + safeUrl + '\',\'_blank\')">' +
         '<div class="card-icon">' + iconHtml + '</div>' +
         '<div class="card-body">' +
@@ -245,9 +245,43 @@
           '<div class="card-desc">' + (l.desc || '') + '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="card-actions">' + editBtn + delBtn + '</div>' +
+      '<div class="card-actions-float">' + editBtn + delBtn + '</div>' +
     '</div>';
   }
+
+  // ============================================================
+  // 后台卡片编辑/删除按钮：浮动在卡片右上角，不占文档流
+  // 与 app.js 前台行为一致；移动端触摸设备始终显示，桌面端悬停才显示
+  // ============================================================
+  (function injectCardActionsStyle() {
+    // 防止重复注入（renderContent 会多次调用，但样式只需一次）
+    if (document.querySelector('style[data-nav-card-actions="1"]')) return;
+    var css = [
+      '.card-actions-float{',
+        'position:absolute; top:8px; right:8px;',
+        'display:flex; gap:4px; z-index:5;',
+        'opacity:0; transition:opacity .15s;',
+      '}',
+      '.card-actions-float .card-act-btn{ width:26px; height:26px; padding:4px; }',
+      '.card:hover .card-actions-float,',
+      '.card:focus-within .card-actions-float{ opacity:1; }',
+      '@media (hover:none) and (pointer:coarse){',
+        '.card-actions-float{ opacity:1; }',
+        '.card-actions-float .card-act-btn{ width:30px; height:30px; }',
+      '}',
+      '.card-actions{ display:none !important; }',
+      '.card-main{ position:relative; z-index:1; }',
+      '.add-card{ position:relative; z-index:1; }',
+      '.card-actions-float svg{ width:15px; height:15px; }',
+      '.card-actions-float .card-act-btn svg{ width:15px; height:15px; stroke:currentColor; stroke-width:1.8; }',
+      '.card{ overflow:visible; }',
+      ''
+    ];
+    var st = document.createElement('style');
+    st.setAttribute('data-nav-card-actions', '1');
+    st.textContent = css.join('\n');
+    document.head.appendChild(st);
+  })();
 
   // ============================================================
   // 渲染内容区
