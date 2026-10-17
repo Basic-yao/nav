@@ -1106,17 +1106,17 @@
     var contentEl = document.getElementById('content');
     var navListEl = document.getElementById('navList');
 
-    if (contentEl) {
-      contentEl.addEventListener('touchstart', onTouchStart, { passive: false });
+if (contentEl) {
+      contentEl.addEventListener('touchstart', onTouchStart, { passive: true });
       contentEl.addEventListener('touchmove', onTouchMove, { passive: false });
-      contentEl.addEventListener('touchend', onTouchEnd);
-      contentEl.addEventListener('touchcancel', onTouchEnd);
+      contentEl.addEventListener('touchend', onTouchEnd, { passive: true });
+      contentEl.addEventListener('touchcancel', onTouchEnd, { passive: true });
     }
     if (navListEl) {
-      navListEl.addEventListener('touchstart', onTouchStart, { passive: false });
+      navListEl.addEventListener('touchstart', onTouchStart, { passive: true });
       navListEl.addEventListener('touchmove', onTouchMove, { passive: false });
-      navListEl.addEventListener('touchend', onTouchEnd);
-      navListEl.addEventListener('touchcancel', onTouchEnd);
+      navListEl.addEventListener('touchend', onTouchEnd, { passive: true });
+      navListEl.addEventListener('touchcancel', onTouchEnd, { passive: true });
     }
   }
 
@@ -1143,13 +1143,17 @@
     return null;
   }
 
-  function onTouchStart(e) {
-    if (e.touches.length !== 1) return;
+function onTouchStart(e) {
+    // 多指触摸 / 非单点：立即彻底重置，不留污染状态
+    if (e.touches.length !== 1) { cancelSort(); return; }
     var t = targetInfo(e.target);
-    if (!t) return;
+    if (!t) { cancelSort(); return; }
 
-    // 点击控件（编辑/删除/手柄/链接）不进入排序
-    if (e.target.closest('a, button, .card-act-btn, .drag-handle, input, textarea, label')) return;
+    // 点击控件（编辑/删除/手柄/链接/卡片主体）不进入排序
+    if (e.target.closest('a, button, .card-act-btn, .drag-handle, input, textarea, label, .card-main')) {
+      cancelSort();
+      return;
+    }
 
     touchSort.kind = t.kind;
     touchSort.sourceEl = t.el;
@@ -1178,13 +1182,9 @@
     vibrate(40);
   }
 
-  function onTouchMove(e) {
+function onTouchMove(e) {
     if (!touchSort.enabled) {
-      // 尚未激活时允许轻滑滚动；一旦移动过大则取消长按
-      if (touchSort.sourceEl) {
-        var dy = Math.abs(e.touches[0].clientY - touchSort.lastY);
-        if (dy > 10) cancelSort();
-      }
+      // 未进入排序：纯滚动，不做任何判断，避免扰动页面滚动与布局
       return;
     }
     e.preventDefault();
