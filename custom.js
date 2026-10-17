@@ -279,7 +279,7 @@
       contentEl.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     });
   // 版权 + 免责声明（始终在卡片内容最底部）
-    contentEl.innerHTML += '<div class="footer-legal">' +
+    content.innerHTML += '<div class="footer-legal">' +
       '<p> Copyright © ' + new Date().getFullYear() + ' Basic-yao</p>' +
       '<p>免责声明：本站仅作个人网址索引，不存储第三方内容，亦不对各网址的真实性、准确性、合法性负责!</p>' +
     '</div>';
@@ -1455,45 +1455,4 @@
 
   window.addEventListener('scroll', function () { if (tip && tip.classList.contains('show')) hideTip(); }, true);
   window.addEventListener('resize', function () { if (tip && tip.classList.contains('show')) hideTip(); });
-// ============================================================
-// admin 移动端布局补丁
-// ============================================================
-(function () {
-  'use strict';
-
-  function applyMobilePatch() {
-    if (document.getElementById('admin-mobile-layout-fix')) return;
-
-    var isSmall = window.matchMedia('(max-width: 768px)').matches;
-    if (!isSmall) return;
-
-    var style = document.createElement('style');
-    style.id = 'admin-mobile-layout-fix';
-    style.textContent = [
-      '@media (max-width: 768px) {',
-      '  .sidebar {',
-      '    width: 56px !important;',
-      '  }',
-      '  .sidebar .nav-title,',
-      '  .sidebar .reset-btn,',
-      '  .sidebar .add-group-item .nav-title {',
-      '    display: none !important;',
-      '  }',
-      '  .main {',
-      '    width: calc(100vw - 56px) !important;',
-      '    max-width: calc(100vw - 56px) !important;',
-      '    margin-left: 56px !important;',
-      '    box-sizing: border-box !important;',
-      '  }',
-      '}'
-    ].join('\n');
-    document.head.appendChild(style);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyMobilePatch);
-  } else {
-    applyMobilePatch();
-  }
-})();
 })();
