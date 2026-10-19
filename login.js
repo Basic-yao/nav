@@ -39,7 +39,15 @@
       }
     });
   }
-
+ if (/iPhone|iPad|iPod/i.test(navigator.userAgent) && 'visualViewport' in window) {
+  var overlay = document.getElementById('loginOverlay');
+  var vv = window.visualViewport;
+  function adjustOverlay() {
+    overlay.style.height = vv.height + 'px';
+  }
+  vv.addEventListener('resize', adjustOverlay);
+  adjustOverlay();
+}
   // 兜底：输入框失焦后恢复滚动位置
   pwdEl.addEventListener('blur', function () {
     setTimeout(function () { window.scrollTo(0, window.scrollY); }, 100);
