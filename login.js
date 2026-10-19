@@ -5,11 +5,12 @@
  *   2. 弹窗 DOM 由本文件动态创建，admin.html 里无需写弹窗结构
  *   3. 跟随主题：读取 html[data-theme]，深色遮罩 #141518 / 浅色 #ffffff
  *   4. 密码错误时清空输入框并重新聚焦
+ *   5. 登录成功后从 DOM 彻底移除遮罩，避免残留导致页面显示异常
  * ============================================================ */
 (function () {
   'use strict';
 
-  // ★ 在这里修改管理密码
+  // ★ 在这里修改管理密码（改成你自己的密码，3 位、6 位都可以，前后别带空格）
   var PASS = '1233';
 
   // 已经创建过就不再重复创建（防止被意外调用多次）
@@ -68,7 +69,10 @@
 
   function checkLogin() {
     if (pwdEl.value === PASS) {
-      overlay.style.display = 'none';   // 登录成功：隐藏（保留 DOM，避免重复创建）
+      // ★ 登录成功：从 DOM 彻底移除遮罩，避免残留撑高/盖住页面导致"放大窗口"
+      if (overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+      }
     } else {
       msgEl.style.display = 'block';
       pwdEl.value = '';
