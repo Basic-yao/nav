@@ -1107,8 +1107,15 @@ html[data-theme="dark"] .nav-item.dragging {
 
 .login-dialog {
   position: absolute;
-  z-index: 1;
+  top: 0;
+  left: 0;
   width: 320px;
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
   padding: 30px;
   text-align: center;
   background: var(--modal-bg);
