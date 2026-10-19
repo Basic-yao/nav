@@ -250,6 +250,15 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   overflow-y: auto;
   overflow-x: clip;
 
+  /* ★ 关键修复：无论内容长短始终预留滚动条空间 */
+  scrollbar-gutter: stable;
+}
+
+/* 兼容不支持 scrollbar-gutter 的旧浏览器 */
+@supports not (scrollbar-gutter: stable) {
+  .main {
+    overflow-y: scroll;
+  }
 }
 
 /* ===== 搜索栏 ===== */
