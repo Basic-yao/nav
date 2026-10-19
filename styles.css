@@ -49,9 +49,7 @@ html[data-theme="dark"] {
 html, body {
   margin: 0 !important;
   padding: 0 !important;
-  height: auto;
-  min-height: 100%;
-  overflow: auto; 
+  overflow: hidden; 
 }
 
 html {
@@ -80,7 +78,6 @@ svg {
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
-  min-height: 100%;
 }
 
 /* ===== 侧边栏 ===== */
@@ -88,8 +85,6 @@ svg {
   flex: 0 0 var(--sidebar-width);
   width: var(--sidebar-width);
   height: 100vh;
-  height: 100dvh;
-  float: left;   
   max-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -242,8 +237,6 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 
   height: 100vh;
   height: 100dvh;
-  min-height: 100vh;
-  min-height: 100dvh;
   box-sizing: border-box;
 
   /* 底部内边距归零，让声明贴底 */
@@ -254,7 +247,7 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   flex-direction: column !important;
   min-height: 0;
 
-  overflow: visible; 
+  overflow-y: auto;
   overflow-x: clip;
   /* ★ 关键修复：无论内容长短始终预留滚动条空间 */
   scrollbar-gutter: stable;
@@ -1103,23 +1096,15 @@ html[data-theme="dark"] .nav-item.dragging {
 }
 
 /* ===== 登录弹窗（admin.html 内联样式实色兜底） ===== */
-#loginOverlay {
-  background: var(--overlay-bg) !important;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
-  z-index: 1000;
-}
+#loginOverlay { background: var(--overlay-bg) !important; }
 
 .login-dialog {
-  width: 360px;
-  max-width: 90vw;
+  position: relative;
+  z-index: 1;
+  width: 320px;
   padding: 30px;
   text-align: center;
-  background: var(--card-bg);
+  background: var(--modal-bg);
   color: var(--text-main);
   border: 1px solid var(--border);
   border-radius: 12px;
