@@ -1,7 +1,6 @@
 (function () {
   'use strict';
 
-  // ★ 在这里修改管理密码
   var PASS = '1233';
 
   var overlay = document.getElementById('loginOverlay');
@@ -9,8 +8,20 @@
   var msgEl = document.getElementById('loginMsg');
   var btnEl = document.getElementById('loginBtn');
 
-  // 如果静态结构不存在，直接退出，不做任何 DOM 操作
   if (!overlay || !pwdEl || !btnEl) return;
+
+  // ★ 只在桌面端（精确指针设备）自动聚焦
+  var isDesktop = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (isDesktop) {
+    // 页面加载完成后聚焦
+    window.addEventListener('load', function () {
+      pwdEl.focus();
+      // 保险：延迟 100ms 再聚焦一次，确保渲染完成
+      setTimeout(function () {
+        pwdEl.focus();
+      }, 100);
+    });
+  }
 
   function submit() {
     if (pwdEl.value === PASS) {
