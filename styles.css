@@ -1103,22 +1103,23 @@ html[data-theme="dark"] .nav-item.dragging {
 }
 
 /* ===== 登录弹窗（admin.html 内联样式实色兜底） ===== */
-#loginOverlay { background: var(--overlay-bg) !important; }
-
-.login-dialog {
+#loginOverlay {
+  background: var(--overlay-bg) !important;
   position: absolute;
   top: 0;
   left: 0;
-  width: 320px;
-  min-height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   z-index: 1000;
+}
+
+.login-dialog {
+  width: 360px;
+  max-width: 90vw;
   padding: 30px;
   text-align: center;
-  background: var(--modal-bg);
+  background: var(--card-bg);
   color: var(--text-main);
   border: 1px solid var(--border);
   border-radius: 12px;

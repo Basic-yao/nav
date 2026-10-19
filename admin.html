@@ -11,7 +11,7 @@
 </head>
 <body>
   <!-- login.js 不再动态创建弹窗，弹窗结构静态写在这里 -->
-  <div id="loginOverlay" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;">
+<div id="loginOverlay" style="position:absolute;top:0;left:0;width:100%;min-height:100vh;min-height:100dvh;z-index:1000;display:flex;align-items:center;justify-content:center;">
     <div class="login-dialog">
       <h2 class="login-title">管理登录</h2>
       <input type="password" id="adminPwd" class="login-input" placeholder="请输入密码" autocomplete="off">
