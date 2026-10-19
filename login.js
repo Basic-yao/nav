@@ -10,7 +10,7 @@
   'use strict';
 
   // ★ 在这里修改管理密码
-  var PASS = '***';
+  var PASS = '1233';
 
   // 已经创建过就不再重复创建（防止被意外调用多次）
   if (document.getElementById('loginOverlay')) return;
