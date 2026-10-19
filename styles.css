@@ -248,7 +248,8 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   display: flex !important;
   flex-direction: column !important;
   min-height: 0;
-
+  position: relative;
+  -webkit-overflow-scrolling: touch;
   overflow-y: auto;
   overflow-x: clip;
 
@@ -880,8 +881,8 @@ html[data-theme="dark"] .nav-item.dragging {
   }
 
   .sidebar {
-    position: fixed;
-    top: 0;
+    position: sticky;
+    top: 0px; 
     left: 0;
     bottom: 0;
     z-index: 300;
