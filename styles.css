@@ -1106,7 +1106,7 @@ html[data-theme="dark"] .nav-item.dragging {
 #loginOverlay { background: var(--overlay-bg) !important; }
 
 .login-dialog {
-  position: relative;
+  position: absolute;
   z-index: 1;
   width: 320px;
   padding: 30px;
