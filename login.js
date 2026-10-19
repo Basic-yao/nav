@@ -47,7 +47,7 @@
   dialog.innerHTML =
     '<h2 style="margin:0 0 15px;font-size:20px;font-weight:700;">管理登录</h2>' +
     '<input type="password" id="adminPwd" autocomplete="off" placeholder="请输入密码" ' +
-      'style="width:100%;padding:10px;margin-bottom:15px;font-size:16px;' +
+      'style="width:100%;padding:10px;margin-bottom:15px;font-size:14px;' +
       'color:' + (isDark ? '#e6e8ec' : '#1f2329') + ';' +
       'background:' + (isDark ? '#1b1f27' : '#ffffff') + ';' +
       'border:1px solid ' + (isDark ? '#262a33' : '#d1d5db') + ';' +
@@ -81,7 +81,13 @@
     if (e.key === 'Enter') checkLogin();
   });
 
-  // ---------- 4. 监听主题切换，实时换色 ----------
+  // ---------- 4. 聚焦密码框 ----------
+  // 用 rAF 延迟，避免被其它脚本的 focus 抢走
+  requestAnimationFrame(function () {
+    try { pwdEl.focus(); } catch (e) {}
+  });
+
+  // ---------- 5. 监听主题切换，实时换色 ----------
   // 你的主题开关改的是 html[data-theme]，这里监听属性变化
   if ('MutationObserver' in window) {
     new MutationObserver(function () {
