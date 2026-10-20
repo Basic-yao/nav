@@ -31,6 +31,12 @@ const navData =
         "url": "https://www.convry.com/",
         "desc": "致力打造即用即走型在线工具箱",
         "icon": "https://www.convry.com/favicon.ico"
+      },
+      {
+        "title": "咔帕搜索",
+        "url": "https://www.cuppaso.com/",
+        "desc": "咔帕搜索（www.CuppaSo.com）是一个资源超丰富的云盘资源搜索网站，咔帕搜索专注于收录夸克云盘,阿里云盘,百度云盘,迅雷云盘,天翼云盘,彩和云盘,蓝奏云盘资源，包括：影视资源、音乐资源、图片资源、电子书资源、软件资源、小说资源等等。只需要输入关键词即可搜索夸克云盘,阿里云盘,百度云盘,迅雷云盘,天翼云盘,彩和云盘,蓝奏云盘资源，直接提供夸克云盘,阿里云盘,百度云盘,迅雷云盘,天翼云盘,彩和云盘,蓝奏云盘分享链接，大家可以保存至自己的夸克云盘,阿里云盘,百度云盘,迅雷云盘,天翼云盘,彩和云盘,蓝奏云盘或者直接下载。",
+        "icon": "https://www.cuppaso.com/static/assets/img/logo.png"
       }
     ]
   },
@@ -61,12 +67,6 @@ const navData =
         "url": "https://taoiptv.com/",
         "desc": "全网自动搜集酒店源和组播源，过滤低分辨率保留1920x1080高清，筛选播放速度优质流畅源，IPTV频道每天2次自动检测、发布最新的有效源。",
         "icon": "https://taoiptv.com/upload/20240312/ab83c2f29ff9c2.jpg"
-      },
-      {
-        "title": "tv.iptv2026.cc.cd",
-        "url": "https://tv.iptv2026.cc.cd/",
-        "desc": "SOCKS5 代理池 · 总端 Quake / 鹰图采集 · 测速验活自愈 · 播放列表注入 · 多账号部署 ｜ 范围：台湾 / 香港 / 全球(排除中国大陆)",
-        "icon": ""
       },
       {
         "title": "电视直播源搜索引擎",
@@ -253,6 +253,36 @@ const navData =
         "url": "https://www.hibitsoft.ir/",
         "desc": "免费的HiBit Uninstaller软件卸载和HiBit Startup Manager启动项管理，提供安装版和便携版，能够清理注册表。",
         "icon": "https://www.hibitsoft.ir/favicon.ico"
+      },
+      {
+        "title": "文件管理工具",
+        "url": "https://dirdeck.com/",
+        "desc": "苹果系统文件管理界的瑞士军刀，Finder 的最佳平替。多标签页、多层级收藏夹、12 种分屏布局、超级预览与文件处理工具，专为 Mac 打造的一站式文件管理工作台。",
+        "icon": "https://dirdeck.com/assets/brand/favicon-32.png"
+      },
+      {
+        "title": "开发者免费服务资源大全",
+        "url": "https://free-for-dev.com/zh/",
+        "desc": "free-for.dev 是一个非常实用且知名的资源网站，专门为软件开发者和技术人员收集整理免费的服务和工具，内容覆盖了开发者从构建、测试、部署到协作的所有环节，该项目在 GitHub 已经获得了 110K Stars。",
+        "icon": "icons/ffd.png"
+      },
+      {
+        "title": "Node.js",
+        "url": "https://nodejs.org/zh-cn",
+        "desc": "在任何地方运行 JavaScript Node.js® 是一个免费、开源、跨平台的 JavaScript 运行时环境，它让开发人员能够创建服务器、 Web 应用、命令行工具和脚本。",
+        "icon": "https://nodejs.org/static/images/favicons/favicon.png"
+      },
+      {
+        "title": "网易UU远程工具",
+        "url": "https://uuyc.163.com/",
+        "desc": "网易UU远程，是一款由网易出品的专业远程控制软件。支持手机、平板、Mac 、PC、TV 与掌机等多设备远控电脑，满足远程游戏、办公和协助需求。凭借高速直连和超低延迟，提供流畅的本地操控体验，支持真彩、 HDR 、4K、144 帧画面显示，支持远程开机、多屏协作、高速文件传输，同时兼容键鼠、手柄和多点触控，让用户不仅可以高效办公也能快乐游戏。",
+        "icon": "https://uuyc.163.com/img/home/icon.jpg"
+      },
+      {
+        "title": "远程控制软件",
+        "url": "https://www.todesk.com/",
+        "desc": "ToDesk远程控制软件是一款稳定流畅的远程控制电脑手机连接软件,可远程桌面办公,远程协助运维.采用端对端加密,让每一次远程访问都安全可靠。",
+        "icon": "https://www.todesk.com/favicon.ico"
       }
     ]
   },
