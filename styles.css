@@ -1150,3 +1150,20 @@ html[data-theme="dark"] .login-dialog { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.
 .login-btn:active { transform: scale(.98); }
 
 .login-msg { display: none; margin-top: 10px; font-size: 13px; color: var(--danger); }
+
+/* Logo 九宫格：实心填充，不被全局 svg 规则覆盖 */
+.logo-mark,
+.logo-mark rect {
+  fill: currentColor !important;
+  stroke: none !important;
+}
+
+/* 浅色主题：品牌蓝 */
+.logo .logo-mark {
+  color: #1677ff;
+}
+
+/* 深色主题：亮蓝 */
+[data-theme="dark"] .logo .logo-mark {
+  color: #4d9bff;
+}
