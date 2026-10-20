@@ -85,9 +85,6 @@
       if (overlay.parentNode) {
         overlay.parentNode.removeChild(overlay);
       }
-     // 恢复登录前 body / html 的 overflow 设置
-      document.body.style.overflow = previousBodyOverflow || '';
-      document.documentElement.style.overflow = previousHtmlOverflow || '';
       // ★ 强制把 .main 的滚动位置归零，抵消 iOS 的负偏移
       var main = document.querySelector('.main');
       if (main) {
