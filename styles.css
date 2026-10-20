@@ -50,6 +50,8 @@ html, body {
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden; 
+  overflow-x: hidden; 
+  overflow-y: auto;
 }
 
 html {
@@ -76,7 +78,7 @@ svg {
   display: flex;
   align-items: stretch;
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   overflow: hidden;
 }
 
@@ -235,9 +237,8 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
   margin-left: 0;
   margin-right: 0;
 
-  /* 移动端修复：不再锁死 100vh，交给文档流与 body 滚动，避免手机地址栏伸缩时搜索栏被顶出视口 */
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   box-sizing: border-box;
 
   /* 底部内边距归零，让声明贴底 */
@@ -250,15 +251,15 @@ html[data-theme="dark"] .theme-icon .icon-moon { opacity: 1; transform: rotate(0
 
   overflow-y: auto;
   overflow-x: clip;
+  /* ★ 关键修复：无论内容长短始终预留滚动条空间 */
+  scrollbar-gutter: stable;
+}
 
-  /* 移动端：取消独立滚动容器，让页面整体滚动，搜索栏自然跟随 */
-  @media (max-width: 768px) {
-    height: auto;
-    min-height: 100vh;
-    min-height: 100dvh;
-    overflow-y: visible;
+/* 兼容不支持 scrollbar-gutter 的旧浏览器 */
+@supports not (scrollbar-gutter: stable) {
+  .main {
+    overflow-y: scroll;
   }
-
 }
 
 /* ===== 搜索栏 ===== */
@@ -840,15 +841,6 @@ html[data-theme="dark"] .nav-item.dragging {
     margin-left: 56px;
     padding: 0 18px 0;
   }
-
-  /* 搜索栏取消吸顶与负边距，避免文字被裁、被顶出视口 */
-  .search-box {
-    position: static;
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    padding: 10px 0 12px;
-  }
 }
 
 /* ===== 移动端/窄屏：侧栏固定为 56px 图标栏，主内容需要让位 ===== */
@@ -1128,7 +1120,7 @@ html[data-theme="dark"] .login-dialog { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
-  font-size: 14px;
+  font-size: 16px;
   font-family: inherit;
   color: var(--text-main);
   background: var(--input-bg);
