@@ -851,6 +851,7 @@ html[data-theme="dark"] .nav-item.dragging {
     max-width: calc(100vw - 56px);
     max-width: calc(100dvw - 56px);
     margin-left: 56px;
+    padding-top: calc(40px + env(safe-area-inset-top, 0px));
   }
 }
 
