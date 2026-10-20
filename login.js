@@ -19,12 +19,6 @@
   // 已经创建过就不再重复创建（防止被意外调用多次）
   if (document.getElementById('loginOverlay')) return;
 
-  // ---------- 0. 登录前先把 body 锁死，防止遮罩出现时页面可滚动 ----------
-  var previousBodyOverflow = document.body.style.overflow;
-  var previousHtmlOverflow  = document.documentElement.style.overflow;
-  document.body.style.overflow = 'hidden';
-  document.documentElement.style.overflow = 'hidden';
-
   // ---------- 1. 创建遮罩 ----------
   var overlay = document.createElement('div');
   overlay.id = 'loginOverlay';
@@ -91,10 +85,9 @@
       if (overlay.parentNode) {
         overlay.parentNode.removeChild(overlay);
       }
-      // 恢复登录前 body / html 的 overflow 设置
+     // 恢复登录前 body / html 的 overflow 设置
       document.body.style.overflow = previousBodyOverflow || '';
       document.documentElement.style.overflow = previousHtmlOverflow || '';
-
       // ★ 强制把 .main 的滚动位置归零，抵消 iOS 的负偏移
       var main = document.querySelector('.main');
       if (main) {
