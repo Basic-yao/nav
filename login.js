@@ -19,6 +19,10 @@
   // 已经创建过就不再重复创建（防止被意外调用多次）
   if (document.getElementById('loginOverlay')) return;
 
+// 恢复登录前 body / html 的 overflow 设置
+      document.body.style.overflow = previousBodyOverflow || '';
+      document.documentElement.style.overflow = previousHtmlOverflow || '';
+
   // ---------- 1. 创建遮罩 ----------
   var overlay = document.createElement('div');
   overlay.id = 'loginOverlay';
