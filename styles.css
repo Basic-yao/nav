@@ -66,6 +66,9 @@ body {
   line-height: 1.6;
   background: var(--bg);
   color: var(--text-main);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 svg {
