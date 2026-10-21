@@ -68,6 +68,12 @@
         "url": "https://tonkiang.us/",
         "desc": "最新直播源分享平台。一个免费且易于使用的在线工具，专门用于搜索和提供公共的 IPTV 频道直播源分享。用户可以通过简单的步骤快速找到并播放所需的电视直播节目。电视直播源搜索引擎｜最新直播源分享平台, 国内外m3u8电视直播源网址每日更新",
         "icon": "https://tonkiang.us/favicon1.ico"
+      },
+      {
+        "title": "GitHub 文件加速",
+        "url": "https://ghproxy.net/",
+        "desc": "GitHub 文件加速",
+        "icon": "https://ghproxy.net/favicon.ico"
       }
     ]
   },
