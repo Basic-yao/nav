@@ -838,16 +838,21 @@
   // ============================================================
   // Logo 点击 → 显示全部
   // ============================================================
-  function bindLogoClick() {
+function bindLogoClick() {
     var logo = document.getElementById('logo');
     if (logo) {
-      logo.onclick = function () {
+      // ★ 用 addEventListener，避免被其他脚本的 onclick= 赋值覆盖
+      logo.addEventListener('click', function () {
         currentView = null;
         var input = document.getElementById('subSearchInput');
         if (input) input.value = '';
         renderSidebar(navDataRef);
         renderContent(navDataRef.filter(function (s) { return (s.links || []).length > 0; }));
-      };
+        // ★ 重置视图后回到顶部
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        var mainEl = document.querySelector('.main');
+        if (mainEl) mainEl.scrollTop = 0;
+      });
       logo.style.cursor = 'pointer';
     }
   }

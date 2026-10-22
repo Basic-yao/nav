@@ -193,14 +193,19 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
 
 
   // Logo 点击 → 显示全部（与 custom.js 后台行为一致）
-  function bindLogoClick() {
+function bindLogoClick() {
     if (!logo) return;
-    logo.onclick = function () {
+    // ★ 用 addEventListener，避免被其他脚本的 onclick= 赋值覆盖
+    logo.addEventListener('click', function () {
       currentView = null;
       currentFiltered = null;
       renderSidebar(navData);
       renderContent(navData.filter(function (s) { return (s.links || []).length > 0; }));
-    };
+      // ★ 重置视图后回到顶部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      var mainEl = document.querySelector('.main');
+      if (mainEl) mainEl.scrollTop = 0;
+    });
     logo.style.cursor = 'pointer';
   }
 
