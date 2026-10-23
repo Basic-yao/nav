@@ -88,10 +88,10 @@
         "icon": "https://www.423down.com/wp-content/themes/D7/favicon.ico?v=202610051715"
       },
       {
-        "title": "Appstorrent.ru",
-        "url": "https://appstorrent.ru/",
-        "desc": "俄罗斯苹果软件下载站",
-        "icon": "https://appstorrent.ru/ph/a2937891ed5d.svg"
+        "title": "软仓 | RuanCang.Net",
+        "url": "https://www.ruancang.net",
+        "desc": "常用软件，Adobe，CAD制图，三维建模，图像设计，建筑BIM，视频音频，数据分析，机械工业，电子电路",
+        "icon": "https://www.ruancang.net/favicon.ico"
       },
       {
         "title": "果核剥壳",
@@ -100,16 +100,16 @@
         "icon": "https://www.ghxi.com/favicon.ico"
       },
       {
-        "title": "软仓 | RuanCang.Net",
-        "url": "https://www.ruancang.net",
-        "desc": "常用软件，Adobe，CAD制图，三维建模，图像设计，建筑BIM，视频音频，数据分析，机械工业，电子电路",
-        "icon": "https://www.ruancang.net/favicon.ico"
-      },
-      {
         "title": "佛系软件",
         "url": "https://foxirj.com/",
         "desc": "精品Windows,macOS破解软件下载，每天更新大量精品mac应用软件,macOS破解软件,Windows破解软件,音频插件,视频插件,图像插件",
         "icon": "https://foxirj.com/favicon.ico"
+      },
+      {
+        "title": "Appstorrent.ru",
+        "url": "https://appstorrent.ru/",
+        "desc": "俄罗斯苹果软件下载站",
+        "icon": "https://appstorrent.ru/ph/a2937891ed5d.svg"
       },
       {
         "title": "MacApp分享频道",
@@ -136,6 +136,12 @@
     "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"5\" y=\"2\" width=\"14\" height=\"20\" rx=\"2\"/><line x1=\"12\" y1=\"18\" x2=\"12.01\" y2=\"18\"/></svg>",
     "links": [
       {
+        "title": "88看球直播",
+        "url": "https://www.88kq.org/",
+        "desc": "88直播地址发布页_NBA足球免费直播_收藏不迷路",
+        "icon": "https://www.88kq.org/img/88.png"
+      },
+      {
         "title": "iFixit：免费修理手册",
         "url": "https://zh.ifixit.com/",
         "desc": "iFixit 是一个以维修为主题的全球性互助社区。从一个一个的设备开始，让我们来一步一个脚印一点一点的修复这个世界。你可以在问题解答论坛和专家一起互动——还可以创建并与全世界分享由你编篡的维修手册。你可以在这里买到所有关于你的 DIY 维修计划的配件及工具，帮助修复好你的苹果或安卓设备。",
@@ -158,12 +164,6 @@
         "url": "https://pcbz.iwzwh.com/",
         "desc": "网页版问真八字在线排盘，免下载使用，更适合专业命理师的选择。为您提供八字命盘准确信息、命例云存储、真太阳时、AI智能提示格局、旺衰、五行能量、八字合婚、玄学学堂、名人八字库、断事笔记等功能。",
         "icon": "https://pcbz.iwzwh.com/favicon.ico"
-      },
-      {
-        "title": "88看球直播",
-        "url": "https://www.88kq.org/",
-        "desc": "88直播地址发布页_NBA足球免费直播_收藏不迷路",
-        "icon": "https://www.88kq.org/img/88.png"
       },
       {
         "title": "卜易居算命网",
@@ -232,12 +232,6 @@
         "icon": "https://www.chinavid.com/wp-content/themes/Vstyle/assets/img/favicon.ico"
       },
       {
-        "title": "Locrdp远程工具",
-        "url": "https://www.locrdp.cn/",
-        "desc": "让每一台windows电脑安全启用远程桌面和远程协助",
-        "icon": "https://www.locrdp.cn/favicon.ico"
-      },
-      {
         "title": "移除内容付费",
         "url": "https://paywallbuster.me/",
         "desc": "许多网站都提供了新闻文章内容付费功能。我们将它们全部汇集在一个方便的地方。所以，你可以尝试它们，找到最适合你喜欢的网站的服务。",
@@ -290,6 +284,12 @@
         "url": "https://www.todesk.com/",
         "desc": "ToDesk远程控制软件是一款稳定流畅的远程控制电脑手机连接软件,可远程桌面办公,远程协助运维.采用端对端加密,让每一次远程访问都安全可靠。",
         "icon": "https://www.todesk.com/favicon.ico"
+      },
+      {
+        "title": "Locrdp远程工具",
+        "url": "https://www.locrdp.cn/",
+        "desc": "让每一台windows电脑安全启用远程桌面和远程协助",
+        "icon": "https://www.locrdp.cn/favicon.ico"
       }
     ]
   },
@@ -332,6 +332,12 @@
         "url": "https://pan.baidu.com/s/15RKNU_u4kSCACbO1uUgQlw?pwd=6666#list/path=%2F",
         "desc": "李忠义老师资料（含答案解析）_免费高速下载|百度网盘-分享无限制",
         "icon": "https://pan.baidu.com/m-static/base/static/images/favicon.ico"
+      },
+      {
+        "title": "车机资源分享",
+        "url": "https://pan.quark.cn/s/5aaeb55d7535",
+        "desc": "夸克网盘是夸克推出的一款云服务产品，功能包括云存储、高清看剧、文件在线解压、PDF一键转换等。通过夸克网盘可随时随地管理和使用照片、文档、手机资料，目前支持Android、iOS、PC、iPad。",
+        "icon": "https://pan.quark.cn/favicon.ico"
       }
     ]
   },
@@ -376,9 +382,9 @@
         "icon": "https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202609132104"
       },
       {
-        "title": "Ubuntu",
+        "title": "Linux",
         "url": "https://ubuntu.com/download/desktop",
-        "desc": "Linux 桌面发行版",
+        "desc": "世界上许多最大的PC制造商都认证其笔记本和台式机支持Ubuntu，从超便携笔记本到高端工作站。Ubuntu认证的硬件通过了我们广泛的测试和评审流程，确保Ubuntu开箱即用。我们的合作伙伴还提供预装优化Ubuntu镜像的部分设备。",
         "icon": "https://ubuntu.com/static/favicons/COF-favicon-48x48.png?v=fa3c63f"
       },
       {
