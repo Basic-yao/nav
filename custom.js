@@ -320,6 +320,7 @@
         navListEl.querySelectorAll('.nav-item').forEach(function (n) { n.classList.remove('active'); });
         div.classList.add('active');
         renderContent([item]);
+        scrollListToTop();   // ★ 新增：点分类后回到顶部
       };
 
       div.appendChild(parent);
