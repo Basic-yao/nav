@@ -191,6 +191,18 @@ const EDIT_MODE = /admin\.html$/i.test(window.location.pathname);
     }
   }
 
+// ★ 新增：回到顶部（手机端滚 .layout，桌面端滚 .main，前台滚 window）
+function scrollListToTop() {
+  ['.layout', '.main'].forEach(function (sel) {
+    var el = document.querySelector(sel);
+    if (el && el.scrollTop !== 0) {
+      try { el.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { el.scrollTop = 0; }
+    }
+  });
+  if (window.scrollY !== 0 || document.documentElement.scrollTop !== 0) {
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+  }
+}
 
   // Logo 点击 → 显示全部（与 custom.js 后台行为一致）
 function bindLogoClick() {
@@ -447,7 +459,7 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
         navList.querySelectorAll('.nav-item').forEach(function (n) { n.classList.remove('active'); });
         div.classList.add('active');
         renderContent([item]);
-        if (typeof resetScrollToTop === 'function') resetScrollToTop();
+        scrollListToTop();
       };
 
       div.appendChild(parent);

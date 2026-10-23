@@ -834,24 +834,42 @@
     }).filter(function (sec) { return sec.links.length > 0; });
   }
 
+function scrollListToTop() {
+  ['.layout', '.main'].forEach(function (sel) {
+    var el = document.querySelector(sel);
+    if (el && el.scrollTop !== 0) {
+      try { el.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { el.scrollTop = 0; }
+    }
+  });
+  if (window.scrollY !== 0 || document.documentElement.scrollTop !== 0) {
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+  }
+}
 
-  // ============================================================
-  // Logo 点击 → 显示全部
-  // ============================================================
-function bindLogoClick() {
+// ★ 新增：回到顶部（后台手机端滚 .layout，桌面端滚 .main）
+  function scrollListToTop() {
+    ['.layout', '.main'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (el && el.scrollTop !== 0) {
+        try { el.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { el.scrollTop = 0; }
+      }
+    });
+    if (window.scrollY !== 0 || document.documentElement.scrollTop !== 0) {
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+    }
+  }
+
+  function bindLogoClick() {
     var logo = document.getElementById('logo');
     if (logo) {
-      // ★ 用 addEventListener，避免被其他脚本的 onclick= 赋值覆盖
+      // ★ 改成 addEventListener，避免被别处的 onclick= 覆盖
       logo.addEventListener('click', function () {
         currentView = null;
         var input = document.getElementById('subSearchInput');
         if (input) input.value = '';
         renderSidebar(navDataRef);
         renderContent(navDataRef.filter(function (s) { return (s.links || []).length > 0; }));
-        // ★ 重置视图后回到顶部
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        var mainEl = document.querySelector('.main');
-        if (mainEl) mainEl.scrollTop = 0;
+        scrollListToTop();                 // ★ 新增：回顶部
       });
       logo.style.cursor = 'pointer';
     }
