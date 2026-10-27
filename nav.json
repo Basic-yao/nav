@@ -73,7 +73,7 @@
         "title": "GitHub 文件加速",
         "url": "https://ghproxy.net/",
         "desc": "GitHub 文件加速",
-        "icon": "https://ghproxy.net/favicon.ico"
+        "icon": "icons/ghproxy.ico"
       }
     ]
   },
