@@ -1258,6 +1258,17 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
   var debounceTimer;
   var blurTimer;
 
+  // 【移动端适配】判断是否为触摸设备
+  var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+
+  // 【移动端适配】统一绑定鼠标/触摸按下事件
+  function bindPointerDown(el, handler) {
+    el.addEventListener('mousedown', handler);
+    if (isTouch) {
+      el.addEventListener('touchstart', handler, { passive: false });
+    }
+  }
+
   // ===== 元素获取（动态兼容）=====
   function getInput() {
     return document.querySelector('.search-input') || document.querySelector('input[type="search"]');
@@ -1315,16 +1326,16 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     render('');
   }
 
-  // ===== 下拉框定位 =====
+  // ===== 下拉框定位（对齐整个搜索区域）=====
   function syncPos() {
     if (!box || box.style.display === 'none') return;
     var rect = input.getBoundingClientRect();
     var parentRect = input.parentElement.getBoundingClientRect();
-    
+
     box.style.top = (parentRect.bottom + window.scrollY + 4) + 'px';
     box.style.left = (parentRect.left + window.scrollX) + 'px';
     box.style.width = parentRect.width + 'px';
-    
+
     var dark = document.documentElement.getAttribute('data-theme') === 'dark' || document.body.classList.contains('dark');
     box.style.background = dark ? '#1f2329' : '#fff';
     box.style.color = dark ? '#e6e6e6' : '#333';
@@ -1392,11 +1403,11 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     });
   }
 
-  // ===== Tab 引擎切换 =====
+  // ===== Tab 引擎切换（精准锁定版）=====
   function switchEngine(dir, currentEl) {
     var tabs = getEngineTabs();
     if (!tabs.length) return false;
-    
+
     var idx = -1;
     if (currentEl && currentEl.classList.contains('active')) {
       idx = tabs.indexOf(currentEl);
@@ -1405,33 +1416,30 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
         if (tabs[i].classList.contains('active')) idx = i;
       }
     }
-    
+
     if (idx === -1) idx = 0;
-    
+
     var newIdx = (idx + dir + tabs.length) % tabs.length;
     tabs[newIdx].focus();
     tabs[newIdx].click();
     return true;
   }
 
-  // ===== 事件绑定 =====
-  box.addEventListener('mousedown', function (e) {
+  // ===== 事件绑定（统一使用 bindPointerDown 兼容手机）=====
+  bindPointerDown(box, function (e) {
     e.preventDefault();
-    e.stopPropagation(); // 【核心修复1】阻止冒泡，避免 document 误判为点击外部
-    
+    e.stopPropagation();
+
     if (e.target.closest('.nav-clear-all')) { clearHistory(); return; }
 
     if (e.target.closest('.nav-del-item')) {
-      // 【核心修复2】删除时只移除对应 DOM 节点，不整份重绘
       var delKw = e.target.closest('.nav-del-item').getAttribute('data-kw');
       var itemEl = e.target.closest('.j-item');
       if (itemEl) itemEl.remove();
-      
-      // 同步本地存储
+
       var h = getHistory().filter(function (x) { return x !== delKw; });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(h));
-      
-      // 若已无条目，收起下拉框
+
       if (!box.querySelector('.j-item')) {
         box.style.display = 'none';
       }
@@ -1513,7 +1521,7 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     }
   });
 
-  // 全局 Tab 兜底
+  // 全局 Tab 兜底（PC 键盘专用，手机上无 Tab 键不触发）
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Tab') return;
 
@@ -1550,7 +1558,8 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
     }, 150);
   });
 
-  document.addEventListener('mousedown', function (e) {
+  // 点击外部收起（兼容手机触摸）
+  bindPointerDown(document, function (e) {
     if (e.target !== input && !box.contains(e.target)) {
       box.style.display = 'none';
     }
@@ -1569,7 +1578,7 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
   window.addEventListener('resize', syncPos);
   new MutationObserver(syncPos).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   new MutationObserver(syncPos).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-  
+
   var engineObserver = new MutationObserver(function () {
     getEngineTabs();
   });
