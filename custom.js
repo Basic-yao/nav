@@ -1507,6 +1507,7 @@ function onTouchMove(e) {
 })();
 
 
+
 (function () {
   'use strict';
 
@@ -1540,7 +1541,7 @@ function onTouchMove(e) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(merged.slice(0, 30)));
   })();
 
-  // ===== 配置与状态（已修正选择器）=====
+  // ===== 配置与状态 =====
   var ENGINE_CONTAINER_ID = 'searchTags';
   var ENGINE_TAB_CLASS = 'tag';
   var activeIndex = -1;
@@ -1605,7 +1606,7 @@ function onTouchMove(e) {
     render('');
   }
 
-  // ===== 下拉框定位（对齐整个搜索区域）=====
+  // ===== 下拉框定位 =====
   function syncPos() {
     if (!box || box.style.display === 'none') return;
     var rect = input.getBoundingClientRect();
@@ -1682,7 +1683,7 @@ function onTouchMove(e) {
     });
   }
 
-  // ===== Tab 引擎切换（精准锁定版）=====
+  // ===== Tab 引擎切换 =====
   function switchEngine(dir, currentEl) {
     var tabs = getEngineTabs();
     if (!tabs.length) return false;
@@ -1701,18 +1702,33 @@ function onTouchMove(e) {
     var newIdx = (idx + dir + tabs.length) % tabs.length;
     tabs[newIdx].focus();
     tabs[newIdx].click();
-    if (input) input.focus();
     return true;
   }
 
   // ===== 事件绑定 =====
   box.addEventListener('mousedown', function (e) {
     e.preventDefault();
+    e.stopPropagation(); // 【核心修复1】阻止冒泡，避免 document 误判为点击外部
+    
     if (e.target.closest('.nav-clear-all')) { clearHistory(); return; }
+
     if (e.target.closest('.nav-del-item')) {
-      delHistory(e.target.closest('.nav-del-item').getAttribute('data-kw'));
+      // 【核心修复2】删除时只移除对应 DOM 节点，不整份重绘
+      var delKw = e.target.closest('.nav-del-item').getAttribute('data-kw');
+      var itemEl = e.target.closest('.j-item');
+      if (itemEl) itemEl.remove();
+      
+      // 同步本地存储
+      var h = getHistory().filter(function (x) { return x !== delKw; });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(h));
+      
+      // 若已无条目，收起下拉框
+      if (!box.querySelector('.j-item')) {
+        box.style.display = 'none';
+      }
       return;
     }
+
     var item = e.target.closest('.j-item');
     if (!item) return;
     var kw = item.getAttribute('data-kw');
@@ -1788,7 +1804,7 @@ function onTouchMove(e) {
     }
   });
 
-  // 【修改点3】全局 Tab 兜底：焦点不在搜索区 → 拉回搜索框；焦点在引擎标签上 → 从该标签开始切
+  // 全局 Tab 兜底
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Tab') return;
 
