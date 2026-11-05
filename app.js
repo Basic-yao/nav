@@ -1446,13 +1446,28 @@ content.innerHTML += title + '<div class="grid">' + cards + addCard + '</div>';
       return;
     }
 
-    var item = e.target.closest('.j-item');
-    if (!item) return;
-    var kw = item.getAttribute('data-kw');
-    saveHistory(kw);
-    input.value = kw;
-    box.style.display = 'none';
-    if (getBtn()) getBtn().click();
+// 点历史项文字 → 回填并直接搜索
+var item = e.target.closest('.j-item');
+if (!item) return;
+
+var kw = (item.getAttribute('data-kw') || '').trim();
+if (!kw) return;
+
+// 1. 先写回输入框（关键）
+input.value = kw;
+input.focus();           // 移动端补一刀，确保光标回来
+input.setSelectionRange(kw.length, kw.length);
+
+// 2. 存历史
+saveHistory(kw);
+
+// 3. 不收起下拉，先显示本地匹配
+render(kw);
+
+// 4. 异步拉百度联想，回来后刷新下拉
+fetchSuggest(kw, function (list) {
+  if (input.value.trim() === kw) render(kw, list);
+});
   });
 
   input.addEventListener('focus', function () { render(input.value.trim()); });
