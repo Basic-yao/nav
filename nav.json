@@ -16,10 +16,10 @@
         "icon": "https://instabox.sh/assets/d61ddab595ead54a/favicon.svg"
       },
       {
-        "title": "Gitee",
-        "url": "https://gitee.com/",
-        "desc": "基于 Git 的代码托管和研发协作平台",
-        "icon": "https://gitee.com/favicon.ico"
+        "title": "cloudflare",
+        "url": "https://www.cloudflare.com/",
+        "desc": "Cloudflare拥有财富500强45%的企业，加入成千上万的开发者行列，他们通过Cloudflare消除了基础设施复杂性并实现了全球部署。",
+        "icon": "https://www.cloudflare.com/favicon.ico"
       },
       {
         "title": "万能视频下载",
@@ -32,6 +32,12 @@
         "url": "https://www.convry.com/",
         "desc": "致力打造即用即走型在线工具箱",
         "icon": "https://www.convry.com/favicon.ico"
+      },
+      {
+        "title": "Oracle Cloud",
+        "url": "https://signup.cloud.oracle.com/",
+        "desc": "Oracle Cloud 免费套餐只需注册 Oracle Cloud 账户即可获取，不仅包含丰富的 Always Free 服务，还提供 300 美元的免费试用储值，让您可以在 30 天内免费使用所有适用的 Oracle Cloud Infrastructure 服务。其中，Always Free 服务可随时使用。而免费试用服务仅在 300 美元免费储值用尽或 30 天到期前有效（以先到者为准）。",
+        "icon": "https://signup.cloud.oracle.com/oraclefavicon.ico"
       }
     ]
   },
