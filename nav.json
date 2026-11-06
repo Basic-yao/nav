@@ -10,6 +10,12 @@
         "icon": "https://github.githubassets.com/favicons/favicon.svg"
       },
       {
+        "title": "instabox",
+        "url": "https://instabox.sh/",
+        "desc": "完整的Linux虚拟机，人工智能代理的云计算，为长期运行的代理提供完整的Linux虚拟机。",
+        "icon": "https://instabox.sh/assets/d61ddab595ead54a/favicon.svg"
+      },
+      {
         "title": "Gitee",
         "url": "https://gitee.com/",
         "desc": "基于 Git 的代码托管和研发协作平台",
@@ -26,12 +32,6 @@
         "url": "https://www.convry.com/",
         "desc": "致力打造即用即走型在线工具箱",
         "icon": "https://www.convry.com/favicon.ico"
-      },
-      {
-        "title": "咔帕搜索",
-        "url": "https://www.cuppaso.com/",
-        "desc": "咔帕搜索（www.CuppaSo.com）是一个资源超丰富的云盘资源搜索网站，咔帕搜索专注于收录夸克云盘,阿里云盘,百度云盘,迅雷云盘,天翼云盘,彩和云盘,蓝奏云盘资源，包括：影视资源、音乐资源、图片资源、电子书资源、软件资源、小说资源等等。只需要输入关键词即可搜索夸克云盘,阿里云盘,百度云盘,迅雷云盘,天翼云盘,彩和云盘,蓝奏云盘资源，直接提供夸克云盘,阿里云盘,百度云盘,迅雷云盘,天翼云盘,彩和云盘,蓝奏云盘分享链接，大家可以保存至自己的夸克云盘,阿里云盘,百度云盘,迅雷云盘,天翼云盘,彩和云盘,蓝奏云盘或者直接下载。",
-        "icon": "https://www.cuppaso.com/static/assets/img/logo.png"
       }
     ]
   },
